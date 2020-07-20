@@ -1,0 +1,17 @@
+FROM ruby:2.7.1
+MAINTAINER "YanYan@42paris"
+
+COPY srcs/ /data
+
+RUN curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add -;\
+	echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list
+
+RUN	apt update;\
+	apt install -y screen nodejs yarn;\
+	apt install -y build-essential zsh vim;
+
+RUN	cd /data/ft_transcendence/;\
+	gem install rails;\
+	bundle install;\
+	yarn install --check-files;\
+	rails db:migrate
