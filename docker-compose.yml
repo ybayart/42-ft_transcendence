@@ -5,7 +5,7 @@ services:
     ports:
       - "3000:3000"
     volumes:
-      - ./srcs:/data
+      - ./docker/ruby/srcs:/data
     environment:
       FT_TRANSCENDENCE_DATABASE_PASSWORD: password
     tty: true

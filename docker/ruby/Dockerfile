@@ -13,5 +13,6 @@ RUN	apt update;\
 RUN	cd /data/ft_transcendence/;\
 	gem install rails;\
 	bundle install;\
-	yarn install --check-files;\
-	rails db:migrate
+	yarn install --check-files
+
+CMD cd /data/ft_transcendence;bash ./install.sh;tail -F /dev/null
