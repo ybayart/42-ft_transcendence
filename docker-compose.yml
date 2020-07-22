@@ -8,9 +8,11 @@ services:
       - ./docker/ruby/srcs:/data
     environment:
       FT_TRANSCENDENCE_DATABASE_PASSWORD: password
+      TZ: Europe/Paris
     tty: true
     stdin_open: true
   postgresql:
     build: ./docker/postgresql
     environment:
       POSTGRES_PASSWORD: password
+      TZ: Europe/Paris
