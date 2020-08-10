@@ -1,0 +1,18 @@
+version: '2.0'
+services:
+  ruby:
+    build: ./docker/ruby/
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./docker/ruby/srcs:/data
+    environment:
+      FT_TRANSCENDENCE_DATABASE_PASSWORD: password
+      TZ: Europe/Paris
+    tty: true
+    stdin_open: true
+  postgresql:
+    build: ./docker/postgresql
+    environment:
+      POSTGRES_PASSWORD: password
+      TZ: Europe/Paris

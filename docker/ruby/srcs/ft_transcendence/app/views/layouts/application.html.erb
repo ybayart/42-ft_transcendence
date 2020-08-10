@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>transcendence</title>
+		<%= csrf_meta_tags %>
+		<%= csp_meta_tag %>
+
+		<%= stylesheet_link_tag 'application', media: 'all', 'data-turbolinks-track': 'reload' %>
+		<%= javascript_pack_tag 'application', 'data-turbolinks-track': 'reload' %>
+	</head>
+
+	<body controller="<%= ({controller: controller_path, action: action_name}).to_json %>">
+		<% if !@nonavbar && user_signed_in? %>
+			<nav class="navbar navbar-light" style="align-items: first baseline;">
+				<%= link_to root_path, class: 'navbar-brand' do %>
+					<img src='<%= asset_path('42-header.svg') %>' height='60px'>
+				<% end %>
+				<ul class="navbar-nav mr-auto responsive-large" style="flex-direction: row;">
+					<% unless Rails.application.routes.recognize_path(request.env['PATH_INFO'])[:controller][..4] == "admin" %>
+						<%= link_to user_path(current_user), class: 'navbar-item navbar-btn' do %>
+							<button type="button">My Profile</button>
+						<% end %>
+					<% else %>
+						<button type="button">BTN Admin</button>
+					<% end %>
+				</ul>
+				<ul class="navbar-nav">
+					<li id="navbar-user" class="nav-item navbar-btn">
+						<button type="button" data-toggle="collapse" data-target="#user-logout" aria-controls="user-logout" aria-expanded="false">
+						<img src="<%= url_for(current_user.profile_pic) %>" style="border-radius:10em; height: 35px">
+							<span id="nav-nickname" class="responsive-large" userid="<%= current_user[:id] %>" userlogin="<%= current_user[:login] %>" usernickname="<%= current_user[:nickname] %>">
+								<%= current_user[:nickname] %>
+							</span>
+						</button>
+						<div id="user-logout" class="collapse">
+							<hr>
+							<%= link_to raw("
+								<img src=" + asset_path('logout.svg') + " class='logo-svg' style='height: 35px;margin-right: 15px;'>
+								<span>Sign out</span>"),
+							destroy_user_session_path, :method => :delete %>
+						</div>
+					</li>
+				</ul>
+			</nav>
+		<% end %>
+
+		<%= yield %>
+	</body>
+</html>
