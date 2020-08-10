@@ -16,3 +16,11 @@ services:
     environment:
       POSTGRES_PASSWORD: password
       TZ: Europe/Paris
+  redis:
+    image: "redis:alpine"
+    command: redis-server --requirepass sOmE_sEcUrE_pAsS
+    ports:
+     - "6379:6379"
+    volumes:
+      - ./docker/redis/redis-data:/var/lib/redis
+      - ./docker/redis/redis.conf:/usr/local/etc/redis/redis.conf

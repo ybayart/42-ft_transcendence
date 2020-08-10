@@ -2,9 +2,9 @@ class RoomMessagesController < ApplicationController
 	before_action :load_entities
 
 	def create
-		@room_message = RoomMessage.create user: current_user,
-																			 room: @room,
-																			 message: params.dig(:room_message, :message)
+		@room_message = RoomMessage.create user: current_user, room: @room, message: params.dig(:room_message, :message)
+		RoomChannel.broadcast_to @room, @room_message
+#		ActionCable.server.broadcast @room, content: @room_message
 	end
 
 	protected

@@ -20,6 +20,9 @@
 						<%= link_to user_path(current_user), class: 'navbar-item navbar-btn' do %>
 							<button type="button">My Profile</button>
 						<% end %>
+						<%= link_to rooms_path, class: 'navbar-item navbar-btn' do %>
+							<button type="button">Rooms</button>
+						<% end %>
 					<% else %>
 						<button type="button">BTN Admin</button>
 					<% end %>
