@@ -8,7 +8,8 @@ RUN curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add -;\
 
 RUN	apt update;\
 	apt install -y screen nodejs yarn;\
-	apt install -y build-essential zsh vim;
+	apt install -y build-essential zsh vim;\
+	sed -i -e s/SECLEVEL=2/SECLEVEL=1/g /etc/ssl/openssl.cnf
 
 RUN	cd /data/ft_transcendence/;\
 	gem install rails;\

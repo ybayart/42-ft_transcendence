@@ -1,10 +1,10 @@
-<h1>Your profile</h1>
+<h1>Edit profile</h1>
 
 <%= form_with(model: @user, local: true) do |form| %>
 	<% if @user.errors.any? %>
 		<div id="error_explanation">
 			<h2>
-				<%= pluralize(@report.errors.count, "error") %> prohibited this modification from being saved:
+				<%= pluralize(@user.errors.count, "error") %> prohibited this modification from being saved:
 			</h2>
 			<ul>
 				<% @user.errors.full_messages.each do |msg| %>
@@ -15,11 +15,18 @@
 	<% end %>
 
 	<p>
-		<%= form.label :login %><br>
-		<%= @user[:login] %>
+		<%= form.label :nickname %><br>
+		<%= form.text_field :nickname %>
 	</p>
 
-	<p>42 Login: <b><%= current_user[:login] %></b></p>
-	<p>Display Name: <b><%= current_user[:nickname] %></b></p>
-	<p>email: <b><%= current_user[:email] %></b></p>
+	<p>
+		<%= form.label :profile_pic %><br>
+		<%= form.file_field :profile_pic %>
+		<img src="<%= url_for(@user.profile_pic) %>" style="max-height: 100px; max-width: 100px;">
+	</p>
+
+	<p>
+		<%= form.submit %>
+	</p>
+
 <% end %>

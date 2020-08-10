@@ -1,6 +1,9 @@
-class User < ApplicationRecord
+require 'open-uri'
+class User < ActiveRecord::Base
 	# Include default devise modules. Others available are:
 	# :confirmable, :lockable, :timeoutable, :trackable and :omniauthable
+	has_one_attached	:profile_pic
+
 	devise :database_authenticatable,
 			:rememberable, :validatable,
 			:omniauthable, omniauth_providers: [:marvin]
@@ -11,7 +14,8 @@ class User < ApplicationRecord
 			user.password = Devise.friendly_token[0,20]
 			user.login = auth.info.nickname
 			user.nickname = auth.info.nickname
-			user.profile_pic = auth.info.image
+			file = open(auth.info.image)
+			user.profile_pic.attach(io: open(file), filename: File.basename(file))
 		end
 	end
 end

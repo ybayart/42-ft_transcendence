@@ -1,0 +1,15 @@
+<h1><%= @user.nickname %> profile</h1>
+
+<p>
+	Member since <b><%= @user.created_at %></b>
+</p>
+
+<p>
+	42 login <b><%= @user.login %></b>
+</p>
+
+<p>
+	Nickname <b><%= @user.nickname %></b>
+</p>
+
+<%= link_to 'Edit', edit_user_path(@user) if current_user == @user%>
