@@ -30,7 +30,7 @@
 				<ul class="navbar-nav">
 					<li id="navbar-user" class="nav-item navbar-btn">
 						<button type="button" data-toggle="collapse" data-target="#user-logout" aria-controls="user-logout" aria-expanded="false">
-						<img src="<%= url_for(current_user.profile_pic) %>" style="border-radius:10em; height: 35px">
+						<img src="<%= url_for(current_user.profile_pic) %>" class="avatar">
 							<span id="nav-nickname" class="responsive-large" userid="<%= current_user[:id] %>" userlogin="<%= current_user[:login] %>" usernickname="<%= current_user[:nickname] %>">
 								<%= current_user[:nickname] %>
 							</span>
@@ -47,6 +47,22 @@
 			</nav>
 		<% end %>
 
-		<%= yield %>
+		<div id="toast-container" aria-live="polite" aria-atomic="true" style="position: relative; z-index: 10;">
+			<div style="position: absolute; top: 0; right: 0;">
+				<% if notice || alert %>
+					<% if notice %>
+						<%= create_alert(notice) %>
+					<% end %>
+					<% if alert %>
+						<%= create_alert(alert) %>
+					<% end %>
+				<% end %>
+			</div>
+		</div>
+
+
+		<div class="page-content">
+			<%= yield %>
+		</div>
 	</body>
 </html>

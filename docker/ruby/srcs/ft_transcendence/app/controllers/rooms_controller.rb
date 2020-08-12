@@ -6,6 +6,8 @@ class RoomsController < ApplicationController
 	end
 
 	def show
+		bans = current_user.receive_bans.where("room": @room).where("end_at > ?", DateTime.now.utc)
+		redirect_to rooms_path, :alert => "You are banned from this room until " + bans.order("end_at DESC").first.end_at.in_time_zone("Europe/Paris").strftime("%T %F") if bans.exists?
 		@room_message = RoomMessage.new room: @room
 		@room_messages = @room.room_messages.includes(:user)
 	end

@@ -6,24 +6,23 @@ $(document).on('turbolinks:load', function () {
 			room: $('[data-channel-subscribe="room"]').data('room-id')
 		}, {
 		connected() {
-			console.log("hello world");
-			console.log($('[data-channel-subscribe="room"]').data('room-id'));
 		},
 
 		disconnected() {
 		},
 
 		received(data) {
+			console.log(data);
+			$('input#room_message_message').val('');
 			var element = $('[data-channel-subscribe="room"]'),
 				room_id = element.data('room-id'),
 				messageTemplate = $('[data-role="message-template"]');
-			console.log(data);
 			var content = messageTemplate.children().clone(true, true);
-	//		content.find('[data-role="user-avatar"]').attr('src', data.user_avatar_url);
+			content.find('[data-role="user-avatar"]').attr("src", data.pic).attr("title", data.nickname);
 			content.find('[data-role="message-text"]').text(data.message);
-			content.find('[data-role="message-date"]').text(data.updated_at);
+			content.find('[data-role="message-date"] > time').attr("datetime", data.date).addClass("timeago");
 			element.append(content);
-			element.animate({ scrollTop: element.prop("scrollHeight")}, 1000);
+			$("time.timeago").timeago();
 		}
 	});
 });

@@ -13,18 +13,18 @@
 				<div class="chat-message-container">
 					<div class="row no-gutters">
 						<div class="col-auto text-center">
-							<img src="<%= url_for(room_message.user) %>" class="avatar" alt="">
+							<img src="<%= url_for(room_message.user.profile_pic) %>" class="avatar" alt="" title="<%= room_message.user.nickname %>">
 						</div>
 
 						<div class="col">
 							<div class="message-content">
-								<p class="mb-1">
+								<p class="mb-1 ml-1">
 									<%= room_message.message %>
 								</p>
 
 								<div class="text-right">
 									<small>
-										<%= room_message.created_at %>
+										<time class="timeago" datetime="<%= room_message.created_at.in_time_zone('Europe/Paris').strftime("%F %T") %>"></time>
 									</small>
 								</div>
 							</div>
@@ -60,10 +60,10 @@
 
 			<div class="col">
 				<div class="message-content">
-					<p class="mb-1" data-role="message-text"></p>
+					<p class="mb-1 ml-1" data-role="message-text"></p>
 
 					<div class="text-right">
-						<small data-role="message-date"></small>
+						<small data-role="message-date"><time></time></small>
 					</div>
 				</div>
 			</div>
