@@ -7,4 +7,10 @@ module ApplicationHelper
 		</div>")
 	end
 
+	def rebalance_rights(room)
+		room.admins << room.owner unless room.admins.include?(room.owner)
+		room.admins.each do |user|
+			room.members << user unless room.members.include?(user)
+		end
+	end
 end
