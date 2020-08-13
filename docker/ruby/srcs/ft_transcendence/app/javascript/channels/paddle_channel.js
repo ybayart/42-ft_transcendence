@@ -1,7 +1,20 @@
 import consumer from "./consumer"
 
-consumer.subscriptions.create("GameChannel", {
+var sub = consumer.subscriptions.create("PaddleChannel", {
   connected() {
+  	document.addEventListener('keypress', logKey);
+
+	function logKey(e)
+	{
+		if (e.key == 'w')
+		{
+			sub.perform('up', {});	
+		}
+		if (e.key == 's')
+		{
+			sub.perform('down', {});	
+		}
+	}
     // Called when the subscription is ready for use on the server
   },
 
@@ -10,9 +23,6 @@ consumer.subscriptions.create("GameChannel", {
   },
 
   received(data) {
-  	console.log(data);
-	//var n = document.getElementById('nb');
-	//n.innerHTML = data.content;
     // Called when there's incoming data on the websocket for this channel
   }
 });

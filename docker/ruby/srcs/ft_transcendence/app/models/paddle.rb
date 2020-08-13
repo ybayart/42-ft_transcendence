@@ -1,32 +1,34 @@
 class Paddle < ApplicationRecord
-	def initialize()
+	def self.initialize()
 		@posY = 50
 		@height = 10
 		@width = 2
 		@velocity = 1
 	end
 
-	def	up()
-		@posY += (1 * velocity);
+	def	self.up()
+		@posY += (1 * velocity)
+		ActionCable.server.broadcast('game', {content: Paddle.posY})
 	end
 
-	def down()
-		@posX -= (1 * velocity);
+	def self.down()
+		@posY -= (1 * velocity)
+		ActionCable.server.broadcast('game', {content: Paddle.posY})
 	end
 
-	def posY()
+	def self.posY()
 		@posY
 	end
 
-	def height()
+	def self.height()
 		@height
 	end
 
-	def width()
+	def self.width()
 		@width
 	end
 
-	def velocity()
+	def self.velocity()
 		@velocity
 	end
 end
