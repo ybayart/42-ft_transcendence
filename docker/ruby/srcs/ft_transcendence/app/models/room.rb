@@ -24,6 +24,6 @@ class Room < ApplicationRecord
 	end
 
 	def check_modifications
-		rebalance_rights(self)
+		ApplicationController.helpers.rebalance_rights(self)
 	end
 end
