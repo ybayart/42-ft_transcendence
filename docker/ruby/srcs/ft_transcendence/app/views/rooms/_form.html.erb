@@ -1,4 +1,36 @@
 <%= form_with(model: @room, local: true) do |form| %>
-	<%= form.text_field :name %>
-	<%= form.submit "Save", class: 'btn btn-success' %>
+	<% if @room.errors.any? %>
+		<div id="error_explanation">
+			<h2>
+				<%= pluralize(@room.errors.count, "error") %> prohibited this modification from being saved:
+			</h2>
+			<ul>
+				<% @room.errors.full_messages.each do |msg| %>
+					<li><%= msg %></li>
+				<% end %>
+			</ul>
+		</div>
+	<% end %>
+
+	<p>
+		<%= form.label :name %><br>
+		<%= form.text_field :name %>
+	</p>
+
+	<p>
+		<%= form.label :password %><br>
+		<%= form.password_field :password %>
+	</p>
+
+	<p>
+		<%= form.radio_button :privacy, "public", :checked => true %>
+		<%= form.label :privacy, "Open room", :value => "public" %>
+		<br>
+		<%= form.radio_button :privacy, "private" %>
+		<%= form.label :privacy, "Secret room", :value => "private" %>
+	</p>
+
+	<p>
+		<%= form.submit "Save", class: 'btn btn-success' %>
+	</p>
 <% end %>
