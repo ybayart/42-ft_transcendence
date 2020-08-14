@@ -20,7 +20,7 @@ class RoomsController < ApplicationController
 	end
 
 	def join
-		@rooms = Room.where(privacy: "public").where.not(id: User.find(1).rooms_member)
+		@rooms = Room.where(privacy: "public").where.not(id: current_user.rooms_member)
 	end
 
 	def create

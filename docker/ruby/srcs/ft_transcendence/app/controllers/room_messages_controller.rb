@@ -7,7 +7,8 @@ class RoomMessagesController < ApplicationController
 			@room_message = @room_message.as_json
 			@room_message[:pic] = url_for(current_user.profile_pic)
 			@room_message[:date] = @room_message['updated_at'].in_time_zone('Europe/Paris').strftime("%F %T")
-			RoomChannel.broadcast_to @room, @room_message
+			output = {"type": "message", "content": @room_message}
+			RoomChannel.broadcast_to @room, output
 		else
 			errors = @room_message.errors.full_messages
 			@room_message = @room_message.as_json
