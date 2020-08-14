@@ -1,10 +1,12 @@
 Rails.application.routes.draw do
-  resources :room_messages
-  resources :rooms
 	root to: 'user#index'
 	resources :user
-	resources :chat
 	resources :game
+	resources :rooms do
+		get 'join', on: :collection
+	end
+
+	resources :room_messages
 
 	devise_for :users, controllers: { omniauth_callbacks: "users/omniauth_callbacks" }
 	devise_scope :user do

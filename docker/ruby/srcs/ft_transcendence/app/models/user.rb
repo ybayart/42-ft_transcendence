@@ -3,6 +3,11 @@ class User < ActiveRecord::Base
 	# Include default devise modules. Others available are:
 	# :confirmable, :lockable, :timeoutable, :trackable and :omniauthable
 	has_one_attached	:profile_pic
+	has_many :room_link_members
+	has_many :rooms_member, :through => :room_link_members, :source => :room
+	has_many :room_link_admins
+	has_many :rooms_admin, :through => :room_link_admins, :source => :room
+	has_many :rooms_owner, class_name: "Room", foreign_key: "owner_id", inverse_of: :owner
 	has_many :send_bans, class_name: "RoomBan", foreign_key: "by_id", inverse_of: :by
 	has_many :receive_bans, class_name: "RoomBan", foreign_key: "user_id", inverse_of: :user
 	has_many :send_mutes, class_name: "RoomMute", foreign_key: "by_id", inverse_of: :by
