@@ -58,13 +58,6 @@ ActiveRecord::Schema.define(version: 2020_08_13_132424) do
     t.index ["user_id"], name: "index_room_bans_on_user_id"
   end
 
-  create_table "room_link_members", id: false, force: :cascade do |t|
-    t.bigint "room_id"
-    t.bigint "user_id"
-    t.index ["room_id"], name: "index_room_link_members_on_room_id"
-    t.index ["user_id"], name: "index_room_link_members_on_user_id"
-  end
-
   create_table "room_messages", force: :cascade do |t|
     t.bigint "room_id", null: false
     t.bigint "user_id", null: false
@@ -108,8 +101,7 @@ ActiveRecord::Schema.define(version: 2020_08_13_132424) do
     t.string "provider"
     t.string "uid"
     t.string "nickname"
-    t.string "state", default: "offline"
-    t.integer "count_co", default: 0
+    t.string "state"
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["provider"], name: "index_users_on_provider"
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
