@@ -1,9 +1,8 @@
 class Ball < ApplicationRecord
 	def self.initialize()
 		@posY = 50
-		@posX = 10
-		@height = 10
-		@width = 2
+		@posX = 20
+		@radius = 10
 		@velocityY = 0
 		@velocityX = 0
 	end
@@ -21,7 +20,7 @@ class Ball < ApplicationRecord
 	end
 
 	def self.collidesLeft()
-		if (@posX < 10)
+		if (@posX < 20)
 			return true
 		else
 			return false
@@ -48,12 +47,8 @@ class Ball < ApplicationRecord
 		@posX
 	end
 
-	def self.height()
-		@height
-	end
-
-	def self.width()
-		@width
+	def self.radius
+		@radius
 	end
 
 	def self.velocityY()

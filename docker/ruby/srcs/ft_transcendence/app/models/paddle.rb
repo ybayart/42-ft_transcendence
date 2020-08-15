@@ -7,13 +7,11 @@ class Paddle < ApplicationRecord
 	end
 
 	def	self.up()
-		@posY += (1 * velocity)
-		ActionCable.server.broadcast('game', {content: Paddle.posY})
+		@posY -= (1 * velocity)
 	end
 
 	def self.down()
-		@posY -= (1 * velocity)
-		ActionCable.server.broadcast('game', {content: Paddle.posY})
+		@posY += (1 * velocity)
 	end
 
 	def self.posY()
