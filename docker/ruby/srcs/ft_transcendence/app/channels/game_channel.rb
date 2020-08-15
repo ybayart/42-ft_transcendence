@@ -7,21 +7,22 @@ class GameChannel < ApplicationCable::Channel
     Ball.throw
   end
 
-  def up
-		Paddle.up
+  def self.up
+	Paddle.up
+	ActionCable.server.broadcast('paddle', {paddlePosY: Paddle.posY})
   end
 
-  def down
+  def self.down
   	Paddle.down
+	ActionCable.server.broadcast('paddle', {paddlePosY: Paddle.posY})
   end
 
   def receive(data)
     Ball.updatePos
-		ActionCable.server.broadcast('game', {
-			paddlePosY: Paddle.posY, 
-			ballPosX: Ball.posX,
-			ballPosY: Ball.posY
-		})
+	ActionCable.server.broadcast('game', {
+		ballPosX: Ball.posX,
+		ballPosY: Ball.posY
+	})
   end
 
   def unsubscribed

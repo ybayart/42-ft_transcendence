@@ -8,20 +8,6 @@ document.addEventListener('turbolinks:load', () => {
 
   var sub = consumer.subscriptions.create("GameChannel", {
     connected() {
-      document.addEventListener('keypress', logKey);
-      function logKey(e)
-      {
-        if (e.key == 'w')
-        {
-          console.log("w pressed");
-          sub.perform('up', {});  
-        }
-        if (e.key == 's')
-        {
-          console.log("s pressed");
-          sub.perform('down', {});  
-        }
-      }
       setInterval(function(){ sub.send({ body: "posRequest" }) }, 50);
     },
 
@@ -29,8 +15,7 @@ document.addEventListener('turbolinks:load', () => {
     },
 
     received(data) {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      ctx.fillRect(5, data.paddlePosY, 15, 50);
+      ctx.clearRect(data.ballPosX - 5, data.ballPosY - 5, 20, 20);
       ctx.beginPath();
       ctx.arc(data.ballPosX, data.ballPosY, 10, 0, 2 * Math.PI, false);
       ctx.stroke();

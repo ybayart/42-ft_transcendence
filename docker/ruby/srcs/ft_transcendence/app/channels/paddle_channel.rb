@@ -9,10 +9,10 @@ class PaddleChannel < ApplicationCable::Channel
   end
 
   def up
-  	Paddle.up
+  	GameChannel.up
   end
 
   def down
-  	Paddle.down
+  	GameChannel.down
   end
 end
