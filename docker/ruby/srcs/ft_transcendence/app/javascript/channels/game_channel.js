@@ -15,9 +15,9 @@ document.addEventListener('turbolinks:load', () => {
   function printBall()
   {	  
   	ctx.clearRect(ballPosX - 20, ballPosY - 20, 40, 40);
-	ctx.beginPath();
-	ctx.arc(ballPosX, ballPosY, 10, 0, 2 * Math.PI, false);
-	ctx.stroke();
+    ctx.beginPath();
+    ctx.arc(ballPosX, ballPosY, 10, 0, 2 * Math.PI, false);
+    ctx.stroke();
   }
 
   var sub = consumer.subscriptions.create("GameChannel", {
@@ -27,41 +27,42 @@ document.addEventListener('turbolinks:load', () => {
       function logKey(e)
       {
         if (e.key == 'w')
-          sub.perform('up', {});  
-		if (e.key == 's')
-          sub.perform('down', {});  
+          sub.perform('player1_up', {});  
+		    if (e.key == 's')
+          sub.perform('player1_down', {});  
       }
 
 	  // BALL
-	  setInterval(function() {
-	  	time += 10;
-	  	ballPosX += velocityX;
-		ballPosY += velocityY;
-		if (ballPosX > 100 || ballPosX < 20)
-			velocityX *= -1;
-		printBall();
-	  }, 10);
-	  /*
-      setInterval(function() {
-	   	sub.send({ 'ballPosX': ballPosX,
-					'ballPosY': ballPosY,
-					'time': time});
-		}, 50);*/
+  	  setInterval(function() {
+  	  	time += 10;
+  	  	ballPosX += velocityX;
+  		  ballPosY += velocityY;
+  		  if (ballPosX > 100 || ballPosX < 20)
+  			 velocityX *= -1;
+  		  printBall();
+      }, 10);
+	  
+    //   setInterval(function() {
+	   // 	sub.send({
+    //     'ballPosX': ballPosX,
+				// 'ballPosY': ballPosY,
+				// 'time': time});
+		  // }, 50);
     },
 
     disconnected() {
     },
 
     received(data) {
-		console.log(data);
-		if (data)
-		{
-			ballPosX = data.ballPosX;
-			ballPosY = data.ballPosY;
-			velocityX = data.velocityX;
-			velocityY = data.velocityY;
-			printBall();
-		}
+  		console.log(data);
+  		if (data)
+  		{
+  			ballPosX = data.ballPosX;
+  			ballPosY = data.ballPosY;
+  			velocityX = data.velocityX;
+  			velocityY = data.velocityY;
+  			printBall();
+  		}
     }
   });
 });
