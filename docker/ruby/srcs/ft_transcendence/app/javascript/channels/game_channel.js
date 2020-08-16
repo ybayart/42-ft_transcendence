@@ -23,8 +23,14 @@ document.addEventListener('turbolinks:load', () => {
       ctx.fillRect(x, y, width, height);
     }
 
-    var sub = consumer.subscriptions.create("GameChannel", {
+    var sub = consumer.subscriptions.create({
+		channel: "GameChannel",
+		game: $('.GameInfo').attr("value")
+	}, {
       connected() {
+	  	console.log($('.GameInfo'));
+	  	console.log($('.GameInfo').val());
+	  	console.log($('.GameInfo').attr("value"));
     	  // PADDLE
         document.addEventListener('keypress', logKey);
         function logKey(e)
@@ -50,7 +56,7 @@ document.addEventListener('turbolinks:load', () => {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         ctx.fillRect(0, 0, canvas.width, canvas.height);
         ctx.fillStyle = "black";
-  			printBall(data.ballPosX, data.ballPosY, data.ballRadius);
+ 		printBall(data.ballPosX, data.ballPosY, data.ballRadius);
         printPaddle(data.paddle1PosX, data.paddle1PosY, data.paddle1Width, data.paddle1Height);
         printPaddle(data.paddle2PosX, data.paddle2PosY, data.paddle2Width, data.paddle2Height);
       }
