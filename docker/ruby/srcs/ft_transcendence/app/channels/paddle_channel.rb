@@ -8,11 +8,4 @@ class PaddleChannel < ApplicationCable::Channel
     # Any cleanup needed when channel is unsubscribed
   end
 
-  def up
-  	GameChannel.up
-  end
-
-  def down
-  	GameChannel.down
-  end
 end

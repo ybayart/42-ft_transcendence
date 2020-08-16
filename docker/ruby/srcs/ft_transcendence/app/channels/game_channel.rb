@@ -2,27 +2,31 @@ class GameChannel < ApplicationCable::Channel
 
   def subscribed
   	stream_from "game"
-    Ball.initialize
-    Paddle.initialize
-    Ball.throw
+	@ball = Ball.new;
+	@paddle = Paddle.new;
+    @ball.throw
   end
 
-  def self.up
-	Paddle.up
-	ActionCable.server.broadcast('paddle', {paddlePosY: Paddle.posY})
+  def up
+	@paddle.up
+	ActionCable.server.broadcast('paddle', {paddlePosY: @paddle.posY})
   end
 
-  def self.down
-  	Paddle.down
-	ActionCable.server.broadcast('paddle', {paddlePosY: Paddle.posY})
+  def down
+  	@paddle.down
+	ActionCable.server.broadcast('paddle', {paddlePosY: @paddle.posY})
   end
 
   def receive(data)
-    Ball.updatePos
-	ActionCable.server.broadcast('game', {
-		ballPosX: Ball.posX,
-		ballPosY: Ball.posY
-	})
+    @ball.updatePos(data.time)
+	if (@ball.posX != data.ballPosX || @ball.posY != data.ballPosY)
+		ActionCable.server.broadcast('game', {
+			ballPosX: @ball.posX,
+			ballPosY: @ball.posY,
+			velocityX: @ball.velocityX,
+			velocityY: @ball.velocityY
+		})
+	end
   end
 
   def unsubscribed

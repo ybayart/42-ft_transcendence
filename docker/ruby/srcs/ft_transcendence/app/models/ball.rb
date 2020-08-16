@@ -1,17 +1,20 @@
-class Ball < ApplicationRecord
-	def self.initialize()
+class Ball
+	include ActiveModel::Model
+
+	def initialize()
 		@posY = 50
 		@posX = 20
 		@radius = 10
 		@velocityY = 0
 		@velocityX = 0
+		@timeLastBounce = 0
 	end
 
-	def self.throw()
+	def throw()
 		@velocityX = 1
 	end
 
-	def	self.collidesRight()
+	def	collidesRight()
 		if (@posX > 100)
 			return true
 		else
@@ -19,7 +22,7 @@ class Ball < ApplicationRecord
 		end
 	end
 
-	def self.collidesLeft()
+	def collidesLeft()
 		if (@posX < 20)
 			return true
 		else
@@ -27,36 +30,48 @@ class Ball < ApplicationRecord
 		end
 	end
 
-	def self.updatePos()
-		@posX += velocityX
-		@posY += velocityY
-		if (self.collidesRight || self.collidesLeft)
+	def updatePosTick(time)
+		@posX += @velocityX
+		@posY += @velocityY
+		if (collidesRight || collidesLeft)
+			@timeLastBounce += time
 			@velocityX *= -1
-      	end
+		end
+	end
+
+	def updatePos(time)
+		$tmp = 0;
+		while ($tmp < time)
+			updatePosTick($tmp)
+			$tmp += 10
+		end
     end
 
-	def self.sendPos()
+	def sendPos()
 		ActionCable.server.broadcast('game', {ballPosX: Ball.posX, ballPosY: Ball.posY})
 	end
 
-	def self.posY()
+	def posY()
 		@posY
 	end
 
-	def self.posX()
+	def posX()
 		@posX
 	end
 
-	def self.radius
+	def radius
 		@radius
 	end
 
-	def self.velocityY()
+	def velocityY()
 		@velocityY
 	end
 
-	def self.velocityX()
+	def velocityX()
 		@velocityX
 	end
 
+	def persisted?
+    	false
+  	end
 end

@@ -1,32 +1,38 @@
-class Paddle < ApplicationRecord
-	def self.initialize()
+class Paddle
+	include ActiveModel::Model
+
+	def initialize()
 		@posY = 50
 		@height = 10
 		@width = 2
 		@velocity = 1
 	end
 
-	def	self.up()
+	def	up()
 		@posY -= (1 * velocity)
 	end
 
-	def self.down()
+	def down()
 		@posY += (1 * velocity)
 	end
 
-	def self.posY()
+	def posY()
 		@posY
 	end
 
-	def self.height()
+	def height()
 		@height
 	end
 
-	def self.width()
+	def width()
 		@width
 	end
 
-	def self.velocity()
+	def velocity()
 		@velocity
 	end
+
+	def persisted?
+    	false
+ 	end
 end
