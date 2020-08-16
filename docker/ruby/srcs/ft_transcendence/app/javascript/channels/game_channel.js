@@ -6,18 +6,16 @@ document.addEventListener('turbolinks:load', () => {
   canvas.height = 600;
   var ctx = canvas.getContext('2d');
 
-  var ballPosY = 20;
-  var ballPosX = 50;
-  var velocityY = 0;
-  var velocityX = 1;
-  var time = 0;
-
-  function printBall()
+  function printBall(x, y, radius)
   {	  
-  	ctx.clearRect(ballPosX - 20, ballPosY - 20, 40, 40);
     ctx.beginPath();
-    ctx.arc(ballPosX, ballPosY, 10, 0, 2 * Math.PI, false);
+    ctx.arc(x, y, radius, 0, 2 * Math.PI, false);
     ctx.stroke();
+  }
+
+  function printPaddle(x, y, width, height)
+  {
+    ctx.fillRect(x, y, width, height);
   }
 
   var sub = consumer.subscriptions.create("GameChannel", {
@@ -32,37 +30,21 @@ document.addEventListener('turbolinks:load', () => {
           sub.perform('player1_down', {});  
       }
 
-	  // BALL
-  	  setInterval(function() {
-  	  	time += 10;
-  	  	ballPosX += velocityX;
-  		  ballPosY += velocityY;
-  		  if (ballPosX > 100 || ballPosX < 20)
-  			 velocityX *= -1;
-  		  printBall();
-      }, 10);
-	  
-    //   setInterval(function() {
-	   // 	sub.send({
-    //     'ballPosX': ballPosX,
-				// 'ballPosY': ballPosY,
-				// 'time': time});
-		  // }, 50);
+	  // REQUEST UPDATE
+      setInterval(function() {
+  	   	sub.send({});
+  		}, 50);
     },
 
     disconnected() {
+
     },
 
     received(data) {
-  		console.log(data);
-  		if (data)
-  		{
-  			ballPosX = data.ballPosX;
-  			ballPosY = data.ballPosY;
-  			velocityX = data.velocityX;
-  			velocityY = data.velocityY;
-  			printBall();
-  		}
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+			printBall(data.ballPosX, data.ballPosY, data.ballRadius);
+      printPaddle(data.paddle1PosX, data.paddle1PosY, data.paddle1Width, data.paddle1Height);
+      printPaddle(data.paddle2PosX, data.paddle2PosY, data.paddle2Width, data.paddle2Height);
     }
   });
 });

@@ -3,8 +3,8 @@ class GameLogic
 
 	def initialize()
 	  	@ball = Ball.new
-	  	@paddle1 = Paddle.new
-	  	@paddle2 = Paddle.new
+	  	@paddle1 = Paddle.new(1)
+	  	@paddle2 = Paddle.new(2)
 	    @ball.throw
 	end
 
@@ -17,7 +17,14 @@ class GameLogic
 	end
 
 	def ball()
-		@Ball
+		@ball
+	end
+
+	def updateBallPos()
+		if (@ball.collidesLeft(@paddle1.posX, @paddle1.posY, @paddle1.width, @paddle1.height) || @ball.collidesRight(@paddle2.posX, @paddle2.posY, @paddle2.width, @paddle2.height))
+			@ball.setVelocityX(@ball.velocityX * -1)
+		end
+		@ball.updatePos
 	end
 
 	def persisted?

@@ -18,9 +18,9 @@ document.addEventListener('turbolinks:load', () => {
 	},
 
 	received(data) {
-		ctx.clearRect(5, paddlePosY, 15, 50);
-		paddlePosY = data.paddlePosY;
-		ctx.fillRect(5, paddlePosY, 15, 50);
+		// ctx.clearRect(5, paddlePosY, 15, 50);
+		// paddlePosY = data.paddlePosY;
+		// ctx.fillRect(5, paddlePosY, 15, 50);
 		// Called when there's incoming data on the websocket for this channel
  	}
   });
