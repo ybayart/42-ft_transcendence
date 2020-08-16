@@ -1,6 +1,16 @@
 class GameLogic
 	include ActiveModel::Model
 
+    def self.create(id)
+      if (!@games)
+        @games = Hash.new
+      end
+      if (!@games[id])
+        @games[id] = GameLogic.new
+      end
+      @games[id]
+    end
+
 	def initialize()
 		@canvasWidth = 600
 		@canvasHeight = 600

@@ -2,7 +2,7 @@ class GameChannel < ApplicationCable::Channel
 
   def subscribed
 	stream_from "game_#{params[:game]}"
-    @gameLogic = GameLogic.new
+    @gameLogic = GameLogic.create(params[:game])
     @gameLogic.start
   end
 

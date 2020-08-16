@@ -1,7 +1,6 @@
 class GameController < ApplicationController
 
 	def index
-		ActionCable.server.broadcast('game', {content: "player connected"});
 		@game = Game.find_by(status: "running", player1: current_user);
 		if (!@game)
 			@game = Game.find_by(status: "running", player2: current_user);
