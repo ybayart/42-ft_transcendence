@@ -28,9 +28,6 @@ document.addEventListener('turbolinks:load', () => {
 		game: $('.GameInfo').attr("value")
 	}, {
       connected() {
-	  	console.log($('.GameInfo'));
-	  	console.log($('.GameInfo').val());
-	  	console.log($('.GameInfo').attr("value"));
     	  // PADDLE
         document.addEventListener('keypress', logKey);
         function logKey(e)

@@ -7,6 +7,7 @@ class GameLogic
       end
       if (!@games[id])
         @games[id] = GameLogic.new
+        @games[id].start
       end
       @games[id]
     end
