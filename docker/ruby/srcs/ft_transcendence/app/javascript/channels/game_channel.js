@@ -5,12 +5,15 @@ document.addEventListener('turbolinks:load', () => {
   canvas.width = 600;
   canvas.height = 600;
   var ctx = canvas.getContext('2d');
+  ctx.fillStyle = "blue";
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+  ctx.fillStyle = "black";
 
   function printBall(x, y, radius)
   {	  
     ctx.beginPath();
     ctx.arc(x, y, radius, 0, 2 * Math.PI, false);
-    ctx.stroke();
+    ctx.fill();
   }
 
   function printPaddle(x, y, width, height)
@@ -33,7 +36,7 @@ document.addEventListener('turbolinks:load', () => {
 	  // REQUEST UPDATE
       setInterval(function() {
   	   	sub.send({});
-  		}, 50);
+  		}, 40);
     },
 
     disconnected() {
@@ -41,7 +44,10 @@ document.addEventListener('turbolinks:load', () => {
     },
 
     received(data) {
+      ctx.fillStyle = "blue";
       ctx.clearRect(0, 0, canvas.width, canvas.height);
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      ctx.fillStyle = "black";
 			printBall(data.ballPosX, data.ballPosY, data.ballRadius);
       printPaddle(data.paddle1PosX, data.paddle1PosY, data.paddle1Width, data.paddle1Height);
       printPaddle(data.paddle2PosX, data.paddle2PosY, data.paddle2Width, data.paddle2Height);

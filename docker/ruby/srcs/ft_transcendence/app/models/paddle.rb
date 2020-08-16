@@ -5,9 +5,9 @@ class Paddle
 		if (player_number == 1)
 			@posX = 5
 		elsif (player_number == 2)
-			@posX = 300
+			@posX = 600 - 20
 		end
-		@posY = 50
+		@posY = 275
 		@height = 50
 		@width = 15
 		@velocity = 5

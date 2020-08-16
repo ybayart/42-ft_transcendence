@@ -6,11 +6,11 @@ class GameChannel < ApplicationCable::Channel
   end
 
   def player1_up
-    @game.paddle1.up
+    @game.paddle1_up
   end
 
   def player1_down
-  	@game.paddle1.down
+  	@game.paddle1_down
   end
 
   def receive(data)
