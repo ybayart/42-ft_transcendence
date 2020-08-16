@@ -7,7 +7,6 @@ class GameLogic
 	  	@ball = Ball.new
 	  	@paddle1 = Paddle.new(1)
 	  	@paddle2 = Paddle.new(2)
-	    @ball.throw
 	end
 
 	def paddle1()
@@ -22,6 +21,10 @@ class GameLogic
 		@ball
 	end
 
+	def start()
+		@ball.throw
+	end
+
 	def paddle1_up()
 		if (@paddle1.posY - @paddle1.velocity > 0)
 			@paddle1.up
@@ -31,6 +34,18 @@ class GameLogic
 	def paddle1_down()
 		if (@paddle1.posY + @paddle1.height + @paddle1.velocity < @canvasHeight)
 			@paddle1.down
+		end
+	end
+
+	def paddle2_up()
+		if (@paddle2.posY - @paddle2.velocity > 0)
+			@paddle2.up
+		end
+	end
+
+	def paddle2_down()
+		if (@paddle2.posY + @paddle2.height + @paddle2.velocity < @canvasHeight)
+			@paddle2.down
 		end
 	end
 

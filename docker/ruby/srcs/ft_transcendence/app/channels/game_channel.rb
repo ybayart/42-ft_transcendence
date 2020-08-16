@@ -3,6 +3,7 @@ class GameChannel < ApplicationCable::Channel
   def subscribed
   	stream_from "game"
     @game = GameLogic.new
+    @game.start
   end
 
   def player1_up

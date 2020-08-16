@@ -23,7 +23,7 @@ document.addEventListener('turbolinks:load', () => {
 
   var sub = consumer.subscriptions.create("GameChannel", {
     connected() {
-	  // PADDLE
+  	  // PADDLE
       document.addEventListener('keypress', logKey);
       function logKey(e)
       {
@@ -33,7 +33,7 @@ document.addEventListener('turbolinks:load', () => {
           sub.perform('player1_down', {});  
       }
 
-	  // REQUEST UPDATE
+  	  //REQUEST UPDATE
       setInterval(function() {
   	   	sub.send({});
   		}, 40);
