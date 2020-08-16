@@ -3,19 +3,36 @@ class GameChannel < ApplicationCable::Channel
   def subscribed
 	stream_from "game_#{params[:game]}"
     @gameLogic = GameLogic.create(params[:game])
+	@game = Game.find_by(player1: current_user);
+	if (!@game)
+		@game = Game.find_by(player2: current_user);
+	end
   end
 
-  def player1_up
-    @gameLogic.paddle1_up
+  def paddle_up
+    if (current_user == @game.player1)
+      @gameLogic.paddle1_up
+    else
+      if (current_user == @game.player2)
+        @gameLogic.paddle2_up
+      end
+    end
   end
 
-  def player1_down
-  	@gameLogic.paddle1_down
+  def paddle_down
+  	if (current_user == @game.player1)
+      @gameLogic.paddle1_down
+    else
+      if (current_user == @game.player2)
+        @gameLogic.paddle2_down
+      end
+    end
   end
 
   def receive(data)
     @gameLogic.updateBallPos
 		ActionCable.server.broadcast("game_#{params[:game]}", {
+            status: @game.status,
 			paddle1PosX: @gameLogic.paddle1.posX,
 			paddle1PosY: @gameLogic.paddle1.posY,
 			paddle1Width: @gameLogic.paddle1.width,

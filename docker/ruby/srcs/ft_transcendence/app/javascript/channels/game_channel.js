@@ -28,14 +28,14 @@ document.addEventListener('turbolinks:load', () => {
 		game: $('.GameInfo').attr("value")
 	}, {
       connected() {
-    	  // PADDLE
+		  // PADDLE
         document.addEventListener('keypress', logKey);
         function logKey(e)
         {
           if (e.key == 'w')
-            sub.perform('player1_up', {});  
+            sub.perform('paddle_up', {});  
   		    if (e.key == 's')
-            sub.perform('player1_down', {});  
+            sub.perform('paddle_down', {});  
         }
 
     	  //REQUEST UPDATE
@@ -49,6 +49,7 @@ document.addEventListener('turbolinks:load', () => {
       },
 
       received(data) {
+		$("#game_status").html = data.status;
         ctx.fillStyle = "blue";
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         ctx.fillRect(0, 0, canvas.width, canvas.height);

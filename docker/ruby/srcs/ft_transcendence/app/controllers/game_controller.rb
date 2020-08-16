@@ -9,20 +9,12 @@ class GameController < ApplicationController
 				if (@game)
 					@game.player2 = current_user
 					@game.status = "running"
-					@game.update(player2: current_user, status: "running")
+                    @game.save
 				else
-					@game = Game.find_by(status: "empty")
-					if (@game)
-						@game.player1 = current_user
-						@game.status = "waiting"
-						@game.update(player1: current_user, status: "waiting")
-					end
-					if (!@game)
-						@game = Game.new()
-						@game.status = "waiting"
-						@game.player1 = current_user
-						@game.save
-					end
+					@game = Game.new()
+					@game.status = "waiting"
+					@game.player1 = current_user
+					@game.save
 				end
 			end
 		end
