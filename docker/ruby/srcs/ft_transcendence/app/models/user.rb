@@ -23,8 +23,8 @@ class User < ActiveRecord::Base
 			user.password = Devise.friendly_token[0,20]
 			user.login = auth.info.nickname
 			user.nickname = auth.info.nickname
-			file = open(auth.info.image)
-			user.profile_pic.attach(io: open(file), filename: File.basename(file))
+			#file = open(auth.info.image)
+			#user.profile_pic.attach(io: open(file), filename: File.basename(file))
 		end
 	end
 end

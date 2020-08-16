@@ -2,8 +2,8 @@ class Ball
 	include ActiveModel::Model
 
 	def initialize()
-		@posY = 50
-		@posX = 20
+		@posY = 300
+		@posX = 31
 		@radius = 10
 		@velocityY = 0
 		@velocityX = 0
@@ -11,45 +11,29 @@ class Ball
 	end
 
 	def throw()
-		@velocityX = 1
+		@velocityX = 3
 	end
 
-	def	collidesRight()
-		if (@posX > 100)
+	def	collidesRight(x, y, width, height)
+		if (@posX + @radius >= x && @posY >= y && @posY <= y + height)
 			return true
 		else
 			return false
 		end
 	end
 
-	def collidesLeft()
-		if (@posX < 20)
+	def collidesLeft(x, y, width, height)
+		if (@posX - @radius <= x + width && @posY > y && @posY < y + height)
 			return true
 		else
 			return false
 		end
 	end
 
-	def updatePosTick(time)
+	def updatePos()
 		@posX += @velocityX
 		@posY += @velocityY
-		if (collidesRight || collidesLeft)
-			@timeLastBounce += time
-			@velocityX *= -1
-		end
-	end
-
-	def updatePos(time)
-		$tmp = 0;
-		while ($tmp < time)
-			updatePosTick($tmp)
-			$tmp += 10
-		end
     end
-
-	def sendPos()
-		ActionCable.server.broadcast('game', {ballPosX: Ball.posX, ballPosY: Ball.posY})
-	end
 
 	def posY()
 		@posY
@@ -69,6 +53,14 @@ class Ball
 
 	def velocityX()
 		@velocityX
+	end
+
+	def setVelocityX(value)
+		@velocityX = value
+	end
+
+	def setVelocityY(value)
+		@velocityY = value
 	end
 
 	def persisted?

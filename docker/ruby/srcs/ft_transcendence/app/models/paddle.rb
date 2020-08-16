@@ -1,10 +1,15 @@
 class Paddle
 	include ActiveModel::Model
 
-	def initialize()
-		@posY = 50
-		@height = 10
-		@width = 2
+	def initialize(player_number)
+		if (player_number == 1)
+			@posX = 5
+		elsif (player_number == 2)
+			@posX = 600 - 20
+		end
+		@posY = 275
+		@height = 50
+		@width = 15
 		@velocity = 5
 	end
 
@@ -14,6 +19,10 @@ class Paddle
 
 	def down()
 		@posY += (1 * velocity)
+	end
+
+	def posX()
+		@posX
 	end
 
 	def posY()

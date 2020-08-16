@@ -2,67 +2,61 @@ import consumer from "./consumer"
 
 document.addEventListener('turbolinks:load', () => {
   var canvas = document.querySelector('.myCanvas');
-  canvas.width = 600;
-  canvas.height = 600;
-  var ctx = canvas.getContext('2d');
+  if (canvas)
+  {
+    canvas.width = 600;
+    canvas.height = 600;
+    var ctx = canvas.getContext('2d');
+    ctx.fillStyle = "blue";
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    ctx.fillStyle = "black";
 
-  var ballPosY = 20;
-  var ballPosX = 50;
-  var velocityY = 0;
-  var velocityX = 1;
-  var time = 0;
-
-  function printBall()
-  {	  
-  	ctx.clearRect(ballPosX - 20, ballPosY - 20, 40, 40);
-    ctx.beginPath();
-    ctx.arc(ballPosX, ballPosY, 10, 0, 2 * Math.PI, false);
-    ctx.stroke();
-  }
-
-  var sub = consumer.subscriptions.create("GameChannel", {
-    connected() {
-	  // PADDLE
-      document.addEventListener('keypress', logKey);
-      function logKey(e)
-      {
-        if (e.key == 'w')
-          sub.perform('player1_up', {});  
-		    if (e.key == 's')
-          sub.perform('player1_down', {});  
-      }
-
-	  // BALL
-  	  setInterval(function() {
-  	  	time += 10;
-  	  	ballPosX += velocityX;
-  		  ballPosY += velocityY;
-  		  if (ballPosX > 100 || ballPosX < 20)
-  			 velocityX *= -1;
-  		  printBall();
-      }, 10);
-	  
-    //   setInterval(function() {
-	   // 	sub.send({
-    //     'ballPosX': ballPosX,
-				// 'ballPosY': ballPosY,
-				// 'time': time});
-		  // }, 50);
-    },
-
-    disconnected() {
-    },
-
-    received(data) {
-  		console.log(data);
-  		if (data)
-  		{
-  			ballPosX = data.ballPosX;
-  			ballPosY = data.ballPosY;
-  			velocityX = data.velocityX;
-  			velocityY = data.velocityY;
-  			printBall();
-  		}
+    function printBall(x, y, radius)
+    {	  
+      ctx.beginPath();
+      ctx.arc(x, y, radius, 0, 2 * Math.PI, false);
+      ctx.fill();
     }
-  });
+
+    function printPaddle(x, y, width, height)
+    {
+      ctx.fillRect(x, y, width, height);
+    }
+
+    var sub = consumer.subscriptions.create({
+		channel: "GameChannel",
+		game: $('.GameInfo').attr("value")
+	}, {
+      connected() {
+    	  // PADDLE
+        document.addEventListener('keypress', logKey);
+        function logKey(e)
+        {
+          if (e.key == 'w')
+            sub.perform('player1_up', {});  
+  		    if (e.key == 's')
+            sub.perform('player1_down', {});  
+        }
+
+    	  //REQUEST UPDATE
+        setInterval(function() {
+    	   	sub.send({});
+    		}, 40);
+      },
+
+      disconnected() {
+
+      },
+
+      received(data) {
+        ctx.fillStyle = "blue";
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        ctx.fillStyle = "black";
+ 		printBall(data.ballPosX, data.ballPosY, data.ballRadius);
+        printPaddle(data.paddle1PosX, data.paddle1PosY, data.paddle1Width, data.paddle1Height);
+        printPaddle(data.paddle2PosX, data.paddle2PosY, data.paddle2Width, data.paddle2Height);
+      }
+    });
+  }
 });
