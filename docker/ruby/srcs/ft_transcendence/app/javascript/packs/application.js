@@ -13,6 +13,8 @@ require("channels")
 
 require("custom")
 
+//require("libs/backbone/underscore")
+//require("libs/backbone/backbone")
 require("libs/jquery-timeago/jquery.timeago")
 
 // Uncomment to copy all static images under ../images to the output folder and reference
