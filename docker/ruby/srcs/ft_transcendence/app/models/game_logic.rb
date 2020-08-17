@@ -27,14 +27,15 @@ class GameLogic
     end
 
 	def initialize()
+	  	@last_loser = rand(1..2)
 		@canvasWidth = 600
 		@canvasHeight = 600
-	  	@ball = Ball.new(1)
+	  	@ball = Ball.new(@last_loser)
 	  	@paddle1 = Paddle.new(1)
 	  	@paddle2 = Paddle.new(2)
 	  	@player1_pts = 0
 	  	@player2_pts = 0
-	  	@last_loser = nil
+	  	@state = "pause"
 	end
 
 	def paddle1()
@@ -49,19 +50,29 @@ class GameLogic
 		@ball
 	end
 
-	def player1_pts
+	def player1_pts()
 		@player1_pts
 	end
 
-	def player2_pts
+	def player2_pts()
 		@player2_pts
 	end
 
+	def last_loser()
+		@last_loser
+	end
+
+	def state()
+		@state
+	end
+
 	def start(player)
+		@state = "play"
 		@ball.throw(player)
 	end
 
     def reset_ball(player)
+    	@state = "pause"
         @ball = Ball.new(player)
     end
 
@@ -96,12 +107,6 @@ class GameLogic
 
 	def updateBallPos()
         $paddle = nil
-		if (@ball.collidesLeft(@paddle1.posX, @paddle1.posY, @paddle1.width, @paddle1.height))
-            $paddle = @paddle1
-        end
-        if (@ball.collidesRight(@paddle2.posX, @paddle2.posY, @paddle2.width, @paddle2.height))
-            $paddle = @paddle2
-		end
         if (@ball.posX < 0 || @ball.posX > @canvasWidth)
         	$loser = 0
         	if (@ball.posX < 0)
@@ -114,7 +119,13 @@ class GameLogic
         	reset_ball($loser)
         	reset_paddles
         	@last_loser = $loser
-            start($loser)
+		else
+			if (@ball.collidesLeft(@paddle1.posX, @paddle1.posY, @paddle1.width, @paddle1.height))
+	            $paddle = @paddle1
+	        end
+	        if (@ball.collidesRight(@paddle2.posX, @paddle2.posY, @paddle2.width, @paddle2.height))
+	            $paddle = @paddle2
+			end
         end
         if ($paddle)
             $offset = (@ball.posY + @ball.radius * 2 - $paddle.posY) / ($paddle.height + @ball.radius * 2)

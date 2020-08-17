@@ -8,7 +8,6 @@ class GameChannel < ApplicationCable::Channel
     if (!@game)
       @game = Game.find_by(status: "running", player2: current_user);
       @game ||= Game.find_by(status: "waiting", player2: current_user);
-      @gameLogic.start
       UpdateBallJob.perform_later(params[:game])
     end
   end
@@ -29,6 +28,20 @@ class GameChannel < ApplicationCable::Channel
     else
       if (current_user == @game.player2)
         @gameLogic.paddle2_down
+      end
+    end
+  end
+
+  def throw_ball
+    if (@game.status == "running" && @gameLogic.state == "pause")
+      if (current_user == @game.player1)
+        if (@gameLogic.last_loser == 1)
+          @gameLogic.start(1)
+        end
+      elsif (current_user == @game.player2)
+        if (@gameLogic.last_loser == 2)
+          @gameLogic.start(2)
+        end
       end
     end
   end
