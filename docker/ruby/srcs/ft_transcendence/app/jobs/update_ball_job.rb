@@ -4,7 +4,9 @@ class UpdateBallJob < ApplicationJob
   def perform(id)
   	@gameLogic = GameLogic.search(id)
     while (@gameLogic)
-    	@gameLogic.updateBallPos
+    	if (@gameLogic.state == "play")
+	    	@gameLogic.updateBallPos
+	    end
 	  	@gameLogic = GameLogic.search(id)
     	sleep(1.0/50.0)
     end

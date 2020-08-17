@@ -32,10 +32,13 @@ document.addEventListener('turbolinks:load', () => {
 				document.addEventListener('keypress', logKey);
 				function logKey(e)
 				{
+          console.log(e.key);
 					if (e.key == 'w')
 						sub.perform('paddle_up', {});  
 					if (e.key == 's')
 						sub.perform('paddle_down', {});  
+          if (e.key == ' ')
+            sub.perform('throw_ball', {});
 				}
 
 				//REQUEST UPDATE
