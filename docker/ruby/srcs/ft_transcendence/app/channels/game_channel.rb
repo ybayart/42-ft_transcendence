@@ -3,9 +3,11 @@ class GameChannel < ApplicationCable::Channel
   def subscribed
 	stream_from "game_#{params[:game]}"
     @gameLogic = GameLogic.create(params[:game])
-	@game = Game.find_by(player1: current_user);
+	@game = Game.find_by(status: "waiting", player1: current_user);
+	@game ||= Game.find_by(status: "running", player1: current_user);
 	if (!@game)
-		@game = Game.find_by(player2: current_user);
+        @game = Game.find_by(status: "running", player2: current_user);
+		@game ||= Game.find_by(status: "waiting", player2: current_user);
         @gameLogic.start
 	end
   end
@@ -32,9 +34,12 @@ class GameChannel < ApplicationCable::Channel
 
   def receive(data)
     @gameLogic.updateBallPos
-		ActionCable.server.broadcast("game_#{params[:game]}", {
+    if (@game.status == "waiting")
+      @game = Game.find_by(id: @game.id)
+    end
+	ActionCable.server.broadcast("game_#{params[:game]}", {
             status: @game.status,
-			paddle1PosX: @gameLogic.paddle1.posX,
+	    	paddle1PosX: @gameLogic.paddle1.posX,
 			paddle1PosY: @gameLogic.paddle1.posY,
 			paddle1Width: @gameLogic.paddle1.width,
 		    paddle1Height: @gameLogic.paddle1.height,
@@ -45,7 +50,7 @@ class GameChannel < ApplicationCable::Channel
 			ballPosX: @gameLogic.ball.posX,
 			ballPosY: @gameLogic.ball.posY,
 			ballRadius: @gameLogic.ball.radius
-		})
+	})
   end
 
   def unsubscribed

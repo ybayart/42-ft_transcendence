@@ -49,7 +49,7 @@ document.addEventListener('turbolinks:load', () => {
       },
 
       received(data) {
-		$("#game_status").html = data.status;
+		$("#game_status").html(data.status);
         ctx.fillStyle = "blue";
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         ctx.fillRect(0, 0, canvas.width, canvas.height);
