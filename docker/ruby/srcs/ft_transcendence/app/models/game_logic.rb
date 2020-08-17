@@ -7,7 +7,6 @@ class GameLogic
       end
       if (!@games[id])
         @games[id] = GameLogic.new
-        @games[id].start
       end
       @games[id]
     end
@@ -69,11 +68,15 @@ class GameLogic
             $paddle = @paddle2
 		end
         if ($paddle)
-            $relativeIntersectY = ($paddle.posY + ($paddle.height / 2)) - @ball.posY
-            $normalizedRelativeIntersectionY = ($relativeIntersectY/($paddle.height/2))
-            $bounceAngle = $normalizedRelativeIntersectionY * 180
-            @ball.setVelocityX(@ball.speed * Math.cos($bounceAngle))
-            @ball.setVelocityY(@ball.speed * -Math.sin($bounceAngle))
+            $offset = (@ball.posY + @ball.radius * 2 - $paddle.posY) / ($paddle.height + @ball.radius * 2)
+            $phi = 0.25 * Math::PI * (2 * $offset - 1)
+            @ball.setVelocityX(@ball.velocityX * -1)
+            @ball.setVelocityY(@ball.speed * Math.sin($phi))
+            #$relativeIntersectY = ($paddle.posY + ($paddle.height / 2)) - @ball.posY
+            #$normalizedRelativeIntersectionY = ($relativeIntersectY/($paddle.height/2))
+            #$bounceAngle = $normalizedRelativeIntersectionY * 75
+            #@ball.setVelocityX(@ball.speed * Math.cos($bounceAngle))
+            #@ball.setVelocityY(@ball.speed * -Math.sin($bounceAngle))
             @ball.increaseSpeed
         end
 		if (@ball.posY + @ball.velocityY - @ball.radius < 0 || @ball.posY + @ball.velocityY + @ball.radius > @canvasHeight)

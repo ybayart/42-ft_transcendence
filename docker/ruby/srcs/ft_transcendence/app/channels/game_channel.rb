@@ -6,6 +6,7 @@ class GameChannel < ApplicationCable::Channel
 	@game = Game.find_by(player1: current_user);
 	if (!@game)
 		@game = Game.find_by(player2: current_user);
+        @gameLogic.start
 	end
   end
 
