@@ -24,7 +24,7 @@ class GameChannel < ApplicationCable::Channel
   end
 
   def paddle_down
-  	if (current_user == @game.player1)
+    if (current_user == @game.player1)
       @gameLogic.paddle1_down
     else
       if (current_user == @game.player2)
@@ -33,29 +33,55 @@ class GameChannel < ApplicationCable::Channel
     end
   end
 
+  def end
+    @game = Game.find_by(id: @game.id)
+  end
+
   def receive(data)
     if (@game.status == "waiting")
       @game = Game.find_by(id: @game.id)
     end
-		ActionCable.server.broadcast("game_#{params[:game]}", {
-      status: @game.status,
-      player1_pts: @gameLogic.player1_pts,
-      player2_pts: @gameLogic.player2_pts,
-			paddle1PosX: @gameLogic.paddle1.posX,
-			paddle1PosY: @gameLogic.paddle1.posY,
-			paddle1Width: @gameLogic.paddle1.width,
-		  paddle1Height: @gameLogic.paddle1.height,
-		  paddle2PosX: @gameLogic.paddle2.posX,
-			paddle2PosY: @gameLogic.paddle2.posY,
-			paddle2Width: @gameLogic.paddle2.width,
-			paddle2Height: @gameLogic.paddle2.height,
-			ballPosX: @gameLogic.ball.posX,
-			ballPosY: @gameLogic.ball.posY,
-			ballRadius: @gameLogic.ball.radius
-	})
+    if (@game.status != "finished")
+      @gameLogic.updateBallPos
+      ActionCable.server.broadcast("game_#{params[:game]}", {
+        status: @game.status,
+        player1_pts: @gameLogic.player1_pts,
+        player2_pts: @gameLogic.player2_pts,
+        paddle1PosX: @gameLogic.paddle1.posX,
+        paddle1PosY: @gameLogic.paddle1.posY,
+        paddle1Width: @gameLogic.paddle1.width,
+        paddle1Height: @gameLogic.paddle1.height,
+        paddle2PosX: @gameLogic.paddle2.posX,
+        paddle2PosY: @gameLogic.paddle2.posY,
+        paddle2Width: @gameLogic.paddle2.width,
+        paddle2Height: @gameLogic.paddle2.height,
+        ballPosX: @gameLogic.ball.posX,
+        ballPosY: @gameLogic.ball.posY,
+        ballRadius: @gameLogic.ball.radius
+      })
+    else
+      ActionCable.server.broadcast("game_#{params[:game]}", {
+        status: @game.status
+      })
+    end
   end
 
   def unsubscribed
-    # Any cleanup needed when channel is unsubscribed
+    $nb_player = 0
+    if (@game.status == "running")
+      @game.status = "finished"
+      if (@game.player1 == current_user)
+        @game.winner = @game.player2
+        $nb_player = 2
+      elsif (@game.player2 == current_user)
+        @game.winner = @game.player1
+        $nb_player = 1
+      end
+      @game.save
+    end
+    ActionCable.server.broadcast("game_#{params[:game]}", {
+        winner: $nb_player
+    })
+    GameLogic.delete(params[:game])
   end
 end

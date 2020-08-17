@@ -11,6 +11,12 @@ class GameLogic
       @games[id]
     end
 
+    def self.delete(id)
+      if (@games && @games[id])
+        @games = @games.except(@games[id])
+      end
+    end
+
 	def initialize()
 		@canvasWidth = 600
 		@canvasHeight = 600
