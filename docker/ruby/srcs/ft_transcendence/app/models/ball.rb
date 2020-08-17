@@ -2,7 +2,6 @@ class Ball
 	include ActiveModel::Model
 
 	def initialize()
-        @speed = 2
 		@posY = 300
 		@posX = 40
 		@radius = 10
@@ -57,7 +56,7 @@ class Ball
 	end
 
     def speed()
-        @speed
+        return (Math.sqrt(@velocityX ** 2 + @velocityY ** 2))
     end
 
 	def setVelocityX(value)
@@ -69,7 +68,8 @@ class Ball
 	end
 
     def increaseSpeed()
-        @speed += 0.5
+        @velocityX += @velocityX * 0.2
+        @velocityY += @velocityY * 0.2
     end
 
 	def persisted?

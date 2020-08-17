@@ -1,15 +1,16 @@
 class GameChannel < ApplicationCable::Channel
 
   def subscribed
-	stream_from "game_#{params[:game]}"
+  	stream_from "game_#{params[:game]}"
     @gameLogic = GameLogic.create(params[:game])
-	@game = Game.find_by(status: "waiting", player1: current_user);
-	@game ||= Game.find_by(status: "running", player1: current_user);
-	if (!@game)
-        @game = Game.find_by(status: "running", player2: current_user);
-		@game ||= Game.find_by(status: "waiting", player2: current_user);
-        @gameLogic.start
-	end
+  	@game = Game.find_by(status: "waiting", player1: current_user);
+  	@game ||= Game.find_by(status: "running", player1: current_user);
+  	if (!@game)
+      @game = Game.find_by(status: "running", player2: current_user);
+  		@game ||= Game.find_by(status: "waiting", player2: current_user);
+      @gameLogic.start
+      UpdateBallJob.perform_later(params[:game])
+  	end
   end
 
   def paddle_up
@@ -33,7 +34,6 @@ class GameChannel < ApplicationCable::Channel
   end
 
   def receive(data)
-    @gameLogic.updateBallPos
     if (@game.status == "waiting")
       @game = Game.find_by(id: @game.id)
     end
