@@ -41,6 +41,10 @@ class Paddle
 		@velocity
 	end
 
+	def getCenter()
+		return (@posY + @height / 2)
+	end
+
 	def persisted?
     	false
  	end

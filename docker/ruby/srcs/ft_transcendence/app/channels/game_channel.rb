@@ -15,20 +15,16 @@ class GameChannel < ApplicationCable::Channel
   def paddle_up
     if (current_user == @game.player1)
       @gameLogic.paddle1_up
-    else
-      if (current_user == @game.player2)
-        @gameLogic.paddle2_up
-      end
+    elsif (current_user == @game.player2)
+      @gameLogic.paddle2_up
     end
   end
 
   def paddle_down
     if (current_user == @game.player1)
       @gameLogic.paddle1_down
-    else
-      if (current_user == @game.player2)
-        @gameLogic.paddle2_down
-      end
+    elsif (current_user == @game.player2)
+      @gameLogic.paddle2_down
     end
   end
 

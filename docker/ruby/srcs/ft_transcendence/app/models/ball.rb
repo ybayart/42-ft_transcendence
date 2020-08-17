@@ -66,6 +66,10 @@ class Ball
         return (Math.sqrt(@velocityX ** 2 + @velocityY ** 2))
     end
 
+    def setPosY(value)
+    	@posY = value
+    end
+
 	def setVelocityX(value)
 		@velocityX = value
 	end
