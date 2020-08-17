@@ -1,12 +1,9 @@
-window.app = {}
-
-_.templateSettings = {
-	interpolate: /\{\{\=(.+?)\}\}/g,
-	evaluate: /\{\{(.+?)\}\}/g
-};
+window.app = {collections: {}, models: {}, views: {}}
 
 require("backbonejs/models")
 require("backbonejs/collections")
-//require(baseDir+"/routers/post")
+require("backbonejs/views")
 //require("./templates")
 //require("./views")
+
+var postsView = new window.app.views.Posts();
