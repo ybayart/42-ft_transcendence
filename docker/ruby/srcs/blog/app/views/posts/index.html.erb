@@ -1,9 +1,6 @@
 <div id="posts"></div>
 
-<script type="text/javascript">
-	$(function() {
-		// Blog is the app name
-		window.router = new Blog.Routers.PostsRouter({posts: <%= @posts.to_json.html_safe -%>});
-		Backbone.history.start();
-	});
+<script type="text/template" class="post-line">
+	<p class="title">{{= title }}</p>
+	<p class="content">{{= content }}</p>
 </script>

@@ -1,6 +1,4 @@
-var Posts = Backbone.Collection.extend({
-	url: '/posts',
-	model: window.app.Post
+window.app.collections.Posts = Backbone.Collection.extend({
+	url: '/api/posts',
+	model: window.app.models.Post
 });
-
-window.app.Posts = Posts;
