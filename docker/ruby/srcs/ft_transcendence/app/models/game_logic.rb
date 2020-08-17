@@ -124,6 +124,14 @@ class GameLogic
 		@ball.updatePos
 	end
 
+    def gameEnd()
+        $bool = false
+        if (@player1_pts == 5 || @player2_pts == 5)
+            $bool = true
+        end
+        $bool
+    end
+
 	def persisted?
     	false
  	end
