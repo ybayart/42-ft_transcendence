@@ -21,7 +21,6 @@ class GameLogic
     	@game = nil
     	if (@games && @games[id])
     		@game = @games[id]
-    		puts "found"
     	end
     	@game
     end
@@ -85,11 +84,17 @@ class GameLogic
 		if (@paddle1.posY - @paddle1.velocity > 0)
 			@paddle1.up
 		end
+		if (@state == "pause" && @last_loser == 1)
+			@ball.setPosY(@paddle1.getCenter)
+		end
 	end
 
 	def paddle1_down()
 		if (@paddle1.posY + @paddle1.height + @paddle1.velocity < @canvasHeight)
 			@paddle1.down
+		end
+		if (@state == "pause" && @last_loser == 1)
+			@ball.setPosY(@paddle1.getCenter)
 		end
 	end
 
@@ -97,12 +102,20 @@ class GameLogic
 		if (@paddle2.posY - @paddle2.velocity > 0)
 			@paddle2.up
 		end
+		if (@state == "pause" && @last_loser == 2)
+			@ball.setPosY(@paddle2.getCenter)
+		end
+
 	end
 
 	def paddle2_down()
 		if (@paddle2.posY + @paddle2.height + @paddle2.velocity < @canvasHeight)
 			@paddle2.down
 		end
+		if (@state == "pause" && @last_loser == 2)
+			@ball.setPosY(@paddle2.getCenter)
+		end
+
 	end
 
 	def updateBallPos()

@@ -32,7 +32,6 @@ document.addEventListener('turbolinks:load', () => {
 				document.addEventListener('keypress', logKey);
 				function logKey(e)
 				{
-          console.log(e.key);
 					if (e.key == 'w')
 						sub.perform('paddle_up', {});  
 					if (e.key == 's')
@@ -54,7 +53,6 @@ document.addEventListener('turbolinks:load', () => {
 			received(data) {
 				if (data.winner)
 				{
-          console.log(data.winner);
 					$("#game_status").html(data.winner + " wins");
 					sub.perform('end', {});
 				}
