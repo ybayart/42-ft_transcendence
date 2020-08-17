@@ -22,7 +22,7 @@ class Ball
 	end
 
 	def	collidesRight(x, y, width, height)
-		if (@posX + @radius >= x && @posY >= y && @posY <= y + height)
+		if (@posX + @radius >= x && @posY + @radius >= y && @posY - @radius <= y + height)
 			return true
 		else
 			return false
@@ -30,7 +30,7 @@ class Ball
 	end
 
 	def collidesLeft(x, y, width, height)
-		if (@posX - @radius <= x + width && @posY > y && @posY < y + height)
+		if (@posX - @radius <= x + width && @posY + @radius >= y && @posY - @radius <= y + height)
 			return true
 		else
 			return false

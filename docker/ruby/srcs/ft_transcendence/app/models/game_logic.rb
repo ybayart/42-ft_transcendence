@@ -34,6 +34,11 @@ class GameLogic
 	  	@paddle2 = Paddle.new(2)
 	  	@player1_pts = 0
 	  	@player2_pts = 0
+	  	if (@last_loser == 1)
+		  	@last_collision = @paddle1
+		elsif (@last_loser == 2)
+			@last_collision = @paddle2
+		end
 	  	@state = "pause"
 	end
 
@@ -145,12 +150,10 @@ class GameLogic
             $phi = 0.25 * Math::PI * (2 * $offset - 1)
             @ball.setVelocityX(@ball.velocityX * -1)
             @ball.setVelocityY(@ball.speed * Math.sin($phi))
-            #$relativeIntersectY = ($paddle.posY + ($paddle.height / 2)) - @ball.posY
-            #$normalizedRelativeIntersectionY = ($relativeIntersectY/($paddle.height/2))
-            #$bounceAngle = $normalizedRelativeIntersectionY * 75
-            #@ball.setVelocityX(@ball.speed * Math.cos($bounceAngle))
-            #@ball.setVelocityY(@ball.speed * -Math.sin($bounceAngle))
-            @ball.increaseSpeed
+            if ($paddle != @last_collision)
+	            @ball.increaseSpeed
+	            @last_collision = $paddle
+	        end
         end
 		if (@ball.posY + @ball.velocityY - @ball.radius < 0 || @ball.posY + @ball.velocityY + @ball.radius > @canvasHeight)
 			@ball.setVelocityY(@ball.velocityY * -1)
