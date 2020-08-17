@@ -13,11 +13,6 @@ require("backbone")
 
 require("backbonejs")
 
-_.templateSettings = {
-	interpolate: /\{\{\=(.+?)\}\}/g,
-	evaluate: /\{\{(.+?)\}\}/g
-};
-
 window._ = _;
 
 // Uncomment to copy all static images under ../images to the output folder and reference

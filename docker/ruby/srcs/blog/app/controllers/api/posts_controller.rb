@@ -29,7 +29,7 @@ class Api::PostsController < ApiController
 		@post = Post.new(post_params)
 
 		if @post.save
-			render :show, status: :created, location: @post
+			render json: @post
 		else
 			render json: @post.errors, status: :unprocessable_entity
 		end
