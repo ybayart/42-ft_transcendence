@@ -139,10 +139,16 @@ class GameLogic
         	@last_loser = $loser
 		else
 			if (@ball.collidesLeft(@paddle1.posX, @paddle1.posY, @paddle1.width, @paddle1.height))
-	            $paddle = @paddle1
+	          $paddle = @paddle1
+              if (@ball.posX - @ball.radius < @paddle1.posX + @paddle1.width)
+                @ball.setPosX(@paddle1.posX + @paddle1.width + @ball.radius)
+              end
 	        end
 	        if (@ball.collidesRight(@paddle2.posX, @paddle2.posY, @paddle2.width, @paddle2.height))
-	            $paddle = @paddle2
+	          $paddle = @paddle2
+              if (@ball.posX + @ball.radius > @paddle2.posX)
+                @ball.setPosX(@paddle1.posX - @ball.radius)
+              end
 			end
         end
         if ($paddle)

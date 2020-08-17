@@ -36,8 +36,8 @@ document.addEventListener('turbolinks:load', () => {
 						sub.perform('paddle_up', {});  
 					if (e.key == 's')
 						sub.perform('paddle_down', {});  
-          if (e.key == ' ')
-            sub.perform('throw_ball', {});
+					if (e.key == ' ')
+						sub.perform('throw_ball', {});
 				}
 
 				//REQUEST UPDATE
