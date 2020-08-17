@@ -17,11 +17,9 @@ class GameLogic
 	  	@ball = Ball.new
 	  	@paddle1 = Paddle.new(1)
 	  	@paddle2 = Paddle.new(2)
+	  	@player1_pts = 0
+	  	@player2_pts = 0
 	end
-
-    def reset_ball()
-        @ball = Ball.new
-    end
 
 	def paddle1()
 		@paddle1
@@ -35,9 +33,22 @@ class GameLogic
 		@ball
 	end
 
+	def player1_pts
+		@player1_pts
+	end
+
+	def player2_pts
+		@player2_pts
+	end
+
 	def start()
 		@ball.throw
 	end
+
+    def reset_ball()
+        @ball = Ball.new
+    end
+
 
 	def paddle1_up()
 		if (@paddle1.posY - @paddle1.velocity > 0)
@@ -72,6 +83,11 @@ class GameLogic
             $paddle = @paddle2
 		end
         if (@ball.posX < 0 || @ball.posX > @canvasWidth)
+        	if (@ball.posX < 0)
+        		@player2_pts += 1
+        	elsif (@ball.posX > @canvasWidth)
+        		@player1_pts += 1
+        	end
             reset_ball
             start
         end

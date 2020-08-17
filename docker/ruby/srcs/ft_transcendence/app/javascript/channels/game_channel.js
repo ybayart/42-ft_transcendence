@@ -49,7 +49,9 @@ document.addEventListener('turbolinks:load', () => {
       },
 
       received(data) {
-		$("#game_status").html(data.status);
+    		$("#game_status").html(data.status);
+        $("#p1_pts").html(data.player1_pts);
+        $("#p2_pts").html(data.player2_pts);
         ctx.fillStyle = "blue";
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         ctx.fillRect(0, 0, canvas.width, canvas.height);
