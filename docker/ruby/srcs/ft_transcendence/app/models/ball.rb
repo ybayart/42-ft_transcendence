@@ -69,7 +69,7 @@ class Ball
 	end
 
     def increaseSpeed()
-        @speed += 0.1
+        @speed += 0.5
     end
 
 	def persisted?
