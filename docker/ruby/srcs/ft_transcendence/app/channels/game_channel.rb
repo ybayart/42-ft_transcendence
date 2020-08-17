@@ -33,12 +33,14 @@ class GameChannel < ApplicationCable::Channel
   def receive(data)
     @gameLogic.updateBallPos
 		ActionCable.server.broadcast("game_#{params[:game]}", {
-            status: @game.status,
+      status: @game.status,
+      player1_pts: @gameLogic.player1_pts,
+      player2_pts: @gameLogic.player2_pts,
 			paddle1PosX: @gameLogic.paddle1.posX,
 			paddle1PosY: @gameLogic.paddle1.posY,
 			paddle1Width: @gameLogic.paddle1.width,
-		    paddle1Height: @gameLogic.paddle1.height,
-		    paddle2PosX: @gameLogic.paddle2.posX,
+		  paddle1Height: @gameLogic.paddle1.height,
+		  paddle2PosX: @gameLogic.paddle2.posX,
 			paddle2PosY: @gameLogic.paddle2.posY,
 			paddle2Width: @gameLogic.paddle2.width,
 			paddle2Height: @gameLogic.paddle2.height,
