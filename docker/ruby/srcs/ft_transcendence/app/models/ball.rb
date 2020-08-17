@@ -2,8 +2,9 @@ class Ball
 	include ActiveModel::Model
 
 	def initialize()
+        @speed = 2
 		@posY = 300
-		@posX = 31
+		@posX = 40
 		@radius = 10
 		@velocityY = 0
 		@velocityX = 0
@@ -55,6 +56,10 @@ class Ball
 		@velocityX
 	end
 
+    def speed()
+        @speed
+    end
+
 	def setVelocityX(value)
 		@velocityX = value
 	end
@@ -62,6 +67,10 @@ class Ball
 	def setVelocityY(value)
 		@velocityY = value
 	end
+
+    def increaseSpeed()
+        @speed += 0.1
+    end
 
 	def persisted?
     	false

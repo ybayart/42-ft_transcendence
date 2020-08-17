@@ -61,9 +61,21 @@ class GameLogic
 	end
 
 	def updateBallPos()
-		if (@ball.collidesLeft(@paddle1.posX, @paddle1.posY, @paddle1.width, @paddle1.height) || @ball.collidesRight(@paddle2.posX, @paddle2.posY, @paddle2.width, @paddle2.height))
-			@ball.setVelocityX(@ball.velocityX * -1)
+        $paddle = nil
+		if (@ball.collidesLeft(@paddle1.posX, @paddle1.posY, @paddle1.width, @paddle1.height))
+            $paddle = @paddle1
+        end
+        if (@ball.collidesRight(@paddle2.posX, @paddle2.posY, @paddle2.width, @paddle2.height))
+            $paddle = @paddle2
 		end
+        if ($paddle)
+            $relativeIntersectY = ($paddle.posY + ($paddle.height / 2)) - @ball.posY
+            $normalizedRelativeIntersectionY = ($relativeIntersectY/($paddle.height/2))
+            $bounceAngle = $normalizedRelativeIntersectionY * 180
+            @ball.setVelocityX(@ball.speed * Math.cos($bounceAngle))
+            @ball.setVelocityY(@ball.speed * -Math.sin($bounceAngle))
+            @ball.increaseSpeed
+        end
 		if (@ball.posY + @ball.velocityY - @ball.radius < 0 || @ball.posY + @ball.velocityY + @ball.radius > @canvasHeight)
 			@ball.setVelocityY(@ball.velocityY * -1)
 		end

@@ -10,7 +10,7 @@ class Paddle
 		@posY = 275
 		@height = 50
 		@width = 15
-		@velocity = 5
+		@velocity = 10
 	end
 
 	def	up()
