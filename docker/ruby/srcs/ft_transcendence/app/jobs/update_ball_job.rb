@@ -1,13 +1,12 @@
 class UpdateBallJob < ApplicationJob
   queue_as :default
 
-  def perform(game)
-  	@gameLogic = GameLogic.create(game)
+  def perform(id)
+  	@gameLogic = GameLogic.search(id)
     while (@gameLogic)
     	@gameLogic.updateBallPos
-	  	@gameLogic = GameLogic.create(game)
-	  	puts "*******************************"
-    	sleep(0.5)
+	  	@gameLogic = GameLogic.search(id)
+    	sleep(1.0/50.0)
     end
   end
 end

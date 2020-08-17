@@ -59,28 +59,25 @@ class GameChannel < ApplicationCable::Channel
         ballPosY: @gameLogic.ball.posY,
         ballRadius: @gameLogic.ball.radius
       })
-    else
+    else      
       ActionCable.server.broadcast("game_#{params[:game]}", {
-        status: @game.status
+        winner: @game.winner.login
       })
     end
   end
 
   def unsubscribed
-    $nb_player = 0
     if (@game.status == "running")
       @game.status = "finished"
       if (@game.player1 == current_user)
         @game.winner = @game.player2
-        $nb_player = 2
       elsif (@game.player2 == current_user)
         @game.winner = @game.player1
-        $nb_player = 1
       end
       @game.save
     end
     ActionCable.server.broadcast("game_#{params[:game]}", {
-        winner: $nb_player
+        winner: @game.winner.login
     })
     GameLogic.delete(params[:game])
   end

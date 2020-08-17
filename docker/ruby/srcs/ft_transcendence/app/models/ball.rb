@@ -11,7 +11,7 @@ class Ball
 	end
 
 	def throw()
-		@velocityX = 3
+		@velocityX = 1
 	end
 
 	def	collidesRight(x, y, width, height)

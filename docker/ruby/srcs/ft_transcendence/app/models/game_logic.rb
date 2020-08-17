@@ -13,8 +13,17 @@ class GameLogic
 
     def self.delete(id)
       if (@games && @games[id])
-        @games = @games.except(@games[id])
+        @games.except!(id)
       end
+    end
+
+    def self.search(id)
+    	@game = nil
+    	if (@games && @games[id])
+    		@game = @games[id]
+    		puts "found"
+    	end
+    	@game
     end
 
 	def initialize()
