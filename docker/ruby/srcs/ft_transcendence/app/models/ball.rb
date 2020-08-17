@@ -1,17 +1,24 @@
 class Ball
 	include ActiveModel::Model
 
-	def initialize()
+	def initialize(player)
+		if (player == 1)
+			@posX = 40
+		elsif (player == 2)
+			@posX = 600 - 20 - 20
+		end
 		@posY = 300
-		@posX = 40
 		@radius = 10
 		@velocityY = 0
 		@velocityX = 0
-		@timeLastBounce = 0
 	end
 
-	def throw()
-		@velocityX = 1
+	def throw(player)
+		if (player == 1)
+			@velocityX = 1
+		elsif (player == 2)
+			@velocityX = -1
+		end
 	end
 
 	def	collidesRight(x, y, width, height)

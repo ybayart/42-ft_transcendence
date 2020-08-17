@@ -29,11 +29,12 @@ class GameLogic
 	def initialize()
 		@canvasWidth = 600
 		@canvasHeight = 600
-	  	@ball = Ball.new
+	  	@ball = Ball.new(1)
 	  	@paddle1 = Paddle.new(1)
 	  	@paddle2 = Paddle.new(2)
 	  	@player1_pts = 0
 	  	@player2_pts = 0
+	  	@last_loser = nil
 	end
 
 	def paddle1()
@@ -56,14 +57,18 @@ class GameLogic
 		@player2_pts
 	end
 
-	def start()
-		@ball.throw
+	def start(player)
+		@ball.throw(player)
 	end
 
-    def reset_ball()
-        @ball = Ball.new
+    def reset_ball(player)
+        @ball = Ball.new(player)
     end
 
+    def reset_paddles()
+    	@paddle1 = Paddle.new(1)
+    	@paddle2 = Paddle.new(2)
+    end
 
 	def paddle1_up()
 		if (@paddle1.posY - @paddle1.velocity > 0)
@@ -98,13 +103,18 @@ class GameLogic
             $paddle = @paddle2
 		end
         if (@ball.posX < 0 || @ball.posX > @canvasWidth)
+        	$loser = 0
         	if (@ball.posX < 0)
         		@player2_pts += 1
+        		$loser = 1
         	elsif (@ball.posX > @canvasWidth)
         		@player1_pts += 1
+        		$loser = 2
         	end
-            reset_ball
-            start
+        	reset_ball($loser)
+        	reset_paddles
+        	@last_loser = $loser
+            start($loser)
         end
         if ($paddle)
             $offset = (@ball.posY + @ball.radius * 2 - $paddle.posY) / ($paddle.height + @ball.radius * 2)
