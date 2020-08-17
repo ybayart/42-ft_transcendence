@@ -19,6 +19,10 @@ class GameLogic
 	  	@paddle2 = Paddle.new(2)
 	end
 
+    def reset_ball()
+        @ball = Ball.new
+    end
+
 	def paddle1()
 		@paddle1
 	end
@@ -67,6 +71,10 @@ class GameLogic
         if (@ball.collidesRight(@paddle2.posX, @paddle2.posY, @paddle2.width, @paddle2.height))
             $paddle = @paddle2
 		end
+        if (@ball.posX < 0 || @ball.posX > @canvasWidth)
+            reset_ball
+            start
+        end
         if ($paddle)
             $offset = (@ball.posY + @ball.radius * 2 - $paddle.posY) / ($paddle.height + @ball.radius * 2)
             $phi = 0.25 * Math::PI * (2 * $offset - 1)
