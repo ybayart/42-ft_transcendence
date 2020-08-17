@@ -1,2 +1,2 @@
-var Post = Backbone.Model.extend({})
-window.app.Post = Post
+window.app.models.Post = Backbone.Model.extend({
+});
