@@ -13,39 +13,35 @@ class Paddle
 		@velocity = 10
 	end
 
-	def	up()
+	def	up
 		@posY -= (1 * velocity)
 	end
 
-	def down()
+	def down
 		@posY += (1 * velocity)
 	end
 
-	def posX()
+	def posX
 		@posX
 	end
 
-	def posY()
+	def posY
 		@posY
 	end
 
-	def height()
+	def height
 		@height
 	end
 
-	def width()
+	def width
 		@width
 	end
 
-	def velocity()
+	def velocity
 		@velocity
 	end
 
-	def getCenter()
+	def getCenter
 		return (@posY + @height / 2)
 	end
-
-	def persisted?
-    	false
- 	end
 end

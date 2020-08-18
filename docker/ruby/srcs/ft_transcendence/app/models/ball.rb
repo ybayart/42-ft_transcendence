@@ -37,16 +37,16 @@ class Ball
 		end
 	end
 
-	def updatePos()
+	def updatePos
 		@posX += @velocityX
 		@posY += @velocityY
     end
 
-	def posY()
+	def posY
 		@posY
 	end
 
-	def posX()
+	def posX
 		@posX
 	end
 
@@ -54,15 +54,15 @@ class Ball
 		@radius
 	end
 
-	def velocityY()
+	def velocityY
 		@velocityY
 	end
 
-	def velocityX()
+	def velocityX
 		@velocityX
 	end
 
-    def speed()
+    def speed
         return (Math.sqrt(@velocityX ** 2 + @velocityY ** 2))
     end
 
@@ -82,12 +82,8 @@ class Ball
 		@velocityY = value
 	end
 
-    def increaseSpeed()
+    def increaseSpeed
         @velocityX += @velocityX * 0.2
         @velocityY += @velocityY * 0.2
     end
-
-	def persisted?
-    	false
-  	end
 end

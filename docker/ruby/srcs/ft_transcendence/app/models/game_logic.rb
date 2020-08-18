@@ -25,7 +25,7 @@ class GameLogic
     	@game
     end
 
-	def initialize()
+	def initialize
 	  	@last_loser = rand(1..2)
 		@canvasWidth = 600
 		@canvasHeight = 600
@@ -34,39 +34,35 @@ class GameLogic
 	  	@paddle2 = Paddle.new(2)
 	  	@player1_pts = 0
 	  	@player2_pts = 0
-	  	if (@last_loser == 1)
-		  	@last_collision = @paddle1
-		elsif (@last_loser == 2)
-			@last_collision = @paddle2
-		end
+        @last_collision = if @last_loser == 1 then @paddle1 else @paddle2 end
 	  	@state = "pause"
 	end
 
-	def paddle1()
+	def paddle1
 		@paddle1
 	end
 
-	def paddle2()
+	def paddle2
 		@paddle2
 	end
 
-	def ball()
+	def ball
 		@ball
 	end
 
-	def player1_pts()
+	def player1_pts
 		@player1_pts
 	end
 
-	def player2_pts()
+	def player2_pts
 		@player2_pts
 	end
 
-	def last_loser()
+	def last_loser
 		@last_loser
 	end
 
-	def state()
+	def state
 		@state
 	end
 
@@ -80,12 +76,12 @@ class GameLogic
         @ball = Ball.new(player)
     end
 
-    def reset_paddles()
+    def reset_paddles
     	@paddle1 = Paddle.new(1)
     	@paddle2 = Paddle.new(2)
     end
 
-	def paddle1_up()
+	def paddle1_up
 		if (@paddle1.posY - @paddle1.velocity > 0)
 			@paddle1.up
 		end
@@ -94,7 +90,7 @@ class GameLogic
 		end
 	end
 
-	def paddle1_down()
+	def paddle1_down
 		if (@paddle1.posY + @paddle1.height + @paddle1.velocity < @canvasHeight)
 			@paddle1.down
 		end
@@ -103,7 +99,7 @@ class GameLogic
 		end
 	end
 
-	def paddle2_up()
+	def paddle2_up
 		if (@paddle2.posY - @paddle2.velocity > 0)
 			@paddle2.up
 		end
@@ -113,7 +109,7 @@ class GameLogic
 
 	end
 
-	def paddle2_down()
+	def paddle2_down
 		if (@paddle2.posY + @paddle2.height + @paddle2.velocity < @canvasHeight)
 			@paddle2.down
 		end
@@ -123,7 +119,7 @@ class GameLogic
 
 	end
 
-	def updateBallPos()
+	def updateBallPos
         $paddle = nil
         if (@ball.posX < 0 || @ball.posX > @canvasWidth)
         	$loser = 0
@@ -147,7 +143,7 @@ class GameLogic
 	        if (@ball.collidesRight(@paddle2.posX, @paddle2.posY, @paddle2.width, @paddle2.height))
 	          $paddle = @paddle2
               if (@ball.posX + @ball.radius > @paddle2.posX)
-                @ball.setPosX(@paddle1.posX - @ball.radius)
+                @ball.setPosX(@paddle2.posX - @ball.radius)
               end
 			end
         end
@@ -174,9 +170,4 @@ class GameLogic
         end
         $bool
     end
-
-	def persisted?
-    	false
- 	end
-
 end
