@@ -12,6 +12,14 @@ class User < ActiveRecord::Base
 	has_many :receive_bans, class_name: "RoomBan", foreign_key: "user_id", inverse_of: :user
 	has_many :send_mutes, class_name: "RoomMute", foreign_key: "by_id", inverse_of: :by
 	has_many :receive_mutes, class_name: "RoomMute", foreign_key: "user_id", inverse_of: :user
+	has_many :friendship_ones, :class_name => 'Friendship', :foreign_key => :friend_b_id
+	has_many :friend_a, through: :friendship_ones
+	has_many :friendship_twos, :class_name => 'Friendship', :foreign_key => :friend_a_id
+	has_many :friend_b, through: :friendship_twos
+
+	def friends
+		friend_a + friend_b
+	end
 
 	devise :database_authenticatable,
 			:rememberable, :validatable,

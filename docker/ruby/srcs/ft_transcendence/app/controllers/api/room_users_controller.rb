@@ -49,10 +49,10 @@ class Api::RoomUsersController < ApiController
 		# Use callbacks to share common setup or constraints between actions.
 		def set_room_user
 			@room_user = {'owner': Room.find(params[:id]).owner, "admins": [], "members": []}
-			Room.find(params[:id]).admins.each do |admin|
+			Room.find(params[:id]).admins.order("state DESC, nickname ASC").each do |admin|
 				@room_user[:admins] << admin unless @room_user[:owner] == admin
 			end
-			Room.find(params[:id]).members.each do |member|
+			Room.find(params[:id]).members.order("state DESC, nickname ASC").each do |member|
 				@room_user[:members] << member unless @room_user[:owner] == member || @room_user[:admins].include?(member)
 			end
 		end

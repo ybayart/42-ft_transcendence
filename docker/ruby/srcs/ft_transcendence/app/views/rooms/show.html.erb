@@ -72,15 +72,32 @@
 
 <script type="text/template" class="room_users-template">
 	<h4>Owner</h4>
-	<%%= owner.nickname %>
+	<%%= format_bold(owner) %>
 	<hr>
 	<h4>Admins</h4>
-	<%%= _.map(admins, function(admin) {return admin.nickname}) %>
+	<%%= _.map(admins, function(admin) {return format_bold(admin)}).join("<br>") %>
 	<hr>
 	<h4>Members</h4>
-	<%%= _.map(members, function(member) {return member.nickname}) %>
+	<%%= _.map(members, function(member) {return format_bold(member)}).join("<br>") %>
 </script>
 
 <script>
-	window.app.views.newRoomUsers = new window.app.views.RoomUsers({}, <%= params[:id] %>);
+	function	format_bold(user) {
+		if (user.state == "online") {
+			return ("<b>" + user.nickname + "</b>");
+		} else {
+			return (user.nickname);
+		}
+	}
+
+	function	updateView() {
+		var	id = <%= params[:id] %>;
+		if (_.isUndefined(window.app.views.newRoomUsers)) {
+			window.app.views.newRoomUsers = new window.app.views.RoomUsers({}, id);
+		} else {
+			window.app.views.newRoomUsers.initialize({}, id);
+		}
+	}
+
+	updateView();
 </script>

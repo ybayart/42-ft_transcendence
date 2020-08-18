@@ -27,7 +27,7 @@ $(document).on('turbolinks:load', function () {
 			}
 			else if (data.type == "join" || data.type == "left")
 			{
-				console.log("REFRESH");
+				updateView();
 			}
 		}
 	});
