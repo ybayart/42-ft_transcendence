@@ -25,6 +25,10 @@ $(document).on('turbolinks:load', function () {
 				element.append(content);
 				$("time.timeago").timeago();
 			}
+			else if (data.type == "join" || data.type == "left")
+			{
+				console.log("REFRESH");
+			}
 		}
 	});
 });
