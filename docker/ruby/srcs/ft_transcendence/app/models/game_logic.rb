@@ -1,173 +1,147 @@
 class GameLogic
-	include ActiveModel::Model
+  include ActiveModel::Model
 
-    def self.create(id)
-      if (!@games)
-        @games = Hash.new
+  def self.create(id)
+    @games ||= Hash.new
+    @games[id] ||= GameLogic.new
+    @games[id]
+  end
+
+  def self.delete(id)
+    if @games && @games[id]
+      @games.except!(id)
+    end
+  end
+
+  def self.search(id)
+    @game = nil
+    if @games && @games[id]
+      @game = @games[id]
+    end
+    @game
+  end
+
+  def initialize
+    @canvasWidth = 600
+    @canvasHeight = 600
+    @paddles = Array.new(2)
+    @paddles[0] = Paddle.new(1)
+    @paddles[1] = Paddle.new(2)
+    @last_loser = rand(1..2)
+    @last_collision = if @last_loser == 1 then @paddles[0] else @paddles[1] end
+    @ball = Ball.new(@last_loser)
+    @player_scores = Array.new(2, 0)
+    @state = "pause"
+  end
+
+  def paddles
+    @paddles
+  end
+
+  def ball
+    @ball
+  end
+
+  def player_scores
+    @player_scores
+  end
+
+  def last_loser
+    @last_loser
+  end
+
+  def state
+    @state
+  end
+
+  def start(player)
+    @state = "play"
+    @ball.throw(player)
+  end
+
+  def reset_ball(player)
+    @state = "pause"
+    @ball = Ball.new(player)
+  end
+
+  def reset_paddles
+    @paddles[0] = Paddle.new(1)
+    @paddles[1] = Paddle.new(2)
+  end
+
+  def reset_all
+    $loser = 0
+    if @ball.posX < 0
+      @player_scores[1] += 1
+      $loser = 1
+    elsif @ball.posX > @canvasWidth
+      @player_scores[0] += 1
+      $loser = 2
+    end
+    reset_ball($loser)
+    reset_paddles
+    @last_loser = $loser
+  end
+
+  def paddle_up(nb)
+    $paddle = @paddles[nb - 1]
+    if $paddle.posY - $paddle.velocity > 0
+      $paddle.up
+    end
+    if @state == "pause" && @last_loser == nb
+      @ball.setPosY($paddle.getCenter)
+    end
+  end
+
+  def paddle_down(nb)
+    $paddle = @paddles[nb - 1]
+    if $paddle.posY + $paddle.height + $paddle.velocity < @canvasHeight
+      $paddle.down
+    end
+    if @state == "pause" && @last_loser == nb
+      @ball.setPosY($paddle.getCenter)
+    end
+  end
+
+  def manage_collide
+    $paddle = nil
+    if @ball.collidesLeft(@paddles[0].posX, @paddles[0].posY, @paddles[0].width, @paddles[0].height)
+      $paddle = @paddles[0]
+      if @ball.posX - @ball.radius < @paddles[0].posX + @paddles[0].width
+        @ball.setPosX(@paddles[0].posX + @paddles[0].width + @ball.radius)
       end
-      if (!@games[id])
-        @games[id] = GameLogic.new
-      end
-      @games[id]
     end
-
-    def self.delete(id)
-      if (@games && @games[id])
-        @games.except!(id)
+    if @ball.collidesRight(@paddles[1].posX, @paddles[1].posY, @paddles[1].width, @paddles[1].height)
+      $paddle = @paddles[1]
+      if @ball.posX + @ball.radius > @paddles[1].posX
+        @ball.setPosX(@paddles[1].posX - @ball.radius)
       end
     end
-
-    def self.search(id)
-    	@game = nil
-    	if (@games && @games[id])
-    		@game = @games[id]
-    	end
-    	@game
+    if $paddle
+      $offset = (@ball.posY + @ball.radius * 2 - $paddle.posY) / ($paddle.height + @ball.radius * 2)
+      $phi = 0.25 * Math::PI * (2 * $offset - 1)
+      @ball.setVelocityX(@ball.velocityX * -1)
+      @ball.setVelocityY(@ball.speed * Math.sin($phi))
+      if $paddle != @last_collision
+        @ball.increaseSpeed
+        @last_collision = $paddle
+      end
     end
+  end
 
-	def initialize
-	  	@last_loser = rand(1..2)
-		@canvasWidth = 600
-		@canvasHeight = 600
-	  	@ball = Ball.new(@last_loser)
-	  	@paddle1 = Paddle.new(1)
-	  	@paddle2 = Paddle.new(2)
-	  	@player1_pts = 0
-	  	@player2_pts = 0
-        @last_collision = if @last_loser == 1 then @paddle1 else @paddle2 end
-	  	@state = "pause"
-	end
-
-	def paddle1
-		@paddle1
-	end
-
-	def paddle2
-		@paddle2
-	end
-
-	def ball
-		@ball
-	end
-
-	def player1_pts
-		@player1_pts
-	end
-
-	def player2_pts
-		@player2_pts
-	end
-
-	def last_loser
-		@last_loser
-	end
-
-	def state
-		@state
-	end
-
-	def start(player)
-		@state = "play"
-		@ball.throw(player)
-	end
-
-    def reset_ball(player)
-    	@state = "pause"
-        @ball = Ball.new(player)
+  def updateBallPos
+    if @ball.posX < 0 || @ball.posX > @canvasWidth
+      reset_all
+    else
+      manage_collide
     end
-
-    def reset_paddles
-    	@paddle1 = Paddle.new(1)
-    	@paddle2 = Paddle.new(2)
+    if @ball.collidesSideArena(@canvasHeight)
+        @ball.setVelocityY(@ball.velocityY * -1)
     end
+    @ball.updatePos
+  end
 
-	def paddle1_up
-		if (@paddle1.posY - @paddle1.velocity > 0)
-			@paddle1.up
-		end
-		if (@state == "pause" && @last_loser == 1)
-			@ball.setPosY(@paddle1.getCenter)
-		end
-	end
-
-	def paddle1_down
-		if (@paddle1.posY + @paddle1.height + @paddle1.velocity < @canvasHeight)
-			@paddle1.down
-		end
-		if (@state == "pause" && @last_loser == 1)
-			@ball.setPosY(@paddle1.getCenter)
-		end
-	end
-
-	def paddle2_up
-		if (@paddle2.posY - @paddle2.velocity > 0)
-			@paddle2.up
-		end
-		if (@state == "pause" && @last_loser == 2)
-			@ball.setPosY(@paddle2.getCenter)
-		end
-
-	end
-
-	def paddle2_down
-		if (@paddle2.posY + @paddle2.height + @paddle2.velocity < @canvasHeight)
-			@paddle2.down
-		end
-		if (@state == "pause" && @last_loser == 2)
-			@ball.setPosY(@paddle2.getCenter)
-		end
-
-	end
-
-	def updateBallPos
-        $paddle = nil
-        if (@ball.posX < 0 || @ball.posX > @canvasWidth)
-        	$loser = 0
-        	if (@ball.posX < 0)
-        		@player2_pts += 1
-        		$loser = 1
-        	elsif (@ball.posX > @canvasWidth)
-        		@player1_pts += 1
-        		$loser = 2
-        	end
-        	reset_ball($loser)
-        	reset_paddles
-        	@last_loser = $loser
-		else
-			if (@ball.collidesLeft(@paddle1.posX, @paddle1.posY, @paddle1.width, @paddle1.height))
-	          $paddle = @paddle1
-              if (@ball.posX - @ball.radius < @paddle1.posX + @paddle1.width)
-                @ball.setPosX(@paddle1.posX + @paddle1.width + @ball.radius)
-              end
-	        end
-	        if (@ball.collidesRight(@paddle2.posX, @paddle2.posY, @paddle2.width, @paddle2.height))
-	          $paddle = @paddle2
-              if (@ball.posX + @ball.radius > @paddle2.posX)
-                @ball.setPosX(@paddle2.posX - @ball.radius)
-              end
-			end
-        end
-        if ($paddle)
-            $offset = (@ball.posY + @ball.radius * 2 - $paddle.posY) / ($paddle.height + @ball.radius * 2)
-            $phi = 0.25 * Math::PI * (2 * $offset - 1)
-            @ball.setVelocityX(@ball.velocityX * -1)
-            @ball.setVelocityY(@ball.speed * Math.sin($phi))
-            if ($paddle != @last_collision)
-	            @ball.increaseSpeed
-	            @last_collision = $paddle
-	        end
-        end
-		if (@ball.posY + @ball.velocityY - @ball.radius < 0 || @ball.posY + @ball.velocityY + @ball.radius > @canvasHeight)
-			@ball.setVelocityY(@ball.velocityY * -1)
-		end
-		@ball.updatePos
-	end
-
-    def gameEnd()
-        $bool = false
-        if (@player1_pts == 5 || @player2_pts == 5)
-            $bool = true
-        end
-        $bool
-    end
+  def gameEnd
+    (@player_scores[0] == 5 || @player_scores[1] == 5)
+  end
 end

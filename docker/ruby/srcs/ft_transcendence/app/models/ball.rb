@@ -2,9 +2,9 @@ class Ball
 	include ActiveModel::Model
 
 	def initialize(player)
-		if (player == 1)
+		if player == 1
 			@posX = 40
-		elsif (player == 2)
+		elsif player == 2
 			@posX = 600 - 20 - 20
 		end
 		@posY = 300
@@ -14,28 +14,24 @@ class Ball
 	end
 
 	def throw(player)
-		if (player == 1)
+		if player == 1
 			@velocityX = 1
-		elsif (player == 2)
+		elsif player == 2
 			@velocityX = -1
 		end
 	end
 
 	def	collidesRight(x, y, width, height)
-		if (@posX + @radius >= x && @posY + @radius >= y && @posY - @radius <= y + height)
-			return true
-		else
-			return false
-		end
+		(@posX + @radius >= x && @posY + @radius >= y && @posY - @radius <= y + height)
 	end
 
 	def collidesLeft(x, y, width, height)
-		if (@posX - @radius <= x + width && @posY + @radius >= y && @posY - @radius <= y + height)
-			return true
-		else
-			return false
-		end
+		(@posX - @radius <= x + width && @posY + @radius >= y && @posY - @radius <= y + height)
 	end
+
+    def collidesSideArena(height)
+        (@posY + @velocityY - @radius < 0 || @posY + @velocityY + @radius > height)
+    end
 
 	def updatePos
 		@posX += @velocityX
@@ -63,7 +59,7 @@ class Ball
 	end
 
     def speed
-        return (Math.sqrt(@velocityX ** 2 + @velocityY ** 2))
+        (Math.sqrt(@velocityX ** 2 + @velocityY ** 2))
     end
 
     def setPosX(value)

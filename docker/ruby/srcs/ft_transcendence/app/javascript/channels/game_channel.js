@@ -54,7 +54,7 @@ document.addEventListener('turbolinks:load', () => {
 				if (data.winner)
 				{
 					$("#game_status").html(data.winner + " wins");
-					sub.perform('end', {});
+					sub.perform('update_game', {});
 				}
 				else
 				{
