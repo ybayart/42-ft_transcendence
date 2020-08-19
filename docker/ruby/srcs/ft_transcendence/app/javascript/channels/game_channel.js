@@ -46,9 +46,9 @@ document.addEventListener('turbolinks:load', () => {
 
 		function logKey(e) {
 			if (e.key == 'w')
-				sub.perform('paddle_up', {});  
+				sub.perform('paddle_up', {});
 			else if (e.key == 's')
-				sub.perform('paddle_down', {});  
+				sub.perform('paddle_down', {});
 			else if (e.key == ' ')
 				sub.perform('throw_ball', {});
 		}
@@ -102,9 +102,11 @@ document.addEventListener('turbolinks:load', () => {
 			received(data) {
 				if (data.winner)
 				{
+					console.log(data.winner);
 					$("#game_status").html(data.winner + " wins");
 					sub.perform('update_game', {});
 					clearInterval(request_update);
+					sub.unsubscribe()
 				}
 				else
 				{
