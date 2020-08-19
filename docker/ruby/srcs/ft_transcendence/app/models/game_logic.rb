@@ -3,7 +3,10 @@ class GameLogic
 
   def self.create(id)
     @games ||= Hash.new
-    @games[id] ||= GameLogic.new
+    if !@games[id]
+      @games[id] ||= GameLogic.new
+      UpdateBallJob.perform_later(id)
+    end
     @games[id]
   end
 
