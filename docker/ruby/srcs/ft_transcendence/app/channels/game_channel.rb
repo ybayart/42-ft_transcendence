@@ -93,7 +93,6 @@ class GameChannel < ApplicationCable::Channel
       update_game
     end
     if @game.status != "finished"
-      @gameLogic.updateBallPos
       send_all_infos
       if @gameLogic.gameEnd
         designate_winner
