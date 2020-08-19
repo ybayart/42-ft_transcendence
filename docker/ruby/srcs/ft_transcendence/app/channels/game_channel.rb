@@ -121,8 +121,8 @@ class GameChannel < ApplicationCable::Channel
       elsif @game.player2 == current_user
         @game.winner = @game.player1
       end
-      @game.player1_pts = @gameLogic.player1_pts;
-      @game.player2_pts = @gameLogic.player2_pts;
+      @game.player1_pts = @gameLogic.player_scores[0];
+      @game.player2_pts = @gameLogic.player_scores[1];
       @game.save
       send_winner_login
     end

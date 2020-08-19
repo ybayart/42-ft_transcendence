@@ -8,7 +8,7 @@ class UpdateBallJob < ApplicationJob
 	    	@gameLogic.updateBallPos
 	    end
 	  	@gameLogic = GameLogic.search(id)
-    	sleep(1.0/50.0)
+    	sleep(1.0/40.0)
     end
   end
 end

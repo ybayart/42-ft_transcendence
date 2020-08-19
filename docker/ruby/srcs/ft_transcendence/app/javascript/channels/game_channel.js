@@ -36,7 +36,7 @@ document.addEventListener('turbolinks:load', () => {
 
 		function erasePaddle(paddle) {
 			ctx.fillStyle = background_color;
-			ctx.fillRect(paddle.posX, 0, paddle.width, canvas.height);
+			ctx.fillRect(paddle.posX, paddle.posY - 5, paddle.width, paddle.height + 10);
 		}
 
 		function printPaddle(paddle) {
@@ -60,15 +60,26 @@ document.addEventListener('turbolinks:load', () => {
 
 		function smooth_paddle_slide(paddle, data) {
 			var diff = data.posY - paddle.posY;
-			var nb_times = refresh_ms / 10;
-			var steps = diff / nb_times;
+			var nb_times = refresh_ms / 10 - 1;
+			if (diff > 0)
+				var steps = Math.floor(diff / nb_times);
+			else
+				var steps = Math.ceil(diff / nb_times);
 			var printer = setInterval(function () {
 				erasePaddle(paddle);
-				paddle.posY += steps;
-				printPaddle(paddle);
 				nb_times--;
 				if (nb_times == 0)
+				{
+					paddle.posY += diff;
+					printPaddle(paddle);
 					clearInterval(printer);
+				}
+				else
+				{
+					paddle.posY += steps;
+					diff -= steps;
+					printPaddle(paddle);
+				}
 			}, 10);
 		}
 
@@ -113,7 +124,7 @@ document.addEventListener('turbolinks:load', () => {
 						smooth_paddle_slide(paddles[0], data.paddles[0]);
 					else
 					{
-						erasePaddle(paddles[1]);
+						erasePaddle(paddles[0]);
 						printPaddle(paddles[0]);
 					}
 					if (paddles[1].posY != data.paddles[1].posY)
