@@ -35,6 +35,7 @@ class GameLogic
     @player_scores = Array.new(2, 0)
     @state = "pause"
     @game = Game.find_by(id: id);
+    @inputs = Array.new();
   end
 
   def paddles
@@ -59,6 +60,14 @@ class GameLogic
 
   def game
     @game
+  end
+
+  def addInput(type, id, player)
+    @inputs.unshift({ type: type, id: id, player: player });
+  end
+
+  def getFrontInput
+    @inputs.pop
   end
 
   def start(player)

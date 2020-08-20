@@ -3,19 +3,19 @@ class UpdateGameStateJob < ApplicationJob
 
   def perform(id)
   	@gameLogic = GameLogic.search(id)
-  	if (@gameLogic)
+  	if @gameLogic
   		@game = @gameLogic.game
 	  end
-    while (@gameLogic)
+    while @gameLogic
 			@game.reload(lock: true)
-    	if (@game.status == "running")
+    	if @game.status == "running"
     		process_inputs(@gameLogic)
-		  	if (@gameLogic.state == "play")
+		  	if @gameLogic.state == "play"
 		    	@gameLogic.updateBallPos
 		    end
 		  end
 		  send_game_state(@gameLogic, @game)
-		  if (@game.status == "finished")
+		  if @game.status == "finished"
         GameLogic.delete(id)
         if (!@game.winner)
         	Game.delete(id)
@@ -27,7 +27,15 @@ class UpdateGameStateJob < ApplicationJob
   end
 
   def process_inputs(gameLogic)
-
+  	input = gameLogic.getFrontInput
+  	while input
+  		if input[:type] == "paddle_up"
+  			gameLogic.paddle_up(input[:player])
+  		elsif input[:type] == "paddle_down"
+  			gameLogic.paddle_down(input[:player])
+  		end
+  		input = gameLogic.getFrontInput
+  	end	
   end
 
 	def send_game_state(gameLogic, game)

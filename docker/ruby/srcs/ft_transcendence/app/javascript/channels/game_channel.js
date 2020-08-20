@@ -1,5 +1,6 @@
 import consumer from "./consumer"
 import Paddle from "../custom/paddle"
+import Ball from "../custom/ball"
 
 document.addEventListener('turbolinks:load', () => {
 	$(document).ready(function () {
@@ -13,6 +14,12 @@ document.addEventListener('turbolinks:load', () => {
 			var background_color = "blue";
 			var paddle_color = "black";
 			var ball_color = "black";
+
+			var beginning_status = $("#game_status").html();
+			var me = (beginning_status == "waiting") ? 0 : 1;
+			var paddles = [null, null];
+			var ball = null;
+			var inputs_id = 0;
 
 			function resetCanvas()
 			{
@@ -45,18 +52,32 @@ document.addEventListener('turbolinks:load', () => {
 
 			function logKey(e) {
 				if (e.key == 'w')
-					sub.perform('paddle_up', {});
+				{
+					sub.perform('input', { type: "paddle_up", id: inputs_id });
+					inputs_id++;
+					// if (paddles[me])
+					// 	paddles[me].goUp()
+				}
 				else if (e.key == 's')
-					sub.perform('paddle_down', {});
+				{
+					sub.perform('input', { type: "paddle_down", id: inputs_id });
+					inputs_id++;
+					// if (paddles[me])
+					// 	paddles[me].goDown()
+				}
 				else if (e.key == ' ')
-					sub.perform('throw_ball', {});
+				{
+					sub.perform('throw_ball', { id: inputs_id });
+					inputs_id++;
+				}
+				// if ((e.key == 'w' || e.key == 's') && paddles[me])
+				// {
+				// 	resetCanvas()
+				// 	printPaddle(paddles[me]);
+				// }
 			}
 
 			resetCanvas();
-			var request_update;
-			var refresh_ms = 40;
-			var paddles = [null, null];
-			var ball;
 
 			var sub = consumer.subscriptions.create({
 				channel: "GameChannel",
@@ -84,6 +105,12 @@ document.addEventListener('turbolinks:load', () => {
 						printBall(data.ball);
 						printPaddle(data.paddles[0]);
 						printPaddle(data.paddles[1]);
+						if (ball == null)
+							ball = new Ball(data.ball)
+						if (paddles[0] == null)
+							paddles[0] = new Paddle(data.paddles[0])
+						if (paddles[1] == null)
+							paddles[1] = new Paddle(data.paddles[1])
 					}
 					else if (data.status == "finished")
 					{

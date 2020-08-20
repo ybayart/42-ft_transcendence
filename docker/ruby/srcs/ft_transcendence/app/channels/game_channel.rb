@@ -7,20 +7,16 @@ class GameChannel < ApplicationCable::Channel
     UpdateGameStateJob.perform_later(params[:game])  
   end
 
-  def paddle_up
+  def getCurrentPlayerNumber
     if current_user == @game.player1
-      @gameLogic.paddle_up(1)
-    elsif current_user == @game.player2
-      @gameLogic.paddle_up(2)
+      return 1
+    else
+      return 2
     end
   end
 
-  def paddle_down
-    if current_user == @game.player1
-      @gameLogic.paddle_down(1)
-    elsif current_user == @game.player2
-      @gameLogic.paddle_down(2)
-    end
+  def input(data)
+    @gameLogic.addInput(data["type"], data["id"], getCurrentPlayerNumber);
   end
 
   def throw_ball
