@@ -21,6 +21,8 @@ class User < ActiveRecord::Base
 		friend_a + friend_b
 	end
 
+	validate	:check_columns
+
 	devise :database_authenticatable,
 			:rememberable, :validatable,
 			:omniauthable, omniauth_providers: [:marvin]
@@ -30,9 +32,14 @@ class User < ActiveRecord::Base
 			user.email = auth.info.email
 			user.password = Devise.friendly_token[0,20]
 			user.login = auth.info.nickname
-			user.nickname = auth.info.nickname
+			user.nickname = nil
 			file = open(auth.info.image)
 			user.profile_pic.attach(io: open(file), filename: File.basename(file))
 		end
+	end
+
+	def check_columns
+		errors.add(:nickname, "can't be blank") if User.exists?(id: self.id) && self.nickname.blank?
+		errors.add(:nickname, "must be unique") if User.exists?(nickname: self.nickname) && self.id != User.where(nickname: self.nickname).take.id
 	end
 end
