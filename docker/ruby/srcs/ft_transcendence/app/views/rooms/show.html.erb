@@ -81,6 +81,30 @@
 	<%%= _.map(members, function(member) {return format_bold(member)}).join("<br>") %>
 </script>
 
+<script type="text/template" class="room_settings-template">
+	<div class="modal-dialog" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title" id="modalLabel">Edit room settings</h5>
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			<div class="modal-body">
+				<h4>Name</h4>
+				<input type="text" class="name" value="<%%= name %>">
+				<br>
+				<h4>Privacy</h4>
+				<input type="text" class="privacy" value="<%%= privacy %>">
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-secondary" data-dismiss="modal" id="modalClose">Close</button>
+				<button type="button" class="btn btn-primary" id="modalSend">YES</button>
+			</div>
+		</div>
+	</div>
+</script>
+
 <script>
 	function	format_bold(user) {
 		if (user.state == "online") {

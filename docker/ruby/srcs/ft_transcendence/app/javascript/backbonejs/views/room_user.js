@@ -15,7 +15,7 @@ window.app.views.RoomUsers = Backbone.View.extend({
 	el: $('.room_users'),
 	initialize: function(option, params) {
 		var self = this;
-		this.model.on('all', this.render, this);
+		this.model.on('add', this.render, this);
 		this.model.fetch({"url": "/api/room_users/" + params});
 	},
 	render: function() {
