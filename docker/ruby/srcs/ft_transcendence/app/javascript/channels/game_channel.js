@@ -59,30 +59,72 @@ document.addEventListener('turbolinks:load', () => {
 			var paddles = [null, null];
 			var ball;
 
-			function smooth_paddle_slide(paddle, data) {
-				var diff = data.posY - paddle.posY;
-				var nb_times = refresh_ms / 10 - 1;
-				if (diff > 0)
-					var steps = Math.floor(diff / nb_times);
+			/*
+			function smooth_paddle_slide(nb, data, callback) {
+				console.log("data "+ data.posY);
+				console.log("paddles "+paddles[nb].posY);
+				var diff = data.posY - paddles[nb].posY;
+				var nb_times = (refresh_ms / 10) - 2;
+				var steps;
+				if (diff == 0)
+				{
+					erasePaddle(paddles[nb]);
+					printPaddle(paddles[nb]);
+					callback();
+					return ;
+				}
+				else if (diff > 0)
+					steps = Math.floor(diff / nb_times);
 				else
-					var steps = Math.ceil(diff / nb_times);
-				var printer = setInterval(function () {
-					erasePaddle(paddle);
+					steps = Math.ceil(diff / nb_times);
+				var rest = diff % nb_times;
+				async function printer(){
 					nb_times--;
 					if (nb_times == 0)
 					{
-						paddle.posY += diff;
-						printPaddle(paddle);
-						clearInterval(printer);
+						erasePaddle(paddles[nb]);
+						paddles[nb].posY += rest;
+						printPaddle(paddles[nb]);
+						callback();
+						return ;
 					}
 					else
 					{
-						paddle.posY += steps;
+						erasePaddle(paddles[nb]);
+						paddles[nb].posY += steps;
 						diff -= steps;
-						printPaddle(paddle);
+						printPaddle(paddles[nb]);
+						setTimeout(printer, 10);
 					}
-				}, 10);
+				}
+				setTimeout(printer, 10);
 			}
+
+			var queue = [null, null];
+			queue[0] = [];
+			queue[1] = [];
+
+			function	callback_queue0()
+			{
+				if (queue[0].length > 1)
+				{
+					queue[0].shitf();
+					queue[0][0]();
+				}
+				else if (queue[0].length > 0)
+					queue[0].shitf();
+			}
+
+			function	callback_queue1()
+			{
+				if (queue[1].length > 1)
+				{
+					queue[1].shift();
+					queue[1][0]();
+				}
+				else if (queue[1].length > 0)
+					queue[1].shift();
+			}*/
 
 			var sub = consumer.subscriptions.create({
 				channel: "GameChannel",
@@ -108,6 +150,7 @@ document.addEventListener('turbolinks:load', () => {
 						sub.perform('update_game', {});
 						clearInterval(request_update);
 						sub.unsubscribe()
+						document.removeEventListener('keypress', logKey);
 					}
 					else
 					{
@@ -123,20 +166,22 @@ document.addEventListener('turbolinks:load', () => {
 						eraseBall(ball.posX, ball.posY, ball.radius);
 						ball = data.ball;
 						printBall(data.ball.posX, data.ball.posY, data.ball.radius);
-						if (paddles[0].posY != data.paddles[0].posY)
-							smooth_paddle_slide(paddles[0], data.paddles[0]);
+						erasePaddle(paddles[0]);
+						paddles[0].posY = data.paddles[0].posY;
+						printPaddle(paddles[0]);
+						erasePaddle(paddles[1]);
+						paddles[1].posY = data.paddles[1].posY;
+						printPaddle(paddles[1]);
+						/*
+						if (queue[0].length == 0)
+							smooth_paddle_slide(0, data.paddles[0], callback_queue0);
 						else
-						{
-							erasePaddle(paddles[0]);
-							printPaddle(paddles[0]);
-						}
-						if (paddles[1].posY != data.paddles[1].posY)
-							smooth_paddle_slide(paddles[1], data.paddles[1]);
+							queue[0].push(smooth_paddle_slide.bind(null, 0, data.paddles[0], callback_queue0));
+						if (queue[1].length == 0)
+							smooth_paddle_slide(1, data.paddles[1], callback_queue1);
 						else
-						{
-							erasePaddle(paddles[1]);
-							printPaddle(paddles[1]);
-						}
+							queue[1].push(smooth_paddle_slide.bind(null, 1, data.paddles[1], callback_queue1));
+							*/
 					}
 				}
 			});

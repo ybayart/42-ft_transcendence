@@ -3,8 +3,10 @@ class GameChannel < ApplicationCable::Channel
   def subscribed
     stream_from "game_#{params[:game]}"
     @gameLogic = GameLogic.create(params[:game])
-    @game = Game.find_by(player1: current_user);
-    @game ||= Game.find_by(player2: current_user);
+    @game = Game.find_by(status: "waiting", player1: current_user);
+    @game ||= Game.find_by(status: "running", player1: current_user);
+    @game ||= Game.find_by(status: "waiting", player1: current_user);
+    @game ||= Game.find_by(status: "running", player2: current_user);
   end
 
   def paddle_up
@@ -101,14 +103,15 @@ class GameChannel < ApplicationCable::Channel
       end
     else
       send_winner_login
+      GameLogic.delete(params[:game])
     end
   end
 
   def unsubscribed
-    if @game.status == "waiting"
+    if @game && @game.status == "waiting"
       @game.delete
     end
-    if @game.status == "running"
+    if @game && @game.status == "running"
       @game.status = "finished"
       if @game.player1 == current_user
         @game.winner = @game.player2

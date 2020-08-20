@@ -15,9 +15,9 @@ class Ball
 
 	def throw(player)
 		if player == 1
-			@velocityX = 1
+			@velocityX = 2
 		elsif player == 2
-			@velocityX = -1
+			@velocityX = -2
 		end
 	end
 
