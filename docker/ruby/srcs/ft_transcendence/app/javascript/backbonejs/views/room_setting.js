@@ -1,5 +1,4 @@
 window.app.views.RoomSetting = Backbone.View.extend({
-	model: window.app.models.newRoomSetting,
 	tagName: 'div',
 	initialize: function() {
 		this.template = _.template($('.room_settings-template').html());
@@ -12,12 +11,19 @@ window.app.views.RoomSetting = Backbone.View.extend({
 		this.model.set('name', $('#modal input.name').val());
 		this.model.set('privacy', $('#modal input.privacy').val());
 
-		this.model.save({"url": "/api/room_settings/1"}, {
+		Backbone.sync("update", this.model,{
+			"url": "/api/room_settings/" + $('#room_message_room_id').val(),
 			success: function(response) {
-				console.log('Successfully patch settings');
+//				$('.room-name').html(response.name);
+				$('#modal').modal('hide');
 			},
 			error: function(err) {
-				console.log('Failed to patch settings!');
+				console.log();
+				$('#modalOutput').html('Failed to edit settings!');
+				$.each(err.responseJSON, function(idx, item) {
+					$('#modalOutput').append("<br>> " + idx + ": " + item);
+				});
+				$('#modalOutput').fadeIn();
 			}
 		});
 	},
@@ -40,11 +46,15 @@ window.app.views.RoomSetting = Backbone.View.extend({
 window.app.views.RoomSettings = Backbone.View.extend({
 	model: window.app.collections.newRoomSettings,
 	el: $('#modal'),
-	initialize: function(option, params) {
+	initialize: function() {
 		var self = this;
 		this.model.on('add', this.render, this);
-		this.model.reset();
-		this.model.fetch({"url": "/api/room_settings/" + params});
+		this.model.fetch({"url": "/api/room_settings/" + $('#room_message_room_id').val()});
+		this.model.on('change', this.changeName, this);
+	},
+	changeName: function() {
+		Backbone.sync("read", this.model, {"url": "/api/room_settings/" + $('#room_message_room_id').val()});
+		$('.room-name').html('TASOEUR');
 	},
 	render: function() {
 		var self = this;
@@ -53,7 +63,6 @@ window.app.views.RoomSettings = Backbone.View.extend({
 			console.log(item.attributes);
 			$('#modal').html((new window.app.views.RoomSetting({model: item})).render().$el);
 		});
-		$('#modalSend').addClass('room-settings-update');
 		$('#modal').modal('show');
 		return this;
 	}
