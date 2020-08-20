@@ -105,7 +105,8 @@ ActiveRecord::Schema.define(version: 2020_08_17_160050) do
     t.string "provider"
     t.string "uid"
     t.string "nickname"
-    t.string "state"
+    t.string "state", default: "offline"
+    t.integer "count_co", default: 0
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["provider"], name: "index_users_on_provider"
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true

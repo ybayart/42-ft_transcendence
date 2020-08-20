@@ -4,10 +4,10 @@ class UpdateGameStateJob < ApplicationJob
   def perform(id)
   	@gameLogic = GameLogic.search(id)
   	if (@gameLogic)
-	  	@game = @gameLogic.game
+  		@game = @gameLogic.game
 	  end
     while (@gameLogic)
-			@game.reload
+			@game.reload(lock: true)
     	if (@game.status == "running")
     		process_inputs(@gameLogic)
 		  	if (@gameLogic.state == "play")
@@ -22,7 +22,7 @@ class UpdateGameStateJob < ApplicationJob
         end
 	    end
 	  	@gameLogic = GameLogic.search(id)
-    	sleep(1.0/40.0)
+    	sleep(1.0/60.0)
     end
   end
 
