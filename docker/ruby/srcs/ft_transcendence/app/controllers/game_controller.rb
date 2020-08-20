@@ -4,6 +4,10 @@ class GameController < ApplicationController
     find_game
   end
 
+  def test
+    find_test_game
+  end
+
   def find_game
     @game = Game.find_by(status: "waiting", player1: current_user);
     @game ||= Game.find_by(status: "running", player1: current_user);
@@ -31,4 +35,16 @@ class GameController < ApplicationController
     @game
   end
 
+  def find_test_game
+    @game = Game.find_by(status: "waiting");
+    if !@game
+      @game = Game.create(player1: current_user, status: "waiting");
+    else
+      @game.player2 = current_user;
+      @game.status = "running"
+      @game.save
+    end
+    @game
+  end
+  
 end
