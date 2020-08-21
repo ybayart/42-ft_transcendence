@@ -13,10 +13,10 @@ window.app.views.RoomUser = Backbone.View.extend({
 window.app.views.RoomUsers = Backbone.View.extend({
 	model: window.app.collections.newRoomUsers,
 	el: $('.room_users'),
-	initialize: function(option, params) {
+	initialize: function() {
 		var self = this;
 		this.model.on('add', this.render, this);
-		this.model.fetch({"url": "/api/room_users/" + params});
+		this.model.fetch({"url": "/api/room_users/" + $('#room_message_room_id').val()});
 	},
 	render: function() {
 		var self = this;

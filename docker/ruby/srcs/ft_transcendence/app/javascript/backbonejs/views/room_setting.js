@@ -14,7 +14,6 @@ window.app.views.RoomSetting = Backbone.View.extend({
 		Backbone.sync("update", this.model,{
 			"url": "/api/room_settings/" + $('#room_message_room_id').val(),
 			success: function(response) {
-//				$('.room-name').html(response.name);
 				$('#modal').modal('hide');
 			},
 			error: function(err) {
@@ -48,13 +47,8 @@ window.app.views.RoomSettings = Backbone.View.extend({
 	el: $('#modal'),
 	initialize: function() {
 		var self = this;
-		this.model.on('add', this.render, this);
+		this.model.on("add", this.render, this);
 		this.model.fetch({"url": "/api/room_settings/" + $('#room_message_room_id').val()});
-		this.model.on('change', this.changeName, this);
-	},
-	changeName: function() {
-		Backbone.sync("read", this.model, {"url": "/api/room_settings/" + $('#room_message_room_id').val()});
-		$('.room-name').html('TASOEUR');
 	},
 	render: function() {
 		var self = this;

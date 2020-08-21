@@ -3,6 +3,8 @@ Rails.application.routes.draw do
 	resources :user
 	resources :rooms do
 		get 'join', on: :collection
+		get 'password', on: :member
+		post 'passwordset', on: :member
 	end
 
 	resources :room_messages

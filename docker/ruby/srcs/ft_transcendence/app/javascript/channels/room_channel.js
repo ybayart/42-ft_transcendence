@@ -29,6 +29,13 @@ $(document).on('turbolinks:load', function () {
 			{
 				updateView();
 			}
+			else if (data.type == "update")
+			{
+				if (window.controller.controller == "rooms" && window.controller.action == "show" && $('#room_message_room_id').val() == data.content.id)
+				{
+					Turbolinks.visit(window.location.toString(), {action: 'replace'});
+				}
+			}
 		}
 	});
 });

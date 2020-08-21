@@ -5,7 +5,17 @@ class RoomsController < ApplicationController
 	def index
 	end
 
+	def password
+	end
+
+	def passwordset
+		session[:room_passwords][@room.id.to_s] = params[:password]
+		redirect_to room_path(@room)
+	end
+
 	def show
+		pass = BCrypt::Password.new(@room.password)
+		redirect_to password_room_path(@room.id), :alert => "Protected by a password" and return if pass != "" and pass != session[:room_passwords][@room.id.to_s]
 		bans = current_user.receive_bans.where("room": @room).where("end_at > ?", DateTime.now.utc)
 		redirect_to rooms_path, :alert => "You are banned from this room until " + bans.order("end_at DESC").first.end_at.in_time_zone("Europe/Paris").strftime("%T %F") and return if bans.exists?
 		unless @room.members.include?(current_user)
@@ -51,6 +61,7 @@ class RoomsController < ApplicationController
 	protected
 
 	def load_entities
+		session[:room_passwords] = {} unless session[:room_passwords]
 		@rooms = current_user.rooms_member
 		@room = Room.find(params[:id]) if params[:id]
 	end

@@ -17,13 +17,27 @@ class Room < ApplicationRecord
 	
 	validate	:check_columns
 
-	after_commit :check_modifications
+	before_save		:check_modifications
+	after_commit	:apply_modifications
+	after_update	:notif_update
 
 	def check_columns
 		errors.add(:name, "must be unique") if Room.exists?(name: self.name) && self.id != Room.where(name: self.name).take.id
 	end
 
 	def check_modifications
+		if !self.id || Room.find(self.id).password != self.password
+			self.password = BCrypt::Password.create(self.password)
+		end
+	end
+
+	def apply_modifications
 		ApplicationController.helpers.rebalance_rights(self)
+	end
+
+	def notif_update
+		room = Room.find(self.id)
+		output = {"type": "update", "content": {"name": self.name, "privacy": self.privacy, "id": self.id}}
+		RoomChannel.broadcast_to room, output
 	end
 end
