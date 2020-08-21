@@ -34,6 +34,7 @@ class UpdateGameStateJob < ApplicationJob
   		elsif input[:type] == "paddle_down"
   			gameLogic.paddle_down(input[:player])
   		end
+			gameLogic.addProcessed(input[:player], input[:id])
   		input = gameLogic.getFrontInput
   	end	
   end
@@ -70,8 +71,13 @@ class UpdateGameStateJob < ApplicationJob
 	        posX: @gameLogic.ball.posX,
 	        posY: @gameLogic.ball.posY,
 	        radius: @gameLogic.ball.radius
-	      }
+	      },
+	      inputs: [
+	      	@gameLogic.processed_inputs[0],
+	      	@gameLogic.processed_inputs[1]
+	      ]
 	    });
+	    @gameLogic.clear_processed
 	  elsif (@game.status == "finished" && @game.winner)
 	    ActionCable.server.broadcast("game_#{@game.id}", {
 	    	status: @game.status,

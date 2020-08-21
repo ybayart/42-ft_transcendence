@@ -20,6 +20,7 @@ document.addEventListener('turbolinks:load', () => {
 			var paddles = [null, null];
 			var ball = null;
 			var inputs_id = 0;
+			var unverified_inputs = [];
 
 			function resetCanvas()
 			{
@@ -54,6 +55,7 @@ document.addEventListener('turbolinks:load', () => {
 				if (e.key == 'w')
 				{
 					sub.perform('input', { type: "paddle_up", id: inputs_id });
+					unverified_inputs.push(inputs_id);
 					inputs_id++;
 					// if (paddles[me])
 					// 	paddles[me].goUp()
@@ -61,6 +63,7 @@ document.addEventListener('turbolinks:load', () => {
 				else if (e.key == 's')
 				{
 					sub.perform('input', { type: "paddle_down", id: inputs_id });
+					unverified_inputs.push(inputs_id);
 					inputs_id++;
 					// if (paddles[me])
 					// 	paddles[me].goDown()
@@ -101,16 +104,28 @@ document.addEventListener('turbolinks:load', () => {
 						$("#game_status").html(data.status);
 						$("#p1_pts").html(data.scores.player1);
 						$("#p2_pts").html(data.scores.player2);
-						resetCanvas();
-						printBall(data.ball);
-						printPaddle(data.paddles[0]);
-						printPaddle(data.paddles[1]);
+
 						if (ball == null)
 							ball = new Ball(data.ball)
 						if (paddles[0] == null)
 							paddles[0] = new Paddle(data.paddles[0])
 						if (paddles[1] == null)
 							paddles[1] = new Paddle(data.paddles[1])
+
+						data.inputs[me].forEach(function(server_id) {
+							unverified_inputs.forEach(function(client_id, index) {
+								if (server_id == client_id)
+									unverified_inputs.splice(index, 1);
+							});
+						});
+
+						console.log(unverified_inputs);
+
+						resetCanvas();
+						printBall(data.ball);
+						printPaddle(data.paddles[0]);
+						printPaddle(data.paddles[1]);
+
 					}
 					else if (data.status == "finished")
 					{

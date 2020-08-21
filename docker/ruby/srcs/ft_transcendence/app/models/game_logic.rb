@@ -36,6 +36,9 @@ class GameLogic
     @state = "pause"
     @game = Game.find_by(id: id);
     @inputs = Array.new();
+    @processed_inputs = Array.new(2);
+    @processed_inputs[0] = [];
+    @processed_inputs[1] = [];
   end
 
   def paddles
@@ -68,6 +71,19 @@ class GameLogic
 
   def getFrontInput
     @inputs.pop
+  end
+
+  def addProcessed(player, id)
+    @processed_inputs[player - 1].push(id)
+  end
+
+  def processed_inputs
+    @processed_inputs
+  end
+
+  def clear_processed
+    @processed_inputs[0].clear
+    @processed_inputs[1].clear
   end
 
   def start(player)
