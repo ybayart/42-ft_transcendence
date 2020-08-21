@@ -5,11 +5,17 @@ window.app.views.RoomSetting = Backbone.View.extend({
 	},
 	events: {
 		'click #modalSend': 'update',
-		'click #modalDelete': 'delete'
+		'click #modalDelete': 'delete',
+		'change #no-password': 'hidePassField'
 	},
 	update: function() {
 		this.model.set('name', $('#modal input.name').val());
 		this.model.set('privacy', $('#modal input.privacy').val());
+		if ($("#modal #no-password").is(":checked")) {
+			this.model.set('password', 'none');
+		} else {
+			this.model.set('password', $('#modal input.password').val());
+		}
 
 		Backbone.sync("update", this.model,{
 			"url": "/api/room_settings/" + $('#room_message_room_id').val(),
@@ -36,8 +42,21 @@ window.app.views.RoomSetting = Backbone.View.extend({
 			}
 		});
 	},
+	hidePassField: function() {
+		if ($('#no-password').is(':checked'))
+		{
+			$('#modal input.password').fadeOut();
+		}
+		else
+		{
+			$('#modal input.password').fadeIn();
+		}
+	},
 	render: function() {
 		this.$el.html(this.template(this.model.attributes));
+		if (this.model.attributes.password == "checked") {
+			this.$el.find('input.password').hide();
+		}
 		return this;
 	}
 });

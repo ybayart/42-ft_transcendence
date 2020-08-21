@@ -95,9 +95,15 @@
 				<div id="modalOutput" style="display: none;"></div>
 				<h4>Name</h4>
 				<input type="text" class="name" value="<%%= name %>">
-				<br>
+				<br><br>
 				<h4>Privacy</h4>
 				<input type="text" class="privacy" value="<%%= privacy %>">
+				<br><br>
+				<h4>Password</h4>
+				<input type="checkbox" id="no-password" name="no-password" <%%= password %>>
+				<label for="no-password">No password?</label>
+				<br>
+				<input type="password" class="password">
 			</div>
 			<div class="modal-footer">
 				<button type="button" class="btn btn-secondary" data-dismiss="modal" id="modalClose">Close</button>
