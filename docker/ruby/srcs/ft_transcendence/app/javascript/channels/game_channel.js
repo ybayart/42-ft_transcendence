@@ -17,6 +17,7 @@ document.addEventListener('turbolinks:load', () => {
 
 			var beginning_status = $("#game_status").html();
 			var me = (beginning_status == "waiting") ? 0 : 1;
+			var other = me == 1 ? 0 : 1;
 			var paddles = [null, null];
 			var ball = null;
 			var inputs_id = 0;
@@ -43,7 +44,7 @@ document.addEventListener('turbolinks:load', () => {
 
 			function erasePaddle(paddle) {
 				ctx.fillStyle = background_color;
-				ctx.fillRect(paddle.posX, paddle.posY - 5, paddle.width, paddle.height + 10);
+				ctx.fillRect(paddle.posX, paddle.posY, paddle.width, paddle.height);
 			}
 
 			function printPaddle(paddle) {
@@ -57,27 +58,27 @@ document.addEventListener('turbolinks:load', () => {
 					sub.perform('input', { type: "paddle_up", id: inputs_id });
 					unverified_inputs.push(inputs_id);
 					inputs_id++;
-					// if (paddles[me])
-					// 	paddles[me].goUp()
+					if (paddles[me])
+						paddles[me].goUp()
 				}
 				else if (e.key == 's')
 				{
 					sub.perform('input', { type: "paddle_down", id: inputs_id });
 					unverified_inputs.push(inputs_id);
 					inputs_id++;
-					// if (paddles[me])
-					// 	paddles[me].goDown()
+					if (paddles[me])
+						paddles[me].goDown()
 				}
 				else if (e.key == ' ')
 				{
 					sub.perform('throw_ball', { id: inputs_id });
 					inputs_id++;
 				}
-				// if ((e.key == 'w' || e.key == 's') && paddles[me])
-				// {
-				// 	resetCanvas()
-				// 	printPaddle(paddles[me]);
-				// }
+				if ((e.key == 'w' || e.key == 's') && paddles[me])
+				{
+					erasePaddle(paddles[me]);
+					printPaddle(paddles[me]);
+				}
 			}
 
 			resetCanvas();
@@ -107,10 +108,10 @@ document.addEventListener('turbolinks:load', () => {
 
 						if (ball == null)
 							ball = new Ball(data.ball)
-						if (paddles[0] == null)
-							paddles[0] = new Paddle(data.paddles[0])
-						if (paddles[1] == null)
-							paddles[1] = new Paddle(data.paddles[1])
+						if (paddles[me] == null)
+							paddles[me] = new Paddle(data.paddles[me])
+						if (paddles[other] == null)
+							paddles[other] = new Paddle(data.paddles[other])
 
 						data.inputs[me].forEach(function(server_id) {
 							unverified_inputs.forEach(function(client_id, index) {
@@ -119,12 +120,15 @@ document.addEventListener('turbolinks:load', () => {
 							});
 						});
 
+						paddles[me].correctPos(unverified_inputs, data.paddles[me])
+						paddles[other].setPos(data.paddles[other]);
+
 						console.log(unverified_inputs);
 
 						resetCanvas();
 						printBall(data.ball);
-						printPaddle(data.paddles[0]);
-						printPaddle(data.paddles[1]);
+						printPaddle(paddles[me]);
+						printPaddle(paddles[other]);
 
 					}
 					else if (data.status == "finished")
@@ -134,26 +138,6 @@ document.addEventListener('turbolinks:load', () => {
 						sub.unsubscribe()
 						document.removeEventListener('keypress', logKey);
 					}
-					// if (data.winner)
-					// {
-					// 	console.log(data.winner);
-					// 	$("#game_status").html(data.winner + " wins");
-					// 	sub.perform('update_game', {});
-					// 	clearInterval(request_update);
-					// 	sub.unsubscribe()
-					// 	document.removeEventListener('keypress', logKey);
-					// }
-					// else
-					// {
-					// 	if (paddles[0] == null)
-					// 		paddles[0] = new Paddle(data.paddles[0]);
-					// 	if (paddles[1] == null)
-					// 		paddles[1] = new Paddle(data.paddles[1]);
-					// 	$("#game_status").html(data.status);
-					// 	$("#p1_pts").html(data.scores.player1);
-					// 	$("#p2_pts").html(data.scores.player2);
-					// 	if (ball == null)
-					// 		ball = data.ball;
 					// 	eraseBall(ball.posX, ball.posY, ball.radius);
 					// 	ball = data.ball;
 					// 	printBall(data.ball.posX, data.ball.posY, data.ball.radius);

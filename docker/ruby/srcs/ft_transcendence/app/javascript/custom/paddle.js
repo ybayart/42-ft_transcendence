@@ -15,6 +15,35 @@ class Paddle {
 		this.posY += this.velocity;
 	}
 
+	correctPos(unverified_inputs, server_data)
+	{
+		server_paddle = new Paddle(server_data);
+		if (unverified_inputs.length == 0)
+		{
+			this.posX = server_paddle.posX;
+			this.posY = server_paddle.posY;
+		}
+		else
+		{
+			unverified_inputs.forEach(function(item) {
+				if (item["type"] == "up")
+					server_paddle.goUp()
+				else if (item["type"] == "down")
+					server_paddle.goDown()
+			});
+			if (server_paddle.posX != this.posX)
+				this.posX = server_paddle.posX;
+			if (server_paddle.posY != this.posY)
+				this.posY = server_paddle.posY;
+		}
+	}
+
+	setPos(server_data)
+	{
+		this.posX = server_data.posX;
+		this.posY = server_data.posY;
+	}
+
 }
 
 module.exports = Paddle;
