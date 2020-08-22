@@ -47,14 +47,19 @@ class RoomsController < ApplicationController
 	end
 
 	def edit
+		redirect_to rooms_path, :alert => "Not your room!" and return unless @room.owner == current_user
 	end
 
 	def update
-		if @room.update_attributes(permitted_parameters)
-			flash[:success] = "Room #{@room.name} was updated successfully"
-			redirect_to rooms_path
+		if @room.owner == current_user
+			if @room.update_attributes(permitted_parameters)
+				flash[:success] = "Room #{@room.name} was updated successfully"
+				redirect_to rooms_path
+			else
+				render :new
+			end
 		else
-			render :new
+			render json: {"status": "error", "error": "403: Forbidden"}, status: :forbidden
 		end
 	end
 
