@@ -1,0 +1,22 @@
+<%= form_for(room_admin, :as => "room_admin", url: room_admins_path, local: true) do |form| %>
+  <% if room_admin.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(room_admin.errors.count, "error") %> prohibited this room_admin from being saved:</h2>
+
+      <ul>
+        <% room_admin.errors.full_messages.each do |message| %>
+          <li><%= message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="field">
+    <%= form.label :user_id %>
+        <%= form.collection_select :user_id, @room.members - @room.admins, :id, :nickname %>
+  </div>
+
+  <div class="actions">
+    <%= form.submit %>
+  </div>
+<% end %>

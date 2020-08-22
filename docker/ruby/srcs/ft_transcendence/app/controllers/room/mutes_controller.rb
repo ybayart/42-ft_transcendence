@@ -1,4 +1,6 @@
 class Room::MutesController < ApplicationController
+  before_action :set_room
+  before_action	:is_admin
   before_action :set_room_mute, only: [:show, :edit, :update, :destroy]
 
   # GET /room/mutes
@@ -25,11 +27,13 @@ class Room::MutesController < ApplicationController
   # POST /room/mutes.json
   def create
     @room_mute = RoomMute.new(room_mute_params)
+	@room_mute.room = @room
+	@room_mute.by = current_user
 
     respond_to do |format|
       if @room_mute.save
-        format.html { redirect_to @room_mute, notice: 'Mute was successfully created.' }
-        format.json { render :show, status: :created, location: @room_mute }
+        format.html { redirect_to room_mute_path(@room, @room_mute), notice: 'Mute was successfully created.' }
+        format.json { render :show, status: :created, location: room_mute_path(@room, @room_mute) }
       else
         format.html { render :new }
         format.json { render json: @room_mute.errors, status: :unprocessable_entity }
@@ -42,8 +46,8 @@ class Room::MutesController < ApplicationController
   def update
     respond_to do |format|
       if @room_mute.update(room_mute_params)
-        format.html { redirect_to @room_mute, notice: 'Mute was successfully updated.' }
-        format.json { render :show, status: :ok, location: @room_mute }
+        format.html { redirect_to room_mute_path(@room, @room_mute), notice: 'Mute was successfully updated.' }
+        format.json { render :show, status: :ok, location: room_mute_path(@room, @room_mute) }
       else
         format.html { render :edit }
         format.json { render json: @room_mute.errors, status: :unprocessable_entity }
@@ -63,12 +67,21 @@ class Room::MutesController < ApplicationController
 
   private
     # Use callbacks to share common setup or constraints between actions.
+    def set_room
+      @room = Room.find(params[:room_id])
+    end
+
+	def is_admin
+		redirect_to @room, :alert => "Missing permission" and return unless @room.admins.include?(current_user)
+	end
+
+    # Use callbacks to share common setup or constraints between actions.
     def set_room_mute
-      @room_mute = RoomMute.find(params[:id])
+      @room_mute = @room.mutes.find(params[:id])
     end
 
     # Only allow a list of trusted parameters through.
     def room_mute_params
-      params.require(:room_mute).permit(:user_id, :by_id, :room_id, :end_at)
+      params.require(:room_mute).permit(:user_id, :end_at)
     end
 end

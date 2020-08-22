@@ -3,9 +3,12 @@
 </h1>
 <% if @room.owner == current_user %>
 	<button onClick="updateSettings()">Settings</button>
+	<%= link_to 'Admins', room_admins_path(@room) %>
 <% end %>
-<% if @room.owner == current_user or @room.admins.include?(current_user) %>
-	<button onClick="updateMembers()">Members</button>
+<% if @room.admins.include?(current_user) %>
+	<%= link_to 'Members', room_members_path(@room) %>
+	<%= link_to 'Bans', room_bans_path(@room) %>
+	<%= link_to 'Mutes', room_mutes_path(@room) %>
 <% end %>
 
 <div class="row">

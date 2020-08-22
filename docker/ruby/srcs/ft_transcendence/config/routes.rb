@@ -7,8 +7,8 @@ Rails.application.routes.draw do
 		post 'passwordset', on: :member
 		resources :mutes, controller: 'room/mutes'
 		resources :bans, controller: 'room/bans'
-		resources :members, only: [:index, :new, :destroy]
-		resources :admins, only: [:index, :new, :destroy]
+		resources :members, controller: 'room/members', only: [:index, :new, :create, :destroy]
+		resources :admins, controller: 'room/admins', only: [:index, :new, :create, :destroy]
 	end
 
 	resources :room_messages

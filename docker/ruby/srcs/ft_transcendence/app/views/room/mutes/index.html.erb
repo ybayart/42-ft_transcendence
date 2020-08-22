@@ -16,13 +16,13 @@
   <tbody>
     <% @room_mutes.each do |room_mute| %>
       <tr>
-        <td><%= room_mute.user_id %></td>
-        <td><%= room_mute.by_id %></td>
-        <td><%= room_mute.room_id %></td>
+        <td><%= room_mute.user.nickname %></td>
+        <td><%= room_mute.by.nickname %></td>
+        <td><%= room_mute.room.name %></td>
         <td><%= room_mute.end_at %></td>
-        <td><%= link_to 'Show', room_mute %></td>
-        <td><%= link_to 'Edit', edit_room_mute_path(room_mute) %></td>
-        <td><%= link_to 'Destroy', room_mute, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+        <td><%= link_to 'Show', room_mute_path(@room, room_mute) %></td>
+        <td><%= link_to 'Edit', edit_room_mute_path(@room, room_mute) %></td>
+        <td><%= link_to 'Destroy', room_mute_path(@room, room_mute), method: :delete, data: { confirm: 'Are you sure?' } %></td>
       </tr>
     <% end %>
   </tbody>
@@ -30,4 +30,5 @@
 
 <br>
 
-<%= link_to 'New Room Mute', new_room_mute_path %>
+<%= link_to 'New Room Mute', new_room_mute_path %> |
+<%= link_to 'Back', @room %>
