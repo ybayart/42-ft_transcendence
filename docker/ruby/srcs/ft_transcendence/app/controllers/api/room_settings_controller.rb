@@ -1,5 +1,5 @@
 class Api::RoomSettingsController < ApiController
-	before_action :set_room_setting, only: [:show, :update]
+	before_action :set_room_setting, only: [:show, :update, :destroy]
 
 	# GET /room_settings/1
 	# GET /room_settings/1.json
@@ -31,6 +31,19 @@ class Api::RoomSettingsController < ApiController
 			else
 				render json: @room_setting.errors, status: :unprocessable_entity
 			end
+		else
+			render json: {"status": "error", "error": "403: Forbidden"}, status: :forbidden
+		end
+	end
+
+	# DELETE /room_users/1
+	# DELETE /room_users/1.json
+	def destroy
+		if @room_setting.owner == current_user
+			output = {"type": "delete", "content": @room_setting}
+			RoomChannel.broadcast_to @room_setting, output
+			@room_setting.destroy
+			head :no_content
 		else
 			render json: {"status": "error", "error": "403: Forbidden"}, status: :forbidden
 		end

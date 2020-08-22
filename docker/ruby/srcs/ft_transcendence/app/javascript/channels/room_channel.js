@@ -12,7 +12,6 @@ $(document).on('turbolinks:load', function () {
 		},
 
 		received(data) {
-			console.log(data);
 			if (data.type == "message") {
 				$('input#room_message_message').val('');
 				var element = $('[data-channel-subscribe="room"]'),
@@ -29,7 +28,7 @@ $(document).on('turbolinks:load', function () {
 			{
 				updateView();
 			}
-			else if (data.type == "update")
+			else if (data.type == "update" || data.type == "delete")
 			{
 				if (window.controller.controller == "rooms" && window.controller.action == "show" && $('#room_message_room_id').val() == data.content.id)
 				{

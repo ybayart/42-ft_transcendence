@@ -1,6 +1,7 @@
 class RoomsController < ApplicationController
 	before_action :authenticate_user!
 	before_action :load_entities
+	before_action :check_member, only: [:show, :password]
 
 	def index
 	end
@@ -19,7 +20,6 @@ class RoomsController < ApplicationController
 		bans = current_user.receive_bans.where("room": @room).where("end_at > ?", DateTime.now.utc)
 		redirect_to rooms_path, :alert => "You are banned from this room until " + bans.order("end_at DESC").first.end_at.in_time_zone("Europe/Paris").strftime("%T %F") and return if bans.exists?
 		unless @room.members.include?(current_user)
-			redirect_to rooms_path, :alert => "You don't have permission to enter in this room" and return if @room.privacy == "private"
 			@room.members << current_user
 		end
 		@room_message = RoomMessage.new room: @room
@@ -68,10 +68,18 @@ class RoomsController < ApplicationController
 	def load_entities
 		session[:room_passwords] = {} unless session[:room_passwords]
 		@rooms = current_user.rooms_member
-		@room = Room.find(params[:id]) if params[:id]
+		begin
+			@room = Room.find(params[:id]) if params[:id]
+		rescue => e
+			redirect_to rooms_path, :alert => "Room not found" and return
+		end
 	end
 
 	def permitted_parameters
 		params.require(:room).permit(:name, :privacy, :password)
+	end
+
+	def check_member
+		redirect_to rooms_path, :alert => "You don't have permission to enter in this room" and return if @room.members.include?(current_user) == false && @room.privacy == "private"
 	end
 end

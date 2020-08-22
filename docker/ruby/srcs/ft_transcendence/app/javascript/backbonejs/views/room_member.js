@@ -23,7 +23,6 @@ window.app.views.RoomMember = Backbone.View.extend({
 				$('#modal').modal('hide');
 			},
 			error: function(err) {
-				console.log();
 				$('#modalOutput').html('Failed to edit members!');
 				$.each(err.responseJSON, function(idx, item) {
 					$('#modalOutput').append("<br>> " + idx + ": " + item);
@@ -73,7 +72,6 @@ window.app.views.RoomMembers = Backbone.View.extend({
 		var self = this;
 		$('#modal').html('');
 		_.each(this.model.toArray(), function(item) {
-			console.log(item.attributes);
 			$('#modal').html((new window.app.views.RoomMember({model: item})).render().$el);
 		});
 		$('#modal').modal('show');

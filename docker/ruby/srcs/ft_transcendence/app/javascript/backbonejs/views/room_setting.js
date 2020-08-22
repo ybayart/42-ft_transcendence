@@ -17,13 +17,12 @@ window.app.views.RoomSetting = Backbone.View.extend({
 			this.model.set('password', $('#modal input.password').val());
 		}
 
-		Backbone.sync("update", this.model,{
+		Backbone.sync("update", this.model, {
 			"url": "/api/room_settings/" + $('#room_message_room_id').val(),
 			success: function(response) {
 				$('#modal').modal('hide');
 			},
 			error: function(err) {
-				console.log();
 				$('#modalOutput').html('Failed to edit settings!');
 				$.each(err.responseJSON, function(idx, item) {
 					$('#modalOutput').append("<br>> " + idx + ": " + item);
@@ -33,13 +32,8 @@ window.app.views.RoomSetting = Backbone.View.extend({
 		});
 	},
 	delete: function() {
-		this.model.destroy({
-			success: function(response) {
-				console.log('Successfully DELETED room');
-			},
-			error: function(err) {
-				console.log('Failed to delete room!');
-			}
+		Backbone.sync("delete", this.model, {
+			"url": "/api/room_settings/" + $('#room_message_room_id').val()
 		});
 	},
 	hidePassField: function() {
@@ -73,7 +67,6 @@ window.app.views.RoomSettings = Backbone.View.extend({
 		var self = this;
 		$('#modal').html('');
 		_.each(this.model.toArray(), function(item) {
-			console.log(item.attributes);
 			$('#modal').html((new window.app.views.RoomSetting({model: item})).render().$el);
 		});
 		$('#modal').modal('show');
