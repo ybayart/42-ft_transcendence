@@ -1,6 +1,14 @@
 class GameController < ApplicationController
 
   def index
+    @games = Game.all
+  end
+
+  def show
+    @game = Game.find(params[:id])
+  end
+
+  def play
     find_game
   end
 

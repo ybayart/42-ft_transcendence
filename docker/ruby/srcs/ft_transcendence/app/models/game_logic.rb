@@ -39,6 +39,8 @@ class GameLogic
     @processed_inputs = Array.new(2);
     @processed_inputs[0] = [];
     @processed_inputs[1] = [];
+    @job_launched = false;
+    @spec_count = 0;
   end
 
   def paddles
@@ -65,6 +67,18 @@ class GameLogic
     @game
   end
 
+  def spec_count
+    @spec_count
+  end
+
+  def job_launched
+    @job_launched
+  end
+
+  def set_job
+    @job_launched = true
+  end
+
   def addInput(type, id, player)
     @inputs.unshift({ type: type, id: id, player: player });
   end
@@ -84,6 +98,14 @@ class GameLogic
   def clear_processed
     @processed_inputs[0].clear
     @processed_inputs[1].clear
+  end
+
+  def addSpec
+    @spec_count += 1
+  end
+
+  def removeSpec
+    @spec_count -= 1
   end
 
   def start(player)

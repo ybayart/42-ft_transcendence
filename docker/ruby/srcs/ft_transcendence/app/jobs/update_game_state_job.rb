@@ -75,7 +75,8 @@ class UpdateGameStateJob < ApplicationJob
 	      inputs: [
 	      	@gameLogic.processed_inputs[0],
 	      	@gameLogic.processed_inputs[1]
-	      ]
+	      ],
+	      spec_count: @gameLogic.spec_count
 	    });
 	    @gameLogic.clear_processed
 	  elsif (@game.status == "finished" && @game.winner)

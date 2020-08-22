@@ -18,6 +18,11 @@ document.addEventListener('turbolinks:load', () => {
 			var beginning_status = $("#game_status").html();
 			var me = (beginning_status == "waiting") ? 0 : 1;
 			var other = me == 1 ? 0 : 1;
+			if (window.location.href.indexOf("test") == -1) //spec
+			{
+				me = 0;
+				other = 1;
+			}
 			var paddles = [null, null];
 			var ball = null;
 			var inputs_id = 0;
@@ -88,7 +93,8 @@ document.addEventListener('turbolinks:load', () => {
 				game: $('.GameInfo').attr("value")
 				}, {
 				connected() {
-					document.addEventListener('keypress', logKey);
+					if (window.location.href.indexOf("test") != -1)
+						document.addEventListener('keypress', logKey);
 				},
 
 				disconnected() {
@@ -99,10 +105,12 @@ document.addEventListener('turbolinks:load', () => {
 					if (data.status == "waiting")
 					{
 						$("#game_status").html(data.status);
+						$("#spec_count").html(data.spec_count);
 					}
 					else if (data.status == "running")
 					{
 						$("#game_status").html(data.status);
+						$("#spec_count").html(data.spec_count);
 						$("#p1_pts").html(data.scores.player1);
 						$("#p2_pts").html(data.scores.player2);
 
@@ -136,7 +144,8 @@ document.addEventListener('turbolinks:load', () => {
 						$("#game_status").html(data.winner + " wins");
 						resetCanvas();
 						sub.unsubscribe()
-						document.removeEventListener('keypress', logKey);
+						if (window.location.href.indexOf("test") != -1)
+							document.removeEventListener('keypress', logKey);
 					}
 					// 	eraseBall(ball.posX, ball.posY, ball.radius);
 					// 	ball = data.ball;

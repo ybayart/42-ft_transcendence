@@ -4,7 +4,13 @@ class GameChannel < ApplicationCable::Channel
     stream_from "game_#{params[:game]}"
     @gameLogic = GameLogic.create(params[:game])
     @game = @gameLogic.game
-    UpdateGameStateJob.perform_later(params[:game])  
+    # if (!@gameLogic.job_launched)
+      UpdateGameStateJob.perform_later(params[:game])
+    #   gameLogic.set_job
+    # end
+    if current_user != @game.player1 && current_user != @game.player2
+      @gameLogic.addSpec
+    end
   end
 
   def getCurrentPlayerNumber
@@ -34,17 +40,21 @@ class GameChannel < ApplicationCable::Channel
   end
 
   def unsubscribed
-    if @game && @game.status == "running"
-      if @game.player1 == current_user
-        @game.winner = @game.player2
-      elsif @game.player2 == current_user
-        @game.winner = @game.player1
+    if @game && (game.player1 == current_user || game.player2 == current_user) 
+      if @game && @game.status == "running"
+        if @game.player1 == current_user
+          @game.winner = @game.player2
+        elsif @game.player2 == current_user
+          @game.winner = @game.player1
+        end
       end
+      @game.status = "finished"
+      @game.player1_pts = @gameLogic.player_scores[0];
+      @game.player2_pts = @gameLogic.player_scores[1];
+      @game.save
+    else
+      @gameLogic.removeSpec
     end
-    @game.status = "finished"
-    @game.player1_pts = @gameLogic.player_scores[0];
-    @game.player2_pts = @gameLogic.player_scores[1];
-    @game.save
   end
 
 end
