@@ -1,0 +1,24 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>User:</strong>
+  <%= @room_mute.user_id %>
+</p>
+
+<p>
+  <strong>By:</strong>
+  <%= @room_mute.by_id %>
+</p>
+
+<p>
+  <strong>Room:</strong>
+  <%= @room_mute.room_id %>
+</p>
+
+<p>
+  <strong>End at:</strong>
+  <%= @room_mute.end_at %>
+</p>
+
+<%= link_to 'Edit', edit_room_mute_path(@room_mute) %> |
+<%= link_to 'Back', room_mutes_path %>

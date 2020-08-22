@@ -5,6 +5,10 @@ Rails.application.routes.draw do
 		get 'join', on: :collection
 		get 'password', on: :member
 		post 'passwordset', on: :member
+		resources :mutes, controller: 'room/mutes'
+		resources :bans, controller: 'room/bans'
+		resources :members, only: [:index, :new, :destroy]
+		resources :admins, only: [:index, :new, :destroy]
 	end
 
 	resources :room_messages

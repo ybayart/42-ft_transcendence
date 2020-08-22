@@ -41,9 +41,9 @@ class Api::RoomSettingsController < ApiController
 	def destroy
 		if @room_setting.owner == current_user
 			output = {"type": "delete", "content": @room_setting}
-			RoomChannel.broadcast_to @room_setting, output
 			@room_setting.destroy
 			head :no_content
+			RoomChannel.broadcast_to @room_setting, output
 		else
 			render json: {"status": "error", "error": "403: Forbidden"}, status: :forbidden
 		end
