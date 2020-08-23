@@ -1,7 +1,30 @@
-<canvas class="myCanvas"></canvas>
-<br>
-<div class="GameInfo" value="<%= @game.id %>" >
-  <p> Game status : <div id="game_status"><%= @game.status %></div> </p>
-  <p> Player 1 points : <div id="p1_pts">0</div></p>
-  <p> Player 2 points : <div id="p2_pts">0</div></p>
-</div>
+<table style="width: 100%; text-align: center;">
+	<tr>
+		<th>ID</th>
+		<th>Player 1</th>
+		<th>Player 2</th>
+		<th>Score</th>
+		<th>Status</th>
+		<th></th>
+	</tr>
+	<% @games.each do |game| %>
+		<tr>
+			<td><%= game.id %></td>
+			<td <% if game.winner == game.player1 %> style="font-weight: bold;" <% end %> >
+				<%= game.player1.login %>
+			</td>
+			<td <% if game.winner == game.player2 %> style="font-weight: bold;" <% end %> >
+				<% if game.player2 %>
+					<%= game.player2.login %>
+				<% end %>
+			</td>
+			<td><%= game.player1_pts %> - <%= game.player2_pts %>
+			<td><%= game.status %></td>
+			<% if game.status == "running" %>
+				<td><%= link_to "Show", game_path(game) %></td>
+			<% end %>
+		</tr>
+	<% end %>
+</table>
+
+

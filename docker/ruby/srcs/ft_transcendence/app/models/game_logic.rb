@@ -4,8 +4,7 @@ class GameLogic
   def self.create(id)
     @games ||= Hash.new
     if !@games[id]
-      @games[id] ||= GameLogic.new
-      UpdateBallJob.perform_later(id)
+      @games[id] ||= GameLogic.new(id)
     end
     @games[id]
   end
@@ -24,7 +23,7 @@ class GameLogic
     @game
   end
 
-  def initialize
+  def initialize(id)
     @canvasWidth = 600
     @canvasHeight = 600
     @paddles = Array.new(2)
@@ -35,6 +34,13 @@ class GameLogic
     @ball = Ball.new(@last_loser)
     @player_scores = Array.new(2, 0)
     @state = "pause"
+    @game = Game.find_by(id: id);
+    @inputs = Array.new();
+    @processed_inputs = Array.new(2);
+    @processed_inputs[0] = [];
+    @processed_inputs[1] = [];
+    @job_launched = false;
+    @spec_count = 0;
   end
 
   def paddles
@@ -55,6 +61,51 @@ class GameLogic
 
   def state
     @state
+  end
+
+  def game
+    @game
+  end
+
+  def spec_count
+    @spec_count
+  end
+
+  def job_launched
+    @job_launched
+  end
+
+  def set_job
+    @job_launched = true
+  end
+
+  def addInput(type, id, player)
+    @inputs.unshift({ type: type, id: id, player: player });
+  end
+
+  def getFrontInput
+    @inputs.pop
+  end
+
+  def addProcessed(player, id)
+    @processed_inputs[player - 1].push(id)
+  end
+
+  def processed_inputs
+    @processed_inputs
+  end
+
+  def clear_processed
+    @processed_inputs[0].clear
+    @processed_inputs[1].clear
+  end
+
+  def addSpec
+    @spec_count += 1
+  end
+
+  def removeSpec
+    @spec_count -= 1
   end
 
   def start(player)
@@ -84,6 +135,9 @@ class GameLogic
     reset_ball($loser)
     reset_paddles
     @last_loser = $loser
+    if (gameEnd)
+      designate_winner
+    end
   end
 
   def paddle_up(nb)
@@ -147,4 +201,19 @@ class GameLogic
   def gameEnd
     (@player_scores[0] == 5 || @player_scores[1] == 5)
   end
+
+  def designate_winner
+    if @game.status == "running"
+      @game.status = "finished"
+      if @player_scores[0] > @player_scores[1]
+        @game.winner = @game.player1
+      else
+        @game.winner = @game.player2
+      end
+      @game.player1_pts = @player_scores[0];
+      @game.player2_pts = @player_scores[1];
+      @game.save
+    end
+  end
+
 end

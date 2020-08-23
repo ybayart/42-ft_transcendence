@@ -6,6 +6,9 @@ Rails.application.routes.draw do
 		get 'join', on: :collection
 	end
 
+	get '/play', to: 'game#play'
+	get '/test', to: 'game#test'
+
 	resources :room_messages
 
 	devise_for :users, controllers: { omniauth_callbacks: "users/omniauth_callbacks" }
