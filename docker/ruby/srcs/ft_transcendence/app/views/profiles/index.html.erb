@@ -10,7 +10,7 @@
 		<tr>
 			<td><%= user.nickname %></td>
 			<td><img src="<%= url_for(user.profile_pic) if user.profile_pic.attached? %>" style="max-height: 100px; max-width: 100px;"></td>
-			<td><%= link_to "View", user_path(user) %></td>
+			<td><%= link_to "View", profile_path(user) %></td>
 		</tr>
 	<% end %>
 </table>

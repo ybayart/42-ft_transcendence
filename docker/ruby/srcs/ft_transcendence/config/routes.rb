@@ -1,8 +1,8 @@
 Rails.application.routes.draw do
 
-	root to: 'users#friends'
-	resources :users do
-		resources :friends, controller: 'user/friends', only: [:index, :new, :create, :destroy]
+	root to: 'profiles#friends'
+	resources :profiles do
+		resources :friends, controller: 'profile/friends', only: [:index, :new, :create, :destroy]
 	end
 	resources :game
 	resources :rooms do
