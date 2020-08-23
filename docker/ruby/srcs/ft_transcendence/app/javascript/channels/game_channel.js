@@ -59,8 +59,8 @@ document.addEventListener('turbolinks:load', () => {
 
 			function renderWorld() {
 				resetCanvas();
-				printPaddle(paddles[0]);
-				printPaddle(paddles[1]);
+				printPaddle(paddles[me]);
+				printPaddle(paddles[other]);
 				printBall(ball);
 			}
 
@@ -85,11 +85,6 @@ document.addEventListener('turbolinks:load', () => {
 				{
 					sub.perform('throw_ball', { id: inputs_id });
 					inputs_id++;
-				}
-				if ((e.key == 'w' || e.key == 's') && paddles[me])
-				{
-					erasePaddle(paddles[me]);
-					printPaddle(paddles[me]);
 				}
 			}
 
@@ -119,10 +114,12 @@ document.addEventListener('turbolinks:load', () => {
 			}
 
 			function update() {
-				interpolate(ball);
-				interpolate(paddles[0]);
-				interpolate(paddles[1]);
-				if (ball && paddles && paddles[0] && paddles[1])
+				if (ball)
+					interpolate(ball);
+				//interpolate(paddles[me]);
+				if (paddles[other])
+					interpolate(paddles[other]);
+				if (ball && paddles && paddles[me] && paddles[other])
 					renderWorld();
 			}
 
@@ -179,9 +176,9 @@ document.addEventListener('turbolinks:load', () => {
 
 						// INTERPOLATION BALL - It works wtf
 						ball.position_buffer.push([new Date(), data.ball.posX, data.ball.posY]);
-						//paddles[me].correctPos(unverified_inputs, data.paddles[me]);
+						paddles[me].correctPos(unverified_inputs, data.paddles[me]);
 						// A VIRER APRES C'EST POUR TEST
-						paddles[me].position_buffer.push([new Date(), data.paddles[me].posX, data.paddles[me].posY]);
+						//paddles[me].position_buffer.push([new Date(), data.paddles[me].posX, data.paddles[me].posY]);
 						// WITHOUT INTERPOLATION
 						//	paddles[other].setPos(data.paddles[other]);
 						// WITH INTERPOLATION
