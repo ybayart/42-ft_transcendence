@@ -1,0 +1,45 @@
+<p id="notice"><%= notice %></p>
+
+<h1>Wars</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th>Guild1</th>
+      <th>Guild2</th>
+      <th>Start at</th>
+      <th>End at</th>
+      <th>Points to win</th>
+      <th>Points1</th>
+      <th>Points2</th>
+      <th>Agree</th>
+      <th>All match</th>
+      <th>Winner</th>
+      <th colspan="3"></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @wars.each do |war| %>
+      <tr>
+        <td><%= war.guild1_id %></td>
+        <td><%= war.guild2_id %></td>
+        <td><%= war.start_at %></td>
+        <td><%= war.end_at %></td>
+        <td><%= war.points_to_win %></td>
+        <td><%= war.points1 %></td>
+        <td><%= war.points2 %></td>
+        <td><%= war.agree %></td>
+        <td><%= war.all_match %></td>
+        <td><%= war.winner_id %></td>
+        <td><%= link_to 'Show', war %></td>
+        <td><%= link_to 'Edit', edit_war_path(war) %></td>
+        <td><%= link_to 'Destroy', war, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<br>
+
+<%= link_to 'New War', new_war_path %>

@@ -1,6 +1,8 @@
 Rails.application.routes.draw do
-	root to: 'user#index'
-	resources :user
+	root to: 'users#friends'
+	resources :users do
+		resources :friends, controller: 'user/friends', only: [:index, :new, :create, :destroy]
+	end
 	resources :rooms do
 		get 'join', on: :collection
 		get 'password', on: :member
@@ -12,6 +14,9 @@ Rails.application.routes.draw do
 	end
 
 	resources :room_messages
+
+	resources :guilds
+	resources :wars
 
 	namespace :api do
 		resources :room_users

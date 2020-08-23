@@ -17,11 +17,20 @@
 				<% end %>
 				<ul class="navbar-nav mr-auto responsive-large" style="flex-direction: row;">
 					<% unless Rails.application.routes.recognize_path(request.env['PATH_INFO'])[:controller][..4] == "admin" %>
-						<%= link_to user_path(current_user), class: 'navbar-item navbar-btn' do %>
+						<%= link_to current_user, class: 'navbar-item navbar-btn' do %>
 							<button type="button">My Profile</button>
+						<% end %>
+						<%= link_to user_friends_path(current_user), class: 'navbar-item navbar-btn' do %>
+							<button type="button">My Friends</button>
+						<% end %>
+						<%= link_to users_path, class: 'navbar-item navbar-btn' do %>
+							<button type="button">Users</button>
 						<% end %>
 						<%= link_to rooms_path, class: 'navbar-item navbar-btn' do %>
 							<button type="button">Rooms</button>
+						<% end %>
+						<%= link_to guilds_path, class: 'navbar-item navbar-btn' do %>
+							<button type="button">Guilds</button>
 						<% end %>
 					<% else %>
 						<button type="button">BTN Admin</button>

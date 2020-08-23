@@ -1,0 +1,54 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>Guild1:</strong>
+  <%= @war.guild1_id %>
+</p>
+
+<p>
+  <strong>Guild2:</strong>
+  <%= @war.guild2_id %>
+</p>
+
+<p>
+  <strong>Start at:</strong>
+  <%= @war.start_at %>
+</p>
+
+<p>
+  <strong>End at:</strong>
+  <%= @war.end_at %>
+</p>
+
+<p>
+  <strong>Points to win:</strong>
+  <%= @war.points_to_win %>
+</p>
+
+<p>
+  <strong>Points1:</strong>
+  <%= @war.points1 %>
+</p>
+
+<p>
+  <strong>Points2:</strong>
+  <%= @war.points2 %>
+</p>
+
+<p>
+  <strong>Agree:</strong>
+  <%= @war.agree %>
+</p>
+
+<p>
+  <strong>All match:</strong>
+  <%= @war.all_match %>
+</p>
+
+<p>
+  <strong>Winner:</strong>
+  <%= @war.winner_id %>
+</p>
+
+<%= link_to 'Edit', edit_war_path(@war) %> |
+<%= link_to 'Back', wars_path %>
