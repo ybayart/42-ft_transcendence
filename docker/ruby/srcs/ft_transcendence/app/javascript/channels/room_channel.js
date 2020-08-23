@@ -12,7 +12,6 @@ $(document).on('turbolinks:load', function () {
 		},
 
 		received(data) {
-			console.log(data);
 			if (data.type == "message") {
 				$('input#room_message_message').val('');
 				var element = $('[data-channel-subscribe="room"]'),
@@ -24,6 +23,17 @@ $(document).on('turbolinks:load', function () {
 				content.find('[data-role="message-date"] > time').attr("datetime", data.content.date).addClass("timeago");
 				element.append(content);
 				$("time.timeago").timeago();
+			}
+			else if (data.type == "join" || data.type == "left")
+			{
+				updateView();
+			}
+			else if (data.type == "update" || data.type == "delete")
+			{
+				if (window.controller.controller == "rooms" && window.controller.action == "show" && $('#room_message_room_id').val() == data.content.id)
+				{
+					Turbolinks.visit(window.location.toString(), {action: 'replace'});
+				}
 			}
 		}
 	});

@@ -1,0 +1,24 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>User:</strong>
+  <%= @room_ban.user.nickname %>
+</p>
+
+<p>
+  <strong>By:</strong>
+  <%= @room_ban.by.nickname %>
+</p>
+
+<p>
+  <strong>Room:</strong>
+  <%= @room_ban.room.name %>
+</p>
+
+<p>
+  <strong>End at:</strong>
+  <%= @room_ban.end_at %>
+</p>
+
+<%= link_to 'Edit', edit_room_ban_path(@room, @room_ban) %> |
+<%= link_to 'Back', room_bans_path %>

@@ -1,6 +1,12 @@
-class UserController < ApplicationController
+class UsersController < ApplicationController
+	before_action :authenticate_user!
+
 	def index
-		@users = User.all.order(:nickname)
+		@users = User.all.order("nickname ASC")
+	end
+
+	def friends
+		@users = current_user.friends
 	end
 	def show
 		@user = User.find(params[:id])

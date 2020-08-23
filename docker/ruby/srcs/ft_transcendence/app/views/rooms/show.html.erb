@@ -1,21 +1,18 @@
-<h1>
+<h1 class="room-name">
 	<%= @room.name %>
 </h1>
+<% if @room.owner == current_user %>
+	<button onClick="updateSettings()">Settings</button>
+	<%= link_to 'Admins', room_admins_path(@room) %>
+<% end %>
+<% if @room.admins.include?(current_user) %>
+	<%= link_to 'Members', room_members_path(@room) %>
+	<%= link_to 'Bans', room_bans_path(@room) %>
+	<%= link_to 'Mutes', room_mutes_path(@room) %>
+<% end %>
 
 <div class="row">
-	<div class="col-12 col-md-3">
-		<h4>Owner</h4>
-		<%= @room.owner.nickname %>
-		<hr>
-		<h4>Admins</h4>
-		<% @room.admins.each do |admin| %>
-			<%= admin.nickname unless admin == @room.owner %>
-		<% end %>
-		<hr>
-		<h4>Members</h4>
-		<% @room.members.each do |member| %>
-			<%= member.nickname unless @room.admins.include?(member) || @room.owner == member %>
-		<% end %>
+	<div class="room_users col-12 col-md-3">
 	</div>
 
 	<div class="col">
@@ -81,3 +78,111 @@
 		</div>
 	</div>
 </div>
+
+<script type="text/template" class="room_users-template">
+	<h4>Owner</h4>
+	<%%= format_bold(owner) %>
+	<hr>
+	<h4>Admins</h4>
+	<%%= _.map(admins, function(admin) {return format_bold(admin)}).join("<br>") %>
+	<hr>
+	<h4>Members</h4>
+	<%%= _.map(members, function(member) {return format_bold(member)}).join("<br>") %>
+</script>
+
+<% if @room.owner == current_user %>
+	<script type="text/template" class="room_settings-template">
+		<div class="modal-dialog" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" id="modalLabel">Edit room settings</h5>
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+				</div>
+				<div class="modal-body">
+					<div id="modalOutput" style="display: none;"></div>
+					<h4>Name</h4>
+					<input type="text" class="name" value="<%%= name %>">
+					<br><br>
+					<h4>Privacy</h4>
+					<input type="text" class="privacy" value="<%%= privacy %>">
+					<br><br>
+					<h4>Password</h4>
+					<input type="checkbox" id="no-password" name="no-password" <%%= password %>>
+					<label for="no-password">No password?</label>
+					<br>
+					<input type="password" class="password">
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-secondary" data-dismiss="modal" id="modalClose">Close</button>
+					<button type="button" class="btn btn-danger" id="modalDelete">Delete</button>
+					<button type="button" class="btn btn-primary" id="modalSend">Edit</button>
+				</div>
+			</div>
+		</div>
+	</script>
+<% end %>
+
+<% if @room.owner == current_user %>
+	<script type="text/template" class="room_members-template">
+		<div class="modal-dialog" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" id="modalLabel">Manage teams</h5>
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+				</div>
+				<div class="modal-body">
+					<div id="modalOutput" style="display: none;"></div>
+					<h4>Name</h4>
+					<input type="text" class="name" value="<%%= name %>">
+					<br><br>
+					<h4>Privacy</h4>
+					<input type="text" class="privacy" value="<%%= privacy %>">
+					<br><br>
+					<h4>Password</h4>
+					<input type="checkbox" id="no-password" name="no-password" <%%= password %>>
+					<label for="no-password">No password?</label>
+					<br>
+					<input type="password" class="password">
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-secondary" data-dismiss="modal" id="modalClose">Close</button>
+					<button type="button" class="btn btn-primary" id="modalSend">Edit</button>
+				</div>
+			</div>
+		</div>
+	</script>
+<% end %>
+
+<script>
+	function    format_bold(user) {
+		if (user.state == "online") {
+			return ("<b>" + user.nickname + "</b>");
+		} else {
+			return (user.nickname);
+		}
+	}
+
+	function    updateView() {
+		if (_.isUndefined(window.app.views.newRoomUsers)) {
+			window.app.views.newRoomUsers = new window.app.views.RoomUsers();
+		} else {
+			window.app.views.newRoomUsers.initialize();
+		}
+	}
+	
+	<% if @room.owner == current_user %>
+		function    updateSettings() {
+			if (_.isUndefined(window.app.views.newRoomSettings)) {
+				window.app.views.newRoomSettings = new window.app.views.RoomSettings();
+			} else {
+				window.app.views.newRoomSettings.initialize();
+			}
+		}
+	<% end %>
+
+	updateView();
+</script>

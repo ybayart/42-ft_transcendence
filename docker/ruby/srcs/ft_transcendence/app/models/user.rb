@@ -12,6 +12,11 @@ class User < ActiveRecord::Base
 	has_many :receive_bans, class_name: "RoomBan", foreign_key: "user_id", inverse_of: :user
 	has_many :send_mutes, class_name: "RoomMute", foreign_key: "by_id", inverse_of: :by
 	has_many :receive_mutes, class_name: "RoomMute", foreign_key: "user_id", inverse_of: :user
+	has_many :friendships, :foreign_key => :friend_a
+	has_many :friends, through: :friendships, :source => :friend_b
+	belongs_to :guild, optional: true
+
+	validate	:check_columns
 
 	devise :database_authenticatable,
 			:rememberable, :validatable,
@@ -22,9 +27,14 @@ class User < ActiveRecord::Base
 			user.email = auth.info.email
 			user.password = Devise.friendly_token[0,20]
 			user.login = auth.info.nickname
-			user.nickname = auth.info.nickname
+			user.nickname = nil
 			file = open(auth.info.image)
 			user.profile_pic.attach(io: open(file), filename: File.basename(file))
 		end
+	end
+
+	def check_columns
+		errors.add(:nickname, "can't be blank") if User.exists?(id: self.id) && self.nickname.blank?
+		errors.add(:nickname, "must be unique") if User.exists?(nickname: self.nickname) && self.id != User.where(nickname: self.nickname).take.id
 	end
 end

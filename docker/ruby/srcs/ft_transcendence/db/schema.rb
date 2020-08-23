@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_08_17_160050) do
+ActiveRecord::Schema.define(version: 2020_08_23_151958) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -48,6 +48,32 @@ ActiveRecord::Schema.define(version: 2020_08_17_160050) do
     t.index ["player1_id"], name: "index_games_on_player1_id"
     t.index ["player2_id"], name: "index_games_on_player2_id"
     t.index ["winner_id"], name: "index_games_on_winner_id"
+  end
+
+  create_table "friendships", id: false, force: :cascade do |t|
+    t.bigint "friend_a_id"
+    t.bigint "friend_b_id"
+    t.index ["friend_a_id"], name: "index_friendships_on_friend_a_id"
+    t.index ["friend_b_id"], name: "index_friendships_on_friend_b_id"
+  end
+
+  create_table "guild_link_officers", id: false, force: :cascade do |t|
+    t.bigint "room_id"
+    t.bigint "user_id"
+    t.index ["room_id"], name: "index_guild_link_officers_on_room_id"
+    t.index ["user_id"], name: "index_guild_link_officers_on_user_id"
+  end
+
+  create_table "guilds", force: :cascade do |t|
+    t.string "name"
+    t.integer "points"
+    t.string "anagram"
+    t.bigint "owner_id"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["anagram"], name: "index_guilds_on_anagram", unique: true
+    t.index ["name"], name: "index_guilds_on_name", unique: true
+    t.index ["owner_id"], name: "index_guilds_on_owner_id"
   end
 
   create_table "room_bans", force: :cascade do |t|
@@ -98,6 +124,7 @@ ActiveRecord::Schema.define(version: 2020_08_17_160050) do
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["name"], name: "index_rooms_on_name", unique: true
+    t.index ["owner_id"], name: "index_rooms_on_owner_id"
   end
 
   create_table "users", force: :cascade do |t|
@@ -106,6 +133,7 @@ ActiveRecord::Schema.define(version: 2020_08_17_160050) do
     t.string "reset_password_token"
     t.datetime "reset_password_sent_at"
     t.datetime "remember_created_at"
+    t.bigint "guild_id"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.string "login"
@@ -113,17 +141,37 @@ ActiveRecord::Schema.define(version: 2020_08_17_160050) do
     t.string "uid"
     t.string "nickname"
     t.string "state", default: "offline"
-    t.integer "count_co", default: 0
     t.index ["email"], name: "index_users_on_email", unique: true
+    t.index ["guild_id"], name: "index_users_on_guild_id"
     t.index ["provider"], name: "index_users_on_provider"
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
     t.index ["uid"], name: "index_users_on_uid"
+  end
+
+  create_table "wars", force: :cascade do |t|
+    t.bigint "guild1_id"
+    t.bigint "guild2_id"
+    t.datetime "start_at"
+    t.datetime "end_at"
+    t.integer "points_to_win"
+    t.integer "points1"
+    t.integer "points2"
+    t.integer "agree"
+    t.boolean "all_match"
+    t.bigint "winner_id"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["guild1_id"], name: "index_wars_on_guild1_id"
+    t.index ["guild2_id"], name: "index_wars_on_guild2_id"
+    t.index ["winner_id"], name: "index_wars_on_winner_id"
   end
 
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "games", "users", column: "player1_id"
   add_foreign_key "games", "users", column: "player2_id"
   add_foreign_key "games", "users", column: "winner_id"
+  add_foreign_key "friendships", "users", column: "friend_a_id"
+  add_foreign_key "friendships", "users", column: "friend_b_id"
   add_foreign_key "room_bans", "users", column: "by_id"
   add_foreign_key "room_messages", "rooms"
   add_foreign_key "room_messages", "users"

@@ -1,0 +1,67 @@
+<%= form_with(model: war, local: true) do |form| %>
+  <% if war.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(war.errors.count, "error") %> prohibited this war from being saved:</h2>
+
+      <ul>
+        <% war.errors.full_messages.each do |message| %>
+          <li><%= message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="field">
+    <%= form.label :guild1_id %>
+    <%= form.text_field :guild1_id %>
+  </div>
+
+  <div class="field">
+    <%= form.label :guild2_id %>
+    <%= form.text_field :guild2_id %>
+  </div>
+
+  <div class="field">
+    <%= form.label :start_at %>
+    <%= form.datetime_select :start_at %>
+  </div>
+
+  <div class="field">
+    <%= form.label :end_at %>
+    <%= form.datetime_select :end_at %>
+  </div>
+
+  <div class="field">
+    <%= form.label :points_to_win %>
+    <%= form.number_field :points_to_win %>
+  </div>
+
+  <div class="field">
+    <%= form.label :points1 %>
+    <%= form.number_field :points1 %>
+  </div>
+
+  <div class="field">
+    <%= form.label :points2 %>
+    <%= form.number_field :points2 %>
+  </div>
+
+  <div class="field">
+    <%= form.label :agree %>
+    <%= form.number_field :agree %>
+  </div>
+
+  <div class="field">
+    <%= form.label :all_match %>
+    <%= form.check_box :all_match %>
+  </div>
+
+  <div class="field">
+    <%= form.label :winner_id %>
+    <%= form.text_field :winner_id %>
+  </div>
+
+  <div class="actions">
+    <%= form.submit %>
+  </div>
+<% end %>

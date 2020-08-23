@@ -1,0 +1,28 @@
+<%= form_with(model: room_ban, local: true) do |form| %>
+  <% if room_ban.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(room_ban.errors.count, "error") %> prohibited this room_ban from being saved:</h2>
+
+      <ul>
+        <% room_ban.errors.full_messages.each do |message| %>
+          <li><%= message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="field">
+    <%= form.label :user_id %>
+    <%= form.collection_select :user_id, @room.members - @room.admins, :id, :nickname %>
+  </div>
+
+  <div class="field">
+    <%= form.label :end_at %>
+    <%= form.datetime_select :end_at %>
+    <h6><b>WARNING:</b> This DateTime is in UTC (-<%= DateTime.now.utc_offset / 1.hours %>h)</h6>
+  </div>
+
+  <div class="actions">
+    <%= form.submit %>
+  </div>
+<% end %>

@@ -10,6 +10,12 @@ window.Rails = Rails;
 require("turbolinks").start()
 require("@rails/activestorage").start()
 require("channels")
+
+const _ = require("underscore")
+require("backbone")
+
+require("backbonejs")
+
 require("custom")
 
 //require("libs/backbone/underscore")
@@ -29,3 +35,5 @@ import 'bootstrap';
 
 window.jQuery = $;
 window.$ = $;
+window.underscore = _;
+window._ = _;

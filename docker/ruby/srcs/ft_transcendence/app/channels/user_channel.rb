@@ -1,19 +1,27 @@
 class UserChannel < ApplicationCable::Channel
 	def subscribed
-		# stream_from "some_channel"
 		stream_for current_user
-		current_user.increment(:count_co).save
-		check_state
+		stream_from "user_channel"
+		online()
 	end
 
 	def unsubscribed
-		current_user.decrement(:count_co).save
-		check_state
-		# Any cleanup needed when channel is unsubscribed
+		offline()
 	end
 
-	private
-		def check_state
-			current_user.update(state: (current_user.count_co > 0 ? "online" : "offline"))
+	def online()
+		unless current_user[:state] == "online"
+			current_user.update(state: "online")
+			output = {"type": "online", "content": current_user}
+			ActionCable.server.broadcast("user_channel", output)
 		end
+	end
+
+	def offline()
+		unless current_user[:state] == "offline"
+			current_user.update(state: "offline")
+			output = {"type": "offline", "content": current_user}
+			ActionCable.server.broadcast("user_channel", output)
+		end
+	end
 end

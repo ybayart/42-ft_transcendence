@@ -1,0 +1,16 @@
+<h3>Users</h3>
+
+<table style="width: 100%; text-align: center;">
+	<tr>
+		<th>Nickname</th>
+		<th>Profile image</th>
+		<th></th>
+	</tr>
+	<% @users.each do |user| %>
+		<tr>
+			<td><%= user.nickname %></td>
+			<td><img src="<%= url_for(user.profile_pic) if user.profile_pic.attached? %>" style="max-height: 100px; max-width: 100px;"></td>
+			<td><%= link_to "View", user_path(user) %></td>
+		</tr>
+	<% end %>
+</table>
