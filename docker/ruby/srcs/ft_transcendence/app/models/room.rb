@@ -26,7 +26,7 @@ class Room < ApplicationRecord
 	end
 
 	def check_modifications
-		if !self.id || (Room.find(self.id).password != self.password && BCrypt::Password.new(Room.find(self.id).password) != self.password)
+		if !self.id || (Room.find(self.id).password != self.password && BCrypt::Password.new(Room.find(self.id).password) != self.password) || BCrypt::Password.valid_hash?(self.password) == nil
 			self.password = BCrypt::Password.create(self.password)
 		end
 	end

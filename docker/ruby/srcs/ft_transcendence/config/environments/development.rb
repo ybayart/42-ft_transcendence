@@ -14,6 +14,7 @@ Rails.application.configure do
   config.hosts << "dump-accueil-1.42.fr"
   config.hosts << "dump-accueil-2.42.fr"
   config.hosts << "e1r13p4.42.fr"
+  config.hosts << "yann5.hexanyn.fr"
 
   # Enable/disable caching. By default caching is disabled.
   # Run rails dev:cache to toggle caching.

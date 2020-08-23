@@ -1,24 +1,24 @@
-<h1><%= @user.nickname %> profile</h1>
+<h1><%= @profile.nickname %> profile</h1>
 
 <p>
-	Member since <b><%= @user.created_at %></b>
+	Member since <b><%= @profile.created_at %></b>
 </p>
 
 <p>
-	42 login <b><%= @user.login %></b>
+	42 login <b><%= @profile.login %></b>
 </p>
 
 <p>
-	Nickname <b><%= @user.nickname %></b>
+	Nickname <b><%= @profile.nickname %></b>
 </p>
 
-<% if @user.guild %>
+<% if @profile.guild %>
 	<p>
-		Guild <b><%= @user.guild.name %></b>
+		Guild <b><%= @profile.guild.name %></b>
 	</p>
 <% end %>
 
-<% if current_user == @user %>
-	<%= link_to 'Edit', edit_profile_path(@user) %>
-<% elsif current_user.friends.exclude?(@user) %>
+<% if current_user == @profile %>
+	<%= link_to 'Edit', edit_profile_path(@profile) %>
+<% elsif current_user.friends.exclude?(@profile) %>
 <% end %>
