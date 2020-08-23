@@ -5,6 +5,7 @@ class Paddle {
 		this.width = data.width;
 		this.height = data.height;
 		this.velocity = data.velocity;
+		this.position_buffer = [];
 	}
 
 	goUp() {

@@ -5,6 +5,7 @@ class Ball {
 		this.radius = data.radius;
 		this.velocityX = data.velocityX;
 		this.velocityY = data.velocityY;
+		this.position_buffer = [];
 	}
 }
 

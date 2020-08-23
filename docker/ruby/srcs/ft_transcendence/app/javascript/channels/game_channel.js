@@ -57,6 +57,13 @@ document.addEventListener('turbolinks:load', () => {
 				ctx.fillRect(paddle.posX, paddle.posY, paddle.width, paddle.height);
 			}
 
+			function renderWorld() {
+				resetCanvas();
+				printPaddle(paddles[0]);
+				printPaddle(paddles[1]);
+				printBall(ball);
+			}
+
 			function logKey(e) {
 				if (e.key == 'w')
 				{
@@ -86,6 +93,47 @@ document.addEventListener('turbolinks:load', () => {
 				}
 			}
 
+			function interpolate(entity) {
+				var render_timestamp = new Date() - (1000.0 / 50);
+
+				// Find the two authoritative positions surrounding the rendering timestamp.
+				var buffer = entity.position_buffer;
+
+				// Drop older positions.
+				while (buffer.length >= 2 && buffer[1][0] <= render_timestamp) {
+					buffer.shift();
+				}
+
+				// Interpolate between the two surrounding authoritative positions.
+				if (buffer.length >= 2 && buffer[0][0] <= render_timestamp && render_timestamp <= buffer[1][0]) {
+					var x0 = buffer[0][1];
+					var x1 = buffer[1][1];
+					var y0 = buffer[0][2];
+					var y1 = buffer[1][2];
+					var t0 = buffer[0][0];
+					var t1 = buffer[1][0];
+
+					entity.posX = x0 + (x1 - x0) * (render_timestamp - t0) / (t1 - t0);
+					entity.posY = y0 + (y1 - y0) * (render_timestamp - t0) / (t1 - t0);
+				}
+			}
+
+			function update() {
+				interpolate(ball);
+				interpolate(paddles[0]);
+				interpolate(paddles[1]);
+				if (ball && paddles && paddles[0] && paddles[1])
+					renderWorld();
+			}
+
+			var update_interval;
+			
+			function setUpdateRate(update_rate) {
+				clearInterval(update_interval);
+				if (update_rate != 0)
+					update_interval = setInterval(update, 1000 / update_rate);
+			}
+				
 			resetCanvas();
 
 			var sub = consumer.subscriptions.create({
@@ -95,6 +143,7 @@ document.addEventListener('turbolinks:load', () => {
 				connected() {
 					if (window.location.href.indexOf("test") != -1)
 						document.addEventListener('keypress', logKey);
+					setUpdateRate(50);
 				},
 
 				disconnected() {
@@ -128,45 +177,27 @@ document.addEventListener('turbolinks:load', () => {
 							});
 						});
 
-						paddles[me].correctPos(unverified_inputs, data.paddles[me])
-						paddles[other].setPos(data.paddles[other]);
+						// INTERPOLATION BALL - It works wtf
+						ball.position_buffer.push([new Date(), data.ball.posX, data.ball.posY]);
+						//paddles[me].correctPos(unverified_inputs, data.paddles[me]);
+						// A VIRER APRES C'EST POUR TEST
+						paddles[me].position_buffer.push([new Date(), data.paddles[me].posX, data.paddles[me].posY]);
+						// WITHOUT INTERPOLATION
+						//	paddles[other].setPos(data.paddles[other]);
+						// WITH INTERPOLATION
+						paddles[other].position_buffer.push([new Date(), data.paddles[other].posX, data.paddles[other].posY]);
 
 						console.log(unverified_inputs);
-
-						resetCanvas();
-						printBall(data.ball);
-						printPaddle(paddles[me]);
-						printPaddle(paddles[other]);
-
 					}
 					else if (data.status == "finished")
 					{
 						$("#game_status").html(data.winner + " wins");
+						setUpdateRate(0);
 						resetCanvas();
 						sub.unsubscribe()
 						if (window.location.href.indexOf("test") != -1)
 							document.removeEventListener('keypress', logKey);
 					}
-					// 	eraseBall(ball.posX, ball.posY, ball.radius);
-					// 	ball = data.ball;
-					// 	printBall(data.ball.posX, data.ball.posY, data.ball.radius);
-					// 	erasePaddle(paddles[0]);
-					// 	paddles[0].posY = data.paddles[0].posY;
-					// 	printPaddle(paddles[0]);
-					// 	erasePaddle(paddles[1]);
-					// 	paddles[1].posY = data.paddles[1].posY;
-					// 	printPaddle(paddles[1]);
-						/*
-						if (queue[0].length == 0)
-							smooth_paddle_slide(0, data.paddles[0], callback_queue0);
-						else
-							queue[0].push(smooth_paddle_slide.bind(null, 0, data.paddles[0], callback_queue0));
-						if (queue[1].length == 0)
-							smooth_paddle_slide(1, data.paddles[1], callback_queue1);
-						else
-							queue[1].push(smooth_paddle_slide.bind(null, 1, data.paddles[1], callback_queue1));
-							*/
-					// }
 				}
 			});
 		}
