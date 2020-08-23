@@ -94,7 +94,7 @@ document.addEventListener('turbolinks:load', () => {
 			}
 
 			function interpolate(entity) {
-				var render_timestamp = new Date() - (1000.0 / 50);
+				var render_timestamp = new Date() - (1000.0 / 10);
 
 				// Find the two authoritative positions surrounding the rendering timestamp.
 				var buffer = entity.position_buffer;
