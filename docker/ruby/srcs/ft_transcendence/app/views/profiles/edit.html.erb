@@ -1,13 +1,13 @@
 <h1>Edit profile</h1>
 
-<%= form_with(model: @user, local: true) do |form| %>
-	<% if @user.errors.any? %>
+<%= form_for(@profile, :as => "profile", url: profile_path(@profile), local: true) do |form| %>
+	<% if @profile.errors.any? %>
 		<div id="error_explanation">
 			<h2>
-				<%= pluralize(@user.errors.count, "error") %> prohibited this modification from being saved:
+				<%= pluralize(@profile.errors.count, "error") %> prohibited this modification from being saved:
 			</h2>
 			<ul>
-				<% @user.errors.full_messages.each do |msg| %>
+				<% @profile.errors.full_messages.each do |msg| %>
 					<li><%= msg %></li>
 				<% end %>
 			</ul>
@@ -22,7 +22,7 @@
 	<p>
 		<%= form.label :profile_pic %><br>
 		<%= form.file_field :profile_pic %>
-		<img src="<%= url_for(@user.profile_pic) %>" style="max-height: 100px; max-width: 100px;">
+		<img src="<%= url_for(@profile.profile_pic) %>" style="max-height: 100px; max-width: 100px;">
 	</p>
 
 	<p>

@@ -2,30 +2,30 @@ class ProfilesController < ApplicationController
 	before_action :authenticate_user!
 
 	def index
-		@users = User.all.order("nickname ASC")
+		@profiles = User.all.order("nickname ASC")
 	end
 
 	def friends
-		@users = current_user.friends
+		@profiles = current_user.friends
 	end
 	def show
-		@user = User.find(params[:id])
+		@profile = User.find(params[:id])
 	end
 	def edit
-		@user = User.find(params[:id])
-		redirect_to @user unless @user.id == current_user.id
+		@profile = User.find(params[:id])
+		redirect_to @profile unless @profile.id == current_user.id
 	end
 	def update
-		@user = User.find(params[:id])
-		if @user.update(user_params)
-			redirect_to @user
+		@profile = User.find(params[:id])
+		if @profile.update(profile_params)
+			redirect_to profile_path(@profile)
 		else
 			render 'edit'
 		end
 	end
 
 	private
-		def user_params
-			params.require(:user).permit(:nickname, :profile_pic)
+		def profile_params
+			params.require(:profile).permit(:nickname, :profile_pic)
 		end
 end
