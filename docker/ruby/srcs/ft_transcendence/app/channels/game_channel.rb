@@ -10,6 +10,16 @@ class GameChannel < ApplicationCable::Channel
 		if current_user != @game.player1 && current_user != @game.player2
 			@gameLogic.addSpec
 		end
+		ActionCable.server.broadcast("game_#{@game.id}", {
+			config:
+			{
+				canvas:
+				{
+					width: @gameLogic.canvasWidth,
+					height: @gameLogic.canvasHeight
+				}
+			}
+		});
 	end
 
 	def getCurrentPlayerNumber
@@ -21,7 +31,7 @@ class GameChannel < ApplicationCable::Channel
 	end
 
 	def input(data)
-		@gameLogic.addInput(data["type"], data["id"], getCurrentPlayerNumber);
+		@gameLogic.addInput(data["type"], data["id"], getCurrentPlayerNumber)
 	end
 
 	def throw_ball
@@ -48,8 +58,8 @@ class GameChannel < ApplicationCable::Channel
 				end
 			end
 			@game.status = "finished"
-			@game.player1_pts = @gameLogic.player_scores[0];
-			@game.player2_pts = @gameLogic.player_scores[1];
+			@game.player1_pts = @gameLogic.player_scores[0]
+			@game.player2_pts = @gameLogic.player_scores[1]
 			@game.save
 		else
 			@gameLogic.removeSpec

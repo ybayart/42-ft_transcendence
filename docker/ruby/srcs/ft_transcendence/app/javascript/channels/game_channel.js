@@ -7,8 +7,6 @@ document.addEventListener('turbolinks:load', () => {
 		var canvas = document.querySelector('.myCanvas');
 		if (canvas)
 		{
-			canvas.width = 600;
-			canvas.height = 600;
 
 			var ctx = canvas.getContext('2d');
 			var background_color = "blue";
@@ -21,6 +19,7 @@ document.addEventListener('turbolinks:load', () => {
 			var spectate;
 			var me;
 			var other;
+
 			if (window.location.href.indexOf("test") == -1) //spec
 			{
 				me = 0;
@@ -76,18 +75,21 @@ document.addEventListener('turbolinks:load', () => {
 			}
 
 			function logKey(e) {
+				var input;
 				if (e.key == 'w')
 				{
-					sub.perform('input', { type: "paddle_up", id: inputs_id });
-					unverified_inputs.push({id: inputs_id, type: "up"});
+					input = { type: "paddle_up", id: inputs_id };
+					sub.perform('input', input);
+					unverified_inputs.push(input);
 					inputs_id++;
 					if (paddles[me])
 						paddles[me].goUp();
 				}
 				else if (e.key == 's')
 				{
-					sub.perform('input', { type: "paddle_down", id: inputs_id });
-					unverified_inputs.push({id: inputs_id, type: "down"});
+					input = { type: "paddle_down", id: inputs_id };
+					sub.perform('input', input);
+					unverified_inputs.push(input);
 					inputs_id++;
 					if (paddles[me])
 						paddles[me].goDown();
@@ -145,8 +147,6 @@ document.addEventListener('turbolinks:load', () => {
 					update_interval = setInterval(update, 1000 / update_rate);
 			}
 				
-			resetCanvas();
-
 			var sub = consumer.subscriptions.create({
 				channel: "GameChannel",
 				game: $('.GameInfo').attr("value")
@@ -162,6 +162,12 @@ document.addEventListener('turbolinks:load', () => {
 				},
 
 				received(data) {
+					if (data.config)
+					{
+						canvas.width = data.config.canvas.width;
+						canvas.height = data.config.canvas.height;
+						resetCanvas();
+					}
 					if (data.status == "waiting")
 					{
 						$("#game_status").html(data.status);

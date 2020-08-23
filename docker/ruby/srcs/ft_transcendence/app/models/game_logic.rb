@@ -24,23 +24,32 @@ class GameLogic
   end
 
   def initialize(id)
-    @canvasWidth = 600
-    @canvasHeight = 600
+    @canvasWidth = 1000
+    @canvasHeight = 60
     @paddles = Array.new(2)
-    @paddles[0] = Paddle.new(1)
-    @paddles[1] = Paddle.new(2)
+	$paddle_height = 50
+    @paddles[0] = Paddle.new(5, @canvasHeight / 2 - ($paddle_height / 2), $paddle_height)
+    @paddles[1] = Paddle.new(@canvasWidth - 20, @canvasHeight / 2 - ($paddle_height / 2), $paddle_height)
     @last_loser = rand(1..2)
     @last_collision = if @last_loser == 1 then @paddles[0] else @paddles[1] end
-    @ball = Ball.new(@last_loser)
+    @ball = Ball.new(@last_loser, @paddles[@last_loser - 1])
     @player_scores = Array.new(2, 0)
     @state = "pause"
-    @game = Game.find_by(id: id);
-    @inputs = Array.new();
-    @processed_inputs = Array.new(2);
-    @processed_inputs[0] = [];
-    @processed_inputs[1] = [];
-    @job_launched = false;
-    @spec_count = 0;
+    @game = Game.find_by(id: id)
+    @inputs = Array.new()
+    @processed_inputs = Array.new(2)
+    @processed_inputs[0] = []
+    @processed_inputs[1] = []
+    @job_launched = false
+    @spec_count = 0
+  end
+
+  def canvasWidth
+	@canvasWidth
+  end
+
+  def canvasHeight
+	@canvasHeight
   end
 
   def paddles
@@ -80,7 +89,7 @@ class GameLogic
   end
 
   def addInput(type, id, player)
-    @inputs.unshift({ type: type, id: id, player: player });
+    @inputs.unshift({ type: type, id: id, player: player })
   end
 
   def getFrontInput
@@ -115,12 +124,14 @@ class GameLogic
 
   def reset_ball(player)
     @state = "pause"
-    @ball = Ball.new(player)
+    @ball = Ball.new(player, @paddles[player - 1])
   end
 
   def reset_paddles
-    @paddles[0] = Paddle.new(1)
-    @paddles[1] = Paddle.new(2)
+	$paddle_height = @paddles[0].height
+    @paddles[0] = Paddle.new(5, @canvasHeight / 2 - ($paddle_height / 2), $paddle_height)
+	$paddle_height = @paddles[1].height
+    @paddles[1] = Paddle.new(@canvasWidth - 20, @canvasHeight / 2 - ($paddle_height / 2), $paddle_height)
   end
 
   def reset_all
@@ -132,8 +143,8 @@ class GameLogic
       @player_scores[0] += 1
       $loser = 2
     end
-    reset_ball($loser)
     reset_paddles
+    reset_ball($loser)
     @last_loser = $loser
     if (gameEnd)
       designate_winner
@@ -210,8 +221,8 @@ class GameLogic
       else
         @game.winner = @game.player2
       end
-      @game.player1_pts = @player_scores[0];
-      @game.player2_pts = @player_scores[1];
+      @game.player1_pts = @player_scores[0]
+      @game.player2_pts = @player_scores[1]
       @game.save
     end
   end

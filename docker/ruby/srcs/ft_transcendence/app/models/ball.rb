@@ -1,14 +1,14 @@
 class Ball
 	include ActiveModel::Model
 
-	def initialize(player)
-		if player == 1
-			@posX = 40
-		elsif player == 2
-			@posX = 600 - 20 - 20
-		end
-		@posY = 300
+	def initialize(player, paddle)
 		@radius = 10
+		if player == 1
+			@posX = paddle.posX + (paddle.width + 10 + @radius)
+		elsif player == 2
+			@posX = paddle.posX - (10 + @radius)
+		end
+		@posY = paddle.posY + paddle.height / 2
 		@velocityY = 0
 		@velocityX = 0
 	end

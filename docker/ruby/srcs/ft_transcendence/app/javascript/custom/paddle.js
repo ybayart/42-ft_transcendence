@@ -27,9 +27,9 @@ class Paddle {
 		else
 		{
 			unverified_inputs.forEach(function(item) {
-				if (item.type == "up")
+				if (item.type == "paddle_up")
 					server_paddle.goUp()
-				else if (item.type == "down")
+				else if (item.type == "paddle_down")
 					server_paddle.goDown()
 			});
 			if (server_paddle.posX != this.posX)
