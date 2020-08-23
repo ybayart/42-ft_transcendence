@@ -16,13 +16,24 @@ document.addEventListener('turbolinks:load', () => {
 			var ball_color = "black";
 
 			var beginning_status = $("#game_status").html();
-			var me = (beginning_status == "waiting") ? 0 : 1;
-			var other = me == 1 ? 0 : 1;
+			
+
+			var spectate;
+			var me;
+			var other;
 			if (window.location.href.indexOf("test") == -1) //spec
 			{
 				me = 0;
 				other = 1;
+				spectate = true;
 			}
+			else
+			{
+				me = (beginning_status == "waiting") ? 0 : 1;
+				other = me == 1 ? 0 : 1;
+				spectate = false;
+			}
+
 			var paddles = [null, null];
 			var ball = null;
 			var inputs_id = 0;
@@ -68,18 +79,18 @@ document.addEventListener('turbolinks:load', () => {
 				if (e.key == 'w')
 				{
 					sub.perform('input', { type: "paddle_up", id: inputs_id });
-					unverified_inputs.push(inputs_id);
+					unverified_inputs.push({id: inputs_id, type: "up"});
 					inputs_id++;
 					if (paddles[me])
-						paddles[me].goUp()
+						paddles[me].goUp();
 				}
 				else if (e.key == 's')
 				{
 					sub.perform('input', { type: "paddle_down", id: inputs_id });
-					unverified_inputs.push(inputs_id);
+					unverified_inputs.push({id: inputs_id, type: "down"});
 					inputs_id++;
 					if (paddles[me])
-						paddles[me].goDown()
+						paddles[me].goDown();
 				}
 				else if (e.key == ' ')
 				{
@@ -88,8 +99,10 @@ document.addEventListener('turbolinks:load', () => {
 				}
 			}
 
+			var server_interval = 5;
+
 			function interpolate(entity) {
-				var render_timestamp = new Date() - (1000.0 / 10);
+				var render_timestamp = new Date() - (1000.0 / server_interval);
 
 				// Find the two authoritative positions surrounding the rendering timestamp.
 				var buffer = entity.position_buffer;
@@ -116,7 +129,8 @@ document.addEventListener('turbolinks:load', () => {
 			function update() {
 				if (ball)
 					interpolate(ball);
-				//interpolate(paddles[me]);
+				if (spectate)
+					interpolate(paddles[me]);
 				if (paddles[other])
 					interpolate(paddles[other]);
 				if (ball && paddles && paddles[me] && paddles[other])
@@ -138,7 +152,7 @@ document.addEventListener('turbolinks:load', () => {
 				game: $('.GameInfo').attr("value")
 				}, {
 				connected() {
-					if (window.location.href.indexOf("test") != -1)
+					if (!spectate)
 						document.addEventListener('keypress', logKey);
 					setUpdateRate(50);
 				},
@@ -167,32 +181,33 @@ document.addEventListener('turbolinks:load', () => {
 						if (paddles[other] == null)
 							paddles[other] = new Paddle(data.paddles[other])
 
-						data.inputs[me].forEach(function(server_id) {
-							unverified_inputs.forEach(function(client_id, index) {
-								if (server_id == client_id)
-									unverified_inputs.splice(index, 1);
-							});
-						});
+						if (!spectate)
+						{
+							var last_server_input = data.inputs[me][data.inputs[me].length - 1];
+							var j = 0;
+							while (j < unverified_inputs.length)
+							{
+								if (unverified_inputs[j].id <= last_server_input)
+									unverified_inputs.splice(j, 1);
+								else
+									j++;
+							}
+						}
 
-						// INTERPOLATION BALL - It works wtf
 						ball.position_buffer.push([new Date(), data.ball.posX, data.ball.posY]);
-						paddles[me].correctPos(unverified_inputs, data.paddles[me]);
-						// A VIRER APRES C'EST POUR TEST
-						//paddles[me].position_buffer.push([new Date(), data.paddles[me].posX, data.paddles[me].posY]);
-						// WITHOUT INTERPOLATION
-						//	paddles[other].setPos(data.paddles[other]);
-						// WITH INTERPOLATION
+						if (spectate)
+							paddles[me].position_buffer.push([new Date(), data.paddles[me].posX, data.paddles[me].posY]);
+						else
+							paddles[me].correctPos(unverified_inputs, data.paddles[me]);
 						paddles[other].position_buffer.push([new Date(), data.paddles[other].posX, data.paddles[other].posY]);
-
-						console.log(unverified_inputs);
 					}
 					else if (data.status == "finished")
 					{
 						$("#game_status").html(data.winner + " wins");
 						setUpdateRate(0);
 						resetCanvas();
-						sub.unsubscribe()
-						if (window.location.href.indexOf("test") != -1)
+						sub.unsubscribe();
+						if (!spectate)
 							document.removeEventListener('keypress', logKey);
 					}
 				}
