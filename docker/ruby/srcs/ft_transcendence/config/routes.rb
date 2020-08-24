@@ -20,7 +20,10 @@ Rails.application.routes.draw do
 
 	resources :room_messages
 
-	resources :guilds
+	resources :guilds do
+		resources :members, controller: 'guild/members', only: [:index, :new, :create, :destroy]
+		resources :officers, controller: 'guild/officers', only: [:index, :new, :create, :destroy]
+	end
 	resources :wars
 
 	namespace :api do

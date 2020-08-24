@@ -1,9 +1,15 @@
+<h1 class="guild-name">
+        <%= @guild.name %>
+</h1>
+
 <p id="notice"><%= notice %></p>
 
-<p>
-	<strong>Name:</strong>
-	<%= @guild.name %>
-</p>
+<% if @guild.owner == current_user %>
+        <%= link_to 'Officers', guild_officers_path(@guild) %>
+<% end %>
+<% if @guild.officers.include?(current_user) %>
+        <%= link_to 'Members', guild_members_path(@guild) %>
+<% end %>
 
 <p>
 	<strong>Points:</strong>

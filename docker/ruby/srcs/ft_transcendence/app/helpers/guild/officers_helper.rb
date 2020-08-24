@@ -1,0 +1,2 @@
+module Guild::OfficersHelper
+end
