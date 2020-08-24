@@ -28,7 +28,7 @@ class GameChannel < ApplicationCable::Channel
 					height: @gameLogic.canvasHeight
 				}
 			}
-		});
+		})
 	end
 
 	def getCurrentPlayerNumber
