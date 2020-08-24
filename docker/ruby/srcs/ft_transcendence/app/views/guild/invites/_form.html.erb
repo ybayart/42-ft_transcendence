@@ -1,0 +1,22 @@
+<%= form_for(guild_invite, :as => "guild_invite", url: guild_invites_path, local: true) do |form| %>
+	<% if guild_invite.errors.any? %>
+		<div id="error_explanation">
+			<h2><%= pluralize(guild_invite.errors.count, "error") %> prohibited this guild_invite from being saved:</h2>
+
+			<ul>
+				<% guild_invite.errors.full_messages.each do |message| %>
+					<li><%= message %></li>
+				<% end %>
+			</ul>
+		</div>
+	<% end %>
+
+	<div class="field">
+		<%= form.label :user_id %>
+	<%= form.collection_select :user_id, User.all - @guild.members - @guild.invites_user, :id, :nickname %>
+	</div>
+
+	<div class="actions">
+		<%= form.submit %>
+	</div>
+<% end %>

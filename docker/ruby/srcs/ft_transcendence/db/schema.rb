@@ -57,10 +57,22 @@ ActiveRecord::Schema.define(version: 2020_08_23_151958) do
     t.index ["winner_id"], name: "index_games_on_winner_id"
   end
 
-  create_table "guild_link_officers", id: false, force: :cascade do |t|
-    t.bigint "room_id"
+  create_table "guild_invit_members", force: :cascade do |t|
+    t.bigint "guild_id"
+    t.bigint "by_id"
     t.bigint "user_id"
-    t.index ["room_id"], name: "index_guild_link_officers_on_room_id"
+    t.boolean "accepted"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["by_id"], name: "index_guild_invit_members_on_by_id"
+    t.index ["guild_id"], name: "index_guild_invit_members_on_guild_id"
+    t.index ["user_id"], name: "index_guild_invit_members_on_user_id"
+  end
+
+  create_table "guild_link_officers", id: false, force: :cascade do |t|
+    t.bigint "guild_id"
+    t.bigint "user_id"
+    t.index ["guild_id"], name: "index_guild_link_officers_on_guild_id"
     t.index ["user_id"], name: "index_guild_link_officers_on_user_id"
   end
 
@@ -180,6 +192,7 @@ ActiveRecord::Schema.define(version: 2020_08_23_151958) do
   add_foreign_key "games", "users", column: "player1_id"
   add_foreign_key "games", "users", column: "player2_id"
   add_foreign_key "games", "users", column: "winner_id"
+  add_foreign_key "guild_invit_members", "users", column: "by_id"
   add_foreign_key "room_bans", "users", column: "by_id"
   add_foreign_key "room_messages", "rooms"
   add_foreign_key "room_messages", "users"

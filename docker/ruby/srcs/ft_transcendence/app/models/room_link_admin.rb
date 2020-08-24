@@ -11,6 +11,6 @@ class RoomLinkAdmin < ApplicationRecord
 	end
 
 	def check_modifications
-		ApplicationController.helpers.rebalance_rights(self.room)
+		ApplicationController.helpers.room_rebalance_rights(self.room)
 	end
 end

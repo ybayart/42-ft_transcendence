@@ -1,0 +1,18 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>User:</strong>
+  <%= @guild_invite.user.nickname %>
+</p>
+
+<p>
+  <strong>By:</strong>
+  <%= @guild_invite.by.nickname %>
+</p>
+
+<p>
+  <strong>Last update:</strong>
+  <%= @guild_invite.updated_at %>
+</p>
+
+<%= link_to 'Back', guild_invites_path %>

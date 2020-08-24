@@ -1,23 +1,44 @@
+<h1 class="guild-name">
+        <%= @guild.name %>
+</h1>
+
 <p id="notice"><%= notice %></p>
 
+<% if @guild.owner == current_user %>
+        <%= link_to 'Officers', guild_officers_path(@guild) %>
+<% end %>
+<% if @guild.officers.include?(current_user) %>
+        <%= link_to 'Members', guild_members_path(@guild) %>
+        <%= link_to 'Invitations', guild_invites_path(@guild) %>
+<% end %>
+
 <p>
-  <strong>Name:</strong>
-  <%= @guild.name %>
+	<strong>Points:</strong>
+	<%= @guild.points %>
 </p>
 
 <p>
-  <strong>Points:</strong>
-  <%= @guild.points %>
+	<strong>Anagram:</strong>
+	<%= @guild.anagram %>
 </p>
 
 <p>
-  <strong>Anagram:</strong>
-  <%= @guild.anagram %>
+	<strong>Owner:</strong>
+	<%= link_to @guild.owner.nickname, profile_path(@guild.owner) %>
 </p>
 
 <p>
-  <strong>Owner:</strong>
-  <%= @guild.owner.nickname %>
+	<strong>Officers:</strong>
+	<% (@guild.officers - [@guild.owner]).each do |officer| %>
+		<%= link_to officer.nickname, profile_path(officer) %>
+	<% end %>
+</p>
+
+<p>
+	<strong>Members:</strong>
+	<% (@guild.members - @guild.officers).each do |member| %>
+		<%= link_to member.nickname, profile_path(member) %>
+	<% end %>
 </p>
 
 <%= link_to 'Edit', edit_guild_path(@guild) if @guild.owner == current_user %> |

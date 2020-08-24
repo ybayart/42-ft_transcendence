@@ -1,0 +1,27 @@
+<p id="notice"><%= notice %></p>
+
+<h1>Guild Officers</h1>
+
+<table>
+	<thead>
+		<tr>
+			<th>User</th>
+			<th colspan="3"></th>
+		</tr>
+	</thead>
+
+	<tbody>
+		<% @guild_officers.each do |guild_officer| %>
+			<tr>
+				<td><%= guild_officer.nickname %></td>
+				<td><%= link_to 'Destroy', guild_officer_path(@guild, guild_officer), method: :delete, data: { confirm: 'Are you sure?' } %></td>
+			</tr>
+		<% end %>
+	</tbody>
+</table>
+
+<br>
+
+<%= link_to 'New Guild Officer', new_guild_officer_path %> |
+<%= link_to 'Back', @guild %>
+
