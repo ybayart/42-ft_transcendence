@@ -1,23 +1,30 @@
 <p id="notice"><%= notice %></p>
 
 <p>
-  <strong>Name:</strong>
-  <%= @guild.name %>
+	<strong>Name:</strong>
+	<%= @guild.name %>
 </p>
 
 <p>
-  <strong>Points:</strong>
-  <%= @guild.points %>
+	<strong>Points:</strong>
+	<%= @guild.points %>
 </p>
 
 <p>
-  <strong>Anagram:</strong>
-  <%= @guild.anagram %>
+	<strong>Anagram:</strong>
+	<%= @guild.anagram %>
 </p>
 
 <p>
-  <strong>Owner:</strong>
-  <%= @guild.owner.nickname %>
+	<strong>Owner:</strong>
+	<%= link_to @guild.owner.nickname, profile_path(@guild.owner) %>
+</p>
+
+<p>
+	<strong>Officers:</strong>
+	<% @guild.officers.each do |officer| %>
+		<%= link_to officers.nickname, profile_path(officer) %>
+	<% end %>
 </p>
 
 <%= link_to 'Edit', edit_guild_path(@guild) if @guild.owner == current_user %> |
