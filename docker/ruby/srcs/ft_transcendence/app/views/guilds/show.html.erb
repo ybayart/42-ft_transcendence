@@ -23,7 +23,7 @@
 <p>
 	<strong>Officers:</strong>
 	<% @guild.officers.each do |officer| %>
-		<%= link_to officers.nickname, profile_path(officer) %>
+		<%= link_to officer.nickname, profile_path(officer) %>
 	<% end %>
 </p>
 
