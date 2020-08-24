@@ -18,6 +18,7 @@ consumer.subscriptions.create("UserChannel", {
 	},
 
 	received(data) {
+		console.log(data);
 		if (window.controller.controller == "rooms" && window.controller.action == "show") {
 			updateView();
 		}
