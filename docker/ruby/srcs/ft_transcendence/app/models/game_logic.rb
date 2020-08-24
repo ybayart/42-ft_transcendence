@@ -24,8 +24,8 @@ class GameLogic
   end
 
   def initialize(id)
-    @canvasWidth = 100
-    @canvasHeight = 60
+    @canvasWidth = 600
+    @canvasHeight = 400
     @paddles = Array.new(2)
 	$paddle_height = 50
     @paddles[0] = Paddle.new(5, @canvasHeight / 2 - ($paddle_height / 2), $paddle_height)
