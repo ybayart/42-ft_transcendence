@@ -8,13 +8,12 @@ document.addEventListener('turbolinks:load', () => {
 		var render = new Render(document.querySelector('.myCanvas'));
 		if (render.canvas)
 		{
-			var beginning_status = $("#game_status").html();
-
 			var spectate;
-			var me = (beginning_status == "waiting") ? 0 : 1;
+			var mynick = $("#nav-nickname").attr("usernickname");
+			var me = mynick == $('.player1').attr("value") ? 0 : 1;
 			var other = me == 1 ? 0 : 1;
 
-			if (window.location.href.indexOf("test") == -1) //spec
+			if (window.location.href.indexOf("spectate") != -1) //spec
 				spectate = true;
 			else
 				spectate = false;
@@ -25,6 +24,7 @@ document.addEventListener('turbolinks:load', () => {
 			var unverified_inputs = [];
 
 			function logKey(e) {
+				e.preventDefault();
 				var input;
 				if (e.key == 'w')
 				{

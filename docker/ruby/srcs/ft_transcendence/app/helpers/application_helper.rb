@@ -7,10 +7,17 @@ module ApplicationHelper
 		</div>")
 	end
 
-	def rebalance_rights(room)
+	def room_rebalance_rights(room)
 		room.admins << room.owner unless room.admins.include?(room.owner)
 		room.admins.each do |user|
 			room.members << user unless room.members.include?(user)
+		end
+	end
+
+	def guild_rebalance_rights(guild)
+		guild.officers << guild.owner unless guild.officers.include?(guild.owner)
+		guild.officers.each do |user|
+			guild.members << user unless guild.members.include?(user)
 		end
 	end
 end

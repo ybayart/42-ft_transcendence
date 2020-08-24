@@ -1,9 +1,16 @@
+<h1 class="guild-name">
+        <%= @guild.name %>
+</h1>
+
 <p id="notice"><%= notice %></p>
 
-<p>
-	<strong>Name:</strong>
-	<%= @guild.name %>
-</p>
+<% if @guild.owner == current_user %>
+        <%= link_to 'Officers', guild_officers_path(@guild) %>
+<% end %>
+<% if @guild.officers.include?(current_user) %>
+        <%= link_to 'Members', guild_members_path(@guild) %>
+        <%= link_to 'Invitations', guild_invites_path(@guild) %>
+<% end %>
 
 <p>
 	<strong>Points:</strong>
@@ -22,8 +29,15 @@
 
 <p>
 	<strong>Officers:</strong>
-	<% @guild.officers.each do |officer| %>
+	<% (@guild.officers - [@guild.owner]).each do |officer| %>
 		<%= link_to officer.nickname, profile_path(officer) %>
+	<% end %>
+</p>
+
+<p>
+	<strong>Members:</strong>
+	<% (@guild.members - @guild.officers).each do |member| %>
+		<%= link_to member.nickname, profile_path(member) %>
 	<% end %>
 </p>
 

@@ -32,7 +32,7 @@ class Room < ApplicationRecord
 	end
 
 	def apply_modifications
-		ApplicationController.helpers.rebalance_rights(self)
+		ApplicationController.helpers.room_rebalance_rights(self)
 	end
 
 	def notif_update

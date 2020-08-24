@@ -1,0 +1,30 @@
+<p id="notice"><%= notice %></p>
+
+<h1>Guild Invites</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th>User</th>
+	  <th>By</th>
+	  <th>Last Modification</th>
+      <th colspan="3"></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @guild_invites.each do |guild_invite| %>
+      <tr>
+        <td><%= guild_invite.user.nickname %></td>
+        <td><%= guild_invite.by.nickname %></td>
+        <td><%= guild_invite.updated_at %></td>
+        <td><%= link_to 'Show', guild_invite_path(@guild, guild_invite) %></td>
+        <td><%= link_to 'Destroy', guild_invite_path(@guild, guild_invite), method: :delete, data: { confirm: 'Are you sure?' } %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<br>
+
+<%= link_to 'New Guild Invite', new_guild_invite_path %>

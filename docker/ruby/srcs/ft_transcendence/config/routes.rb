@@ -4,7 +4,6 @@ Rails.application.routes.draw do
 	resources :profiles do
 		resources :friends, controller: 'profile/friends', only: [:index, :new, :create, :destroy]
 	end
-	resources :game
 	resources :rooms do
 		get 'join', on: :collection
 		get 'password', on: :member
@@ -15,12 +14,18 @@ Rails.application.routes.draw do
 		resources :admins, controller: 'room/admins', only: [:index, :new, :create, :destroy]
 	end
 
+	resources :game, only: [:index, :show]
 	get '/play', to: 'game#play'
 	get '/test', to: 'game#test'
+	get '/spectate/:id', to: 'game#spectate'
 
 	resources :room_messages
 
-	resources :guilds
+	resources :guilds do
+		resources :invites, controller: 'guild/invites', only: [:index, :show, :new, :create, :destroy]
+		resources :members, controller: 'guild/members', only: [:index, :destroy]
+		resources :officers, controller: 'guild/officers', only: [:index, :new, :create, :destroy]
+	end
 	resources :wars
 
 	namespace :api do

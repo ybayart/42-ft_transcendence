@@ -1,0 +1,2 @@
+module Guild::InvitesHelper
+end
