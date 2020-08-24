@@ -8,6 +8,10 @@ class GameController < ApplicationController
     @game = Game.find(params[:id])
   end
 
+  def spectate
+    @game = Game.find(params[:id])
+  end
+
   def play
     find_game
   end

@@ -17,6 +17,7 @@ Rails.application.routes.draw do
 
 	get '/play', to: 'game#play'
 	get '/test', to: 'game#test'
+	get '/spectate/:id', to: 'game#spectate'
 
 	resources :room_messages
 
