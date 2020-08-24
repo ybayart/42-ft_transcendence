@@ -13,7 +13,7 @@
 
 	<div class="field">
 		<%= form.label :user_id %>
-	<%= form.collection_select :user_id, User.all - @guild.members - @guild.invites_user, :id, :nickname %>
+	<%= form.collection_select :user_id, User.all - @guild.members - @guild.invites.where(state: "waiting").map(&:user), :id, :nickname %>
 	</div>
 
 	<div class="actions">

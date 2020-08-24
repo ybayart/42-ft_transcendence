@@ -5,11 +5,7 @@ class Guild::InvitesController < ApplicationController
 	# GET /guild/invites
 	# GET /guild/invites.json
 	def index
-		@guild_invites = @guild.invites.where(accepted: false)
-	end
-
-	def show
-		@guild_invite = @guild.invites.find(params[:id])
+		@guild_invites = @guild.invites.order("id DESC")
 	end
 
 	# GET /guild/invites/new
@@ -23,7 +19,7 @@ class Guild::InvitesController < ApplicationController
 		@guild_invite = GuildInvitMember.new(guild_invite_params)
 		@guild_invite.guild = @guild
 		@guild_invite.by = current_user
-		@guild_invite.accepted = false
+		@guild_invite.state = "waiting"
 
 		respond_to do |format|
 			if @guild_invite.save
@@ -38,6 +34,7 @@ class Guild::InvitesController < ApplicationController
 	# DELETE /guild/invites/1
 	# DELETE /guild/invites/1.json
 	def destroy
+		redirect_to guild_invites_url, :alert => "Already used" and return unless @guild.invites.find(params[:id]).state == "waiting"
 		@guild.invites.destroy(params[:id])
 		respond_to do |format|
 			format.html { redirect_to guild_invites_url, notice: 'Invite was successfully destroyed.' }

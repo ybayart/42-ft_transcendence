@@ -1,0 +1,34 @@
+<p id="notice"><%= notice %></p>
+
+<h1>Guilds' invitations</h1>
+
+<table>
+	<thead>
+		<tr>
+			<th>Name</th>
+		<th>By</th>
+		<th>Date</th>
+		<th>State</th>
+			<th colspan="3"></th>
+		</tr>
+	</thead>
+
+	<tbody>
+		<% @invits.each do |invit| %>
+			<tr>
+				<td><%= invit.guild.name %></td>
+				<td><%= link_to invit.by.nickname, profile_path(invit.by) %></td>
+				<td><%= invit.updated_at %></td>
+		<td><%= invit.state %>
+				<% if invit.state == "waiting" %>
+					<td><%= link_to 'Accept', invitationspost_guilds_path(invit, invitations: {state: "accepted"}), method: :patch, data: { confirm: 'Accepts an invitation replace your current guild! Are you sure?' } %></td>
+					<td><%= link_to 'Decline', invitationspost_guilds_path(invit, invitations: {state: "rejected"}), method: :patch %></td>
+				<% end %>
+			</tr>
+		<% end %>
+	</tbody>
+</table>
+
+<br>
+
+<%= link_to 'Back', guilds_path %>

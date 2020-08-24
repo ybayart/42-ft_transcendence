@@ -11,7 +11,7 @@ class Guild::MembersController < ApplicationController
 	# DELETE /guild/members/1
 	# DELETE /guild/members/1.json
 	def destroy
-		@guild.members.destroy(params[:id])
+		@guild.members.find(params[:id]).update(guild: nil)
 		respond_to do |format|
 			format.html { redirect_to guild_members_url, notice: 'Member invitation was successfully destroyed.' }
 			format.json { head :no_content }

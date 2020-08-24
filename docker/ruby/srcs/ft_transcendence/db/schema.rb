@@ -61,7 +61,7 @@ ActiveRecord::Schema.define(version: 2020_08_23_151958) do
     t.bigint "guild_id"
     t.bigint "by_id"
     t.bigint "user_id"
-    t.boolean "accepted"
+    t.string "state"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["by_id"], name: "index_guild_invit_members_on_by_id"

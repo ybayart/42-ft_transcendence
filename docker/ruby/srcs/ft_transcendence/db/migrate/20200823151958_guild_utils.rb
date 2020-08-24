@@ -8,7 +8,7 @@ class GuildUtils < ActiveRecord::Migration[6.0]
 			t.references :guild
 			t.references :by, references: :users, foreign_key: { to_table: :users}
 			t.references :user
-			t.boolean :accepted
+			t.string :state
 
 			t.timestamps
 		end

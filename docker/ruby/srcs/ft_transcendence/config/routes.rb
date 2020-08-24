@@ -21,7 +21,9 @@ Rails.application.routes.draw do
 	resources :room_messages
 
 	resources :guilds do
-		resources :invites, controller: 'guild/invites', only: [:index, :show, :new, :create, :destroy]
+		get 'invitations', on: :collection
+		patch 'invitationspost/:id', to: 'guilds#invitationspost', on: :collection, as: "invitationspost"
+		resources :invites, controller: 'guild/invites', only: [:index, :new, :create, :destroy]
 		resources :members, controller: 'guild/members', only: [:index, :destroy]
 		resources :officers, controller: 'guild/officers', only: [:index, :new, :create, :destroy]
 	end

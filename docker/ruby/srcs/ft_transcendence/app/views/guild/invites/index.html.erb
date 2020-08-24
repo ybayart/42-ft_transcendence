@@ -7,6 +7,7 @@
     <tr>
       <th>User</th>
 	  <th>By</th>
+	  <th>State</th>
 	  <th>Last Modification</th>
       <th colspan="3"></th>
     </tr>
@@ -15,11 +16,13 @@
   <tbody>
     <% @guild_invites.each do |guild_invite| %>
       <tr>
-        <td><%= guild_invite.user.nickname %></td>
-        <td><%= guild_invite.by.nickname %></td>
+        <td><%= link_to guild_invite.user.nickname, profile_path(guild_invite.user) %></td>
+        <td><%= link_to guild_invite.by.nickname, profile_path(guild_invite.by) %></td>
+		<td><%= guild_invite.state %></td>
         <td><%= guild_invite.updated_at %></td>
-        <td><%= link_to 'Show', guild_invite_path(@guild, guild_invite) %></td>
-        <td><%= link_to 'Destroy', guild_invite_path(@guild, guild_invite), method: :delete, data: { confirm: 'Are you sure?' } %></td>
+		<% if guild_invite.state == "waiting" %>
+			<td><%= link_to 'Destroy', guild_invite_path(@guild, guild_invite), method: :delete, data: { confirm: 'Are you sure?' } %></td>
+		<% end %>
       </tr>
     <% end %>
   </tbody>
@@ -27,4 +30,5 @@
 
 <br>
 
-<%= link_to 'New Guild Invite', new_guild_invite_path %>
+<%= link_to 'New Guild Invite', new_guild_invite_path %> |
+<%= link_to 'Back', @guild %>
