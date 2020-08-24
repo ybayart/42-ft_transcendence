@@ -58,9 +58,9 @@ ActiveRecord::Schema.define(version: 2020_08_23_151958) do
   end
 
   create_table "guild_link_officers", id: false, force: :cascade do |t|
-    t.bigint "room_id"
+    t.bigint "guild_id"
     t.bigint "user_id"
-    t.index ["room_id"], name: "index_guild_link_officers_on_room_id"
+    t.index ["guild_id"], name: "index_guild_link_officers_on_guild_id"
     t.index ["user_id"], name: "index_guild_link_officers_on_user_id"
   end
 
