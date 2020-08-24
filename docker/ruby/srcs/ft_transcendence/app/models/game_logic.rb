@@ -24,8 +24,8 @@ class GameLogic
   end
 
   def initialize(id)
-    @canvasWidth = 600
-    @canvasHeight = 600
+    @canvasWidth = 100
+    @canvasHeight = 60
     @paddles = Array.new(2)
 	$paddle_height = 50
     @paddles[0] = Paddle.new(5, @canvasHeight / 2 - ($paddle_height / 2), $paddle_height)
@@ -191,7 +191,9 @@ class GameLogic
       @ball.setVelocityX(@ball.velocityX * -1)
       @ball.setVelocityY(@ball.speed * Math.sin($phi))
       if $paddle != @last_collision
-        @ball.increaseSpeed
+        if @ball.speed < $paddle.width
+          @ball.increaseSpeed
+        end
         @last_collision = $paddle
       end
     end
