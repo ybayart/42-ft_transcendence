@@ -1,78 +1,28 @@
 import consumer from "./consumer"
+import Render from "../custom/render"
 import Paddle from "../custom/paddle"
 import Ball from "../custom/ball"
 
 document.addEventListener('turbolinks:load', () => {
 	$(document).ready(function () {
-		var canvas = document.querySelector('.myCanvas');
-		if (canvas)
+		var render = new Render(document.querySelector('.myCanvas'));
+		if (render.canvas)
 		{
-
-			var ctx = canvas.getContext('2d');
-			var background_color = "blue";
-			var paddle_color = "black";
-			var ball_color = "black";
-
 			var beginning_status = $("#game_status").html();
-			
 
 			var spectate;
-			var me;
-			var other;
+			var me = (beginning_status == "waiting") ? 0 : 1;
+			var other = me == 1 ? 0 : 1;
 
 			if (window.location.href.indexOf("test") == -1) //spec
-			{
-				me = 0;
-				other = 1;
 				spectate = true;
-			}
 			else
-			{
-				me = (beginning_status == "waiting") ? 0 : 1;
-				other = me == 1 ? 0 : 1;
 				spectate = false;
-			}
 
 			var paddles = [null, null];
 			var ball = null;
 			var inputs_id = 0;
 			var unverified_inputs = [];
-
-			function resetCanvas()
-			{
-				ctx.clearRect(0, 0, canvas.width, canvas.height);
-				ctx.fillStyle = background_color;
-				ctx.fillRect(0, 0, canvas.width, canvas.height);
-			}
-
-			function eraseBall(x, y, radius) {
-				ctx.fillStyle = background_color;
-				ctx.fillRect(x - (radius + 1), y - (radius + 1), (radius + 2) * 2, (radius + 2) * 2);
-			}
-
-			function printBall(ball) {
-				ctx.beginPath();
-				ctx.fillStyle = ball_color;
-				ctx.arc(ball.posX, ball.posY, ball.radius, 0, 2 * Math.PI, false);
-				ctx.fill();
-			}
-
-			function erasePaddle(paddle) {
-				ctx.fillStyle = background_color;
-				ctx.fillRect(paddle.posX, paddle.posY, paddle.width, paddle.height);
-			}
-
-			function printPaddle(paddle) {
-				ctx.fillStyle = paddle_color;
-				ctx.fillRect(paddle.posX, paddle.posY, paddle.width, paddle.height);
-			}
-
-			function renderWorld() {
-				resetCanvas();
-				printPaddle(paddles[me]);
-				printPaddle(paddles[other]);
-				printBall(ball);
-			}
 
 			function logKey(e) {
 				var input;
@@ -81,7 +31,6 @@ document.addEventListener('turbolinks:load', () => {
 					input = { type: "paddle_up", id: inputs_id };
 					sub.perform('input', input);
 					unverified_inputs.push(input);
-					inputs_id++;
 					if (paddles[me])
 						paddles[me].goUp();
 				}
@@ -90,15 +39,12 @@ document.addEventListener('turbolinks:load', () => {
 					input = { type: "paddle_down", id: inputs_id };
 					sub.perform('input', input);
 					unverified_inputs.push(input);
-					inputs_id++;
 					if (paddles[me])
 						paddles[me].goDown();
 				}
 				else if (e.key == ' ')
-				{
 					sub.perform('throw_ball', { id: inputs_id });
-					inputs_id++;
-				}
+				inputs_id++;
 			}
 
 			var server_interval = 5;
@@ -110,21 +56,14 @@ document.addEventListener('turbolinks:load', () => {
 				var buffer = entity.position_buffer;
 
 				// Drop older positions.
-				while (buffer.length >= 2 && buffer[1][0] <= render_timestamp) {
+				while (buffer.length >= 2 && buffer[1].time <= render_timestamp) {
 					buffer.shift();
 				}
 
 				// Interpolate between the two surrounding authoritative positions.
-				if (buffer.length >= 2 && buffer[0][0] <= render_timestamp && render_timestamp <= buffer[1][0]) {
-					var x0 = buffer[0][1];
-					var x1 = buffer[1][1];
-					var y0 = buffer[0][2];
-					var y1 = buffer[1][2];
-					var t0 = buffer[0][0];
-					var t1 = buffer[1][0];
-
-					entity.posX = x0 + (x1 - x0) * (render_timestamp - t0) / (t1 - t0);
-					entity.posY = y0 + (y1 - y0) * (render_timestamp - t0) / (t1 - t0);
+				if (buffer.length >= 2 && buffer[0].time <= render_timestamp && render_timestamp <= buffer[1].time) {
+					entity.posX = buffer[0].x + (buffer[1].x - buffer[0].x) * (render_timestamp - buffer[0].time) / (buffer[1].time - buffer[0].time);
+					entity.posY = buffer[0].y + (buffer[1].y - buffer[0].y) * (render_timestamp - buffer[0].time) / (buffer[1].time - buffer[0].time);
 				}
 			}
 
@@ -136,7 +75,7 @@ document.addEventListener('turbolinks:load', () => {
 				if (paddles[other])
 					interpolate(paddles[other]);
 				if (ball && paddles && paddles[me] && paddles[other])
-					renderWorld();
+					render.renderWorld(ball, paddles);
 			}
 
 			var update_interval;
@@ -164,21 +103,21 @@ document.addEventListener('turbolinks:load', () => {
 				received(data) {
 					if (data.config)
 					{
-						canvas.width = data.config.canvas.width;
-						canvas.height = data.config.canvas.height;
-						resetCanvas();
+						render.canvas.width = data.config.canvas.width;
+						render.canvas.height = data.config.canvas.height;
+						render.resetCanvas();
 					}
 					if (data.status == "waiting")
 					{
-						$("#game_status").html(data.status);
-						$("#spec_count").html(data.spec_count);
+						render.updateGameStatus("waiting");
+						render.updateSpecCount(data.spec_count);
 					}
 					else if (data.status == "running")
 					{
-						$("#game_status").html(data.status);
-						$("#spec_count").html(data.spec_count);
-						$("#p1_pts").html(data.scores.player1);
-						$("#p2_pts").html(data.scores.player2);
+						render.updateGameStatus("running");
+						render.updateSpecCount(data.spec_count);
+						render.updatePts(1, data.scores.player1);
+						render.updatePts(2, data.scores.player2);
 
 						if (ball == null)
 							ball = new Ball(data.ball)
@@ -200,18 +139,18 @@ document.addEventListener('turbolinks:load', () => {
 							}
 						}
 
-						ball.position_buffer.push([new Date(), data.ball.posX, data.ball.posY]);
+						ball.position_buffer.push({time: new Date(), x: data.ball.posX, y: data.ball.posY});
 						if (spectate)
-							paddles[me].position_buffer.push([new Date(), data.paddles[me].posX, data.paddles[me].posY]);
+							paddles[me].position_buffer.push({time: new Date(), x: data.paddles[me].posX, y: data.paddles[me].posY});
 						else
 							paddles[me].correctPos(unverified_inputs, data.paddles[me]);
-						paddles[other].position_buffer.push([new Date(), data.paddles[other].posX, data.paddles[other].posY]);
+						paddles[other].position_buffer.push({time: new Date(), x: data.paddles[other].posX, y: data.paddles[other].posY});
 					}
 					else if (data.status == "finished")
 					{
-						$("#game_status").html(data.winner + " wins");
+						render.updateGameStatus(data.winner + " wins");
 						setUpdateRate(0);
-						resetCanvas();
+						render.resetCanvas();
 						sub.unsubscribe();
 						if (!spectate)
 							document.removeEventListener('keypress', logKey);
