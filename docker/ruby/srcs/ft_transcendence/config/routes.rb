@@ -1,8 +1,10 @@
 Rails.application.routes.draw do
+
 	root to: 'profiles#friends'
 	resources :profiles do
 		resources :friends, controller: 'profile/friends', only: [:index, :new, :create, :destroy]
 	end
+	resources :game
 	resources :rooms do
 		get 'join', on: :collection
 		get 'password', on: :member
@@ -12,6 +14,9 @@ Rails.application.routes.draw do
 		resources :members, controller: 'room/members', only: [:index, :new, :create, :destroy]
 		resources :admins, controller: 'room/admins', only: [:index, :new, :create, :destroy]
 	end
+
+	get '/play', to: 'game#play'
+	get '/test', to: 'game#test'
 
 	resources :room_messages
 

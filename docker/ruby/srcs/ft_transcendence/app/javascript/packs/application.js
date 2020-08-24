@@ -10,6 +10,7 @@ window.Rails = Rails;
 require("turbolinks").start()
 require("@rails/activestorage").start()
 require("channels")
+
 const _ = require("underscore")
 require("backbone")
 
