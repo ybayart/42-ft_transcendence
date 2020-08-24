@@ -21,7 +21,8 @@ Rails.application.routes.draw do
 	resources :room_messages
 
 	resources :guilds do
-		resources :members, controller: 'guild/members', only: [:index, :new, :create, :destroy]
+		resources :invites, controller: 'guild/invites', only: [:index, :show, :new, :create, :destroy]
+		resources :members, controller: 'guild/members', only: [:index, :destroy]
 		resources :officers, controller: 'guild/officers', only: [:index, :new, :create, :destroy]
 	end
 	resources :wars

@@ -9,6 +9,7 @@
 <% end %>
 <% if @guild.officers.include?(current_user) %>
         <%= link_to 'Members', guild_members_path(@guild) %>
+        <%= link_to 'Invitations', guild_invites_path(@guild) %>
 <% end %>
 
 <p>
@@ -28,8 +29,15 @@
 
 <p>
 	<strong>Officers:</strong>
-	<% @guild.officers.each do |officer| %>
+	<% (@guild.officers - [@guild.owner]).each do |officer| %>
 		<%= link_to officer.nickname, profile_path(officer) %>
+	<% end %>
+</p>
+
+<p>
+	<strong>Members:</strong>
+	<% (@guild.members - @guild.officers).each do |member| %>
+		<%= link_to member.nickname, profile_path(member) %>
 	<% end %>
 </p>
 
