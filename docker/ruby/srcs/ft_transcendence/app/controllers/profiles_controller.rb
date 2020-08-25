@@ -29,8 +29,10 @@ class ProfilesController < ApplicationController
 
 	def edit
 		unless @profile.otp_required_for_login == true
-			@profile.otp_secret = User.generate_otp_secret
-			@profile.save!
+			unless @profile.nickname.blank?
+				@profile.otp_secret = User.generate_otp_secret
+				@profile.save!
+			end
 			issuer = 'ft_transcendence'
 			label = "#{issuer}:#{@profile.email}"
 
@@ -46,7 +48,9 @@ class ProfilesController < ApplicationController
 	end
 
 	def update
-		params[:profile][:otp_required_for_login] = true if (@profile.otp_required_for_login and params[:profile][:otp_required_for_login] == true) or (params[:otp_code] and @profile.current_otp == params[:otp_code])
+		unless @profile.nickname.blank?
+			params[:profile][:otp_required_for_login] = true if (@profile.otp_required_for_login and params[:profile][:otp_required_for_login] == true) or (params[:otp_code] and @profile.current_otp == params[:otp_code])
+		end
 		if @profile.update(profile_params)
 			redirect_to profile_path(@profile)
 		else

@@ -33,6 +33,8 @@ class User < ActiveRecord::Base
 			user.nickname = nil
 			file = open(auth.info.image)
 			user.profile_pic.attach(io: open(file), filename: File.basename(file))
+			user.otp_required_for_login = false
+			user.otp_accepted = true
 		end
 	end
 
