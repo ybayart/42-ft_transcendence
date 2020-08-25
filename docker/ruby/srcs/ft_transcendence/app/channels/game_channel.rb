@@ -1,7 +1,10 @@
 class GameChannel < ApplicationCable::Channel
 
+	@@subscribers = Array.new
+
 	def subscribed
 		stream_from "game_#{params[:game]}"
+		@@subscribers.push(current_user.id)
 		@gameLogic = GameLogic.create(params[:game])
 		@game = @gameLogic.game
 		if current_user == @game.player1 && current_user != @game.player2
@@ -9,6 +12,12 @@ class GameChannel < ApplicationCable::Channel
 		end
 		if current_user != @game.player1 && current_user != @game.player2
 			@gameLogic.addSpec
+		end
+		if @game.player1 && @game.player2 && @game.status == "waiting"
+			if @@subscribers.index(@game.player1.id) && @@subscribers.index(@game.player2.id)
+				@game.status = "running"
+				@game.save
+			end
 		end
 		ActionCable.server.broadcast("game_#{@game.id}", {
 			config:
@@ -49,6 +58,8 @@ class GameChannel < ApplicationCable::Channel
 	end
 
 	def unsubscribed
+		@@subscribers.delete(current_user.id)
+		puts @@subscribers
 		if @game && (@game.player1 == current_user || @game.player2 == current_user) 
 			if @game && @game.status == "running"
 				if @game.player1 == current_user

@@ -6,6 +6,7 @@ Dotenv.load
 errors = []
 errors << "Env value 42_OAUTH_CLIENT not set" if ENV["42_OAUTH_CLIENT"].nil?
 errors << "Env value 42_OAUTH_SECRET not set" if ENV["42_OAUTH_SECRET"].nil?
+errors << "Env value TOTP_KEY not set" if ENV["TOTP_KEY"].nil?
 if errors.count > 0
 	puts "Cannot start:"
 	errors.each do |msg|

@@ -21,7 +21,7 @@
 			<td><%= game.player1_pts %> - <%= game.player2_pts %>
 			<td><%= game.status %></td>
 			<% if game.status == "running" %>
-				<td><%= link_to "Show", game_path(game) %></td>
+				<td><%= link_to "Spectate", controller: "game", action: "spectate", id: game.id %></td>
 			<% end %>
 		</tr>
 	<% end %>

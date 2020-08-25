@@ -25,6 +25,23 @@
 		<img src="<%= url_for(@profile.profile_pic) %>" style="max-height: 100px; max-width: 100px;">
 	</p>
 
+	<br><br>
+
+	<p>
+		<% if @profile.otp_required_for_login == true %>
+			<%= form.label :otp_required_for_login %>
+			<%= form.check_box :otp_required_for_login %>
+		<% else %>
+			<%= raw(@svg_otp) %>
+			<%= label_tag :otp_code %>
+			<%= text_field_tag :otp_code %>
+			<p>
+				Secret: 
+				<%= @profile.otp_secret %>
+			</p>
+		<% end %>
+	</p>
+
 	<p>
 		<%= form.submit %>
 	</p>

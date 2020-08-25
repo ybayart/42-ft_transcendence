@@ -2,6 +2,8 @@ Rails.application.routes.draw do
 
 	root to: 'profiles#friends'
 	resources :profiles do
+		get 'otp', on: :collection
+		post 'otppost', on: :collection
 		resources :friends, controller: 'profile/friends', only: [:index, :new, :create, :destroy]
 	end
 	resources :rooms do
@@ -17,6 +19,7 @@ Rails.application.routes.draw do
 	resources :game, only: [:index, :show]
 	get '/play', to: 'game#play'
 	get '/test', to: 'game#test'
+	get '/spectate/:id', to: 'game#spectate'
 
 	resources :room_messages
 

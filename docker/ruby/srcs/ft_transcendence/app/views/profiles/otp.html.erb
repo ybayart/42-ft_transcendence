@@ -1,0 +1,12 @@
+<h1>OTP Code</h1>
+
+<%= form_for(@profile, :as => "profile", url: otppost_profiles_path, remote: true, method: "POST") do |form| %>
+	<p>
+		<%= label_tag :otp_code %>
+		<%= text_field_tag :otp_code %>
+	</p>
+
+	<p>
+		<%= form.submit %>
+	</p>
+<% end %>

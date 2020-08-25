@@ -5,9 +5,11 @@ ruby '2.7.1'
 
 gem 'omniauth-marvin', '~> 1.0.2'
 gem 'devise'
+gem 'devise-two-factor'
 gem 'date'
 gem 'openssl'
 gem 'time_difference'
+gem 'rqrcode'
 
 gem 'dotenv'
 

@@ -1,24 +1,29 @@
 <h1><%= @profile.nickname %> profile</h1>
 
 <p>
-	Member since <b><%= @profile.created_at %></b>
+	Member since: <b><%= @profile.created_at %></b>
 </p>
 
 <p>
-	42 login <b><%= @profile.login %></b>
+	42 login: <b><%= @profile.login %></b>
 </p>
 
 <p>
-	Nickname <b><%= @profile.nickname %></b>
+	Nickname: <b><%= @profile.nickname %></b>
 </p>
 
 <% if @profile.guild %>
 	<p>
-		Guild <b><%= @profile.guild.name %></b>
+		Guild: <b><%= @profile.guild.name %></b>
 	</p>
 <% end %>
 
 <% if current_user == @profile %>
+	<p>
+		otp required: <b><%= @profile.otp_required_for_login == true %></b>
+	</p>
+
 	<%= link_to 'Edit', edit_profile_path(@profile) %>
 <% elsif current_user.friends.exclude?(@profile) %>
+	<%= link_to 'Add to friend', profile_friends_path(current_user, friendship: {friend_b_id: @profile}), method: :post %>
 <% end %>

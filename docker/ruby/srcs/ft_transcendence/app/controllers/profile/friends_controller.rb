@@ -5,7 +5,7 @@ class Profile::FriendsController < ApplicationController
 	# GET /profile/friends
 	# GET /profile/friends.json
 	def index
-		@profile_friends = @profile.friends
+		@profile_friends = @profile.friends.order("nickname ASC")
 	end
 
 	# GET /profile/friends/new

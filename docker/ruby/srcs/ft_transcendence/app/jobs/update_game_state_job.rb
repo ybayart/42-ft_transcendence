@@ -22,7 +22,7 @@ class UpdateGameStateJob < ApplicationJob
 				end
 			end
 		  	@gameLogic = GameLogic.search(id)
-			sleep(1.0/60.0)
+			sleep(1.0/20.0)
 		end
 	end
 

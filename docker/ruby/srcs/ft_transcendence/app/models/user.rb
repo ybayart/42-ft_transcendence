@@ -20,9 +20,10 @@ class User < ActiveRecord::Base
 
 	validate	:check_columns
 
-	devise :database_authenticatable,
-			:rememberable, :validatable,
-			:omniauthable, omniauth_providers: [:marvin]
+	devise	:rememberable, :validatable,
+			:two_factor_authenticatable,
+			:omniauthable, omniauth_providers: [:marvin],
+			:otp_secret_encryption_key => ENV['TOTP_KEY']
 
 	def self.from_omniauth(auth)
 		where(provider: auth.provider, uid: auth.uid).first_or_create do |user|

@@ -13,7 +13,7 @@
   <tbody>
     <% @profile_friends.each do |profile_friend| %>
       <tr>
-        <td><%= profile_friend.nickname %></td>
+        <td><%= link_to profile_friend.nickname, profile_path(profile_friend) %></td>
         <td><%= link_to 'Destroy', profile_friend_path(@profile, profile_friend), method: :delete, data: { confirm: 'Are you sure?' } %></td>
       </tr>
     <% end %>
