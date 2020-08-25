@@ -9,7 +9,7 @@
 </p>
 
 <p>
-	Nickname <b><%= @profile.nickname %></b>
+	Nickname <b id="nickname"><%= @profile.nickname %></b>
 </p>
 
 <% if @profile.guild %>
@@ -17,6 +17,9 @@
 		Guild <b><%= @profile.guild.name %></b>
 	</p>
 <% end %>
+
+<button id="game_invite">Invite to play</button>
+<br>
 
 <% if current_user == @profile %>
 	<%= link_to 'Edit', edit_profile_path(@profile) %>

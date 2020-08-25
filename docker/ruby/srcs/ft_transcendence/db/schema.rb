@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_08_23_151958) do
+ActiveRecord::Schema.define(version: 2020_08_25_105333) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -76,6 +76,14 @@ ActiveRecord::Schema.define(version: 2020_08_23_151958) do
     t.index ["owner_id"], name: "index_guilds_on_owner_id"
   end
 
+  create_table "notifications", force: :cascade do |t|
+    t.string "message"
+    t.bigint "user_id", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["user_id"], name: "index_notifications_on_user_id"
+  end
+
   create_table "room_bans", force: :cascade do |t|
     t.bigint "user_id"
     t.bigint "by_id"
@@ -86,6 +94,13 @@ ActiveRecord::Schema.define(version: 2020_08_23_151958) do
     t.index ["by_id"], name: "index_room_bans_on_by_id"
     t.index ["room_id"], name: "index_room_bans_on_room_id"
     t.index ["user_id"], name: "index_room_bans_on_user_id"
+  end
+
+  create_table "room_link_admins", id: false, force: :cascade do |t|
+    t.bigint "room_id"
+    t.bigint "user_id"
+    t.index ["room_id"], name: "index_room_link_admins_on_room_id"
+    t.index ["user_id"], name: "index_room_link_admins_on_user_id"
   end
 
   create_table "room_link_members", id: false, force: :cascade do |t|
@@ -121,9 +136,11 @@ ActiveRecord::Schema.define(version: 2020_08_23_151958) do
     t.string "name"
     t.string "privacy"
     t.string "password"
+    t.bigint "owner_id"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["name"], name: "index_rooms_on_name", unique: true
+    t.index ["owner_id"], name: "index_rooms_on_owner_id"
   end
 
   create_table "users", force: :cascade do |t|
@@ -132,6 +149,7 @@ ActiveRecord::Schema.define(version: 2020_08_23_151958) do
     t.string "reset_password_token"
     t.datetime "reset_password_sent_at"
     t.datetime "remember_created_at"
+    t.bigint "guild_id"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.string "login"
@@ -139,8 +157,8 @@ ActiveRecord::Schema.define(version: 2020_08_23_151958) do
     t.string "uid"
     t.string "nickname"
     t.string "state", default: "offline"
-    t.integer "count_co", default: 0
     t.index ["email"], name: "index_users_on_email", unique: true
+    t.index ["guild_id"], name: "index_users_on_guild_id"
     t.index ["provider"], name: "index_users_on_provider"
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
     t.index ["uid"], name: "index_users_on_uid"
@@ -170,6 +188,7 @@ ActiveRecord::Schema.define(version: 2020_08_23_151958) do
   add_foreign_key "games", "users", column: "player1_id"
   add_foreign_key "games", "users", column: "player2_id"
   add_foreign_key "games", "users", column: "winner_id"
+  add_foreign_key "notifications", "users"
   add_foreign_key "room_bans", "users", column: "by_id"
   add_foreign_key "room_messages", "rooms"
   add_foreign_key "room_messages", "users"

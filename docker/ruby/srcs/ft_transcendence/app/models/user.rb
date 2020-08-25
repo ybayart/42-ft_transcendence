@@ -16,6 +16,7 @@ class User < ActiveRecord::Base
 	has_many :friends, through: :friendships, :source => :friend_b
 	belongs_to :guild, optional: true
 	has_many :guild_invites, class_name: "GuildInvitMember", foreign_key: "by_id", inverse_of: :by
+	has_many :notifications
 
 	validate	:check_columns
 
