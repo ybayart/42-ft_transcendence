@@ -12,7 +12,6 @@ class ProfilesController < ApplicationController
 	end
 
 	def otppost
-		puts "---------------------------- #{params}"
 		if current_user.current_otp == params[:otp_code]
 			current_user.update(otp_accepted: true)
 			redirect_to root_path, :notice => "OTP Code accepted"
