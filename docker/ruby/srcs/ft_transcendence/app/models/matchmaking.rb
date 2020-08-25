@@ -1,24 +1,24 @@
 class Matchmaking
 	include ActiveModel::Model
 
-	def self.addPlayerToQueue(id)
+	def self.addPlayerToQueue(user)
 		@queue ||= []
-		if !@queue.include?(id)
-			@queue.push(id)
+		if !@queue.include?(user)
+			@queue.push(user)
 			if @queue.length == 1
 				CreateMatchFromQueueJob.perform_later()
 			end
 		end
 	end
 
-	def self.removePlayerFromQueue(id)
-		if @queue && @queue.include?(id)
-			@queue.delete(id)
+	def self.removePlayerFromQueue(user)
+		if @queue && @queue.include?(user)
+			@queue.delete(user)
 		end
 	end
 
-	def self.redirectPlayer(id, game_id)
-		ActionCable.server.broadcast("matchmaking_#{id}", {
+	def self.redirectPlayer(user, game_id)
+		ActionCable.server.broadcast("matchmaking_#{user}", {
 			game:
 			{
 				id: game_id

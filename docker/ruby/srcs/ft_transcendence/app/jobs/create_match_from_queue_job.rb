@@ -3,8 +3,8 @@ class CreateMatchFromQueueJob < ApplicationJob
 
  	def perform(*args)
 		@queue = Matchmaking.queue
-		while @queue && @queue.length
-			if @queue.length > 2
+		while @queue && @queue.length > 0
+			if @queue.length >= 2
 				$rand1 = rand(@queue.length)
 				$rand2 = rand(@queue.length)
 				while ($rand2 == $rand1)
