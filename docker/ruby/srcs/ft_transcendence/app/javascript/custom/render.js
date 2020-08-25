@@ -2,7 +2,8 @@ class Render {
 	constructor(canvas)
 	{
 		this.canvas = canvas;
-		this.ctx = canvas.getContext('2d');
+		if (this.canvas)
+			this.ctx = canvas.getContext('2d');
 		this.background_color = "blue";
 		this.paddle_color = "black";
 		this.ball_color = "black";

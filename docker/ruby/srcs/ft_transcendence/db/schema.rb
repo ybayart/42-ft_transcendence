@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_08_24_233610) do
+ActiveRecord::Schema.define(version: 2020_08_25_105333) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -86,6 +86,14 @@ ActiveRecord::Schema.define(version: 2020_08_24_233610) do
     t.index ["anagram"], name: "index_guilds_on_anagram", unique: true
     t.index ["name"], name: "index_guilds_on_name", unique: true
     t.index ["owner_id"], name: "index_guilds_on_owner_id"
+  end
+
+  create_table "notifications", force: :cascade do |t|
+    t.string "message"
+    t.bigint "user_id", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["user_id"], name: "index_notifications_on_user_id"
   end
 
   create_table "room_bans", force: :cascade do |t|
@@ -199,6 +207,7 @@ ActiveRecord::Schema.define(version: 2020_08_24_233610) do
   add_foreign_key "games", "users", column: "player2_id"
   add_foreign_key "games", "users", column: "winner_id"
   add_foreign_key "guild_invit_members", "users", column: "by_id"
+  add_foreign_key "notifications", "users"
   add_foreign_key "room_bans", "users", column: "by_id"
   add_foreign_key "room_messages", "rooms"
   add_foreign_key "room_messages", "users"
