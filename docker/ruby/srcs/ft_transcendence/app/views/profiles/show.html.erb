@@ -27,3 +27,33 @@
 <% elsif current_user.friends.exclude?(@profile) %>
 	<%= link_to 'Add to friend', profile_friends_path(current_user, friendship: {friend_b_id: @profile}), method: :post %>
 <% end %>
+
+<br><hr>
+
+<h3>Match history</h3>
+
+<table style="text-align: center;">
+	<thead>
+		<tr>
+			<th>Player 1</th>
+			<th></th>
+			<th></th>
+			<th></th>
+			<th>Player 2</th>
+			<th>Date</th>
+		</tr>
+	</thead>
+
+	<tbody>
+		<% @matchs_history.each do |match| %>
+			<tr>
+				<td><%= set_bold(match.player1.nickname, match.player1, match.winner) %></td>
+				<td><%= set_bold(match.player1_pts, match.player1, match.winner) %></td>
+				<td>-</td>
+				<td><%= set_bold(match.player2_pts, match.player2, match.winner) %></td>
+				<td><%= set_bold(match.player2.nickname, match.player2, match.winner) %></td>
+				<td><%= match.updated_at %></td>
+			</tr>
+		<% end %>
+	</tbody>
+</table>
