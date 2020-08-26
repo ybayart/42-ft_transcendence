@@ -1,5 +1,5 @@
 import consumer from "./consumer"
-import { interval_matchmaking, notif, new_notif } from "./notifications_channel"
+import { interval_matchmaking, notif } from "./notifications_channel"
 
 var matchmaking;
 
