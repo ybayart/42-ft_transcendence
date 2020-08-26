@@ -17,6 +17,7 @@
 				<% end %>
 				<ul class="navbar-nav mr-auto responsive-large" style="flex-direction: row;">
 					<% unless Rails.application.routes.recognize_path(request.env['PATH_INFO'])[:controller][..4] == "admin" %>
+							<button id="play_matchmaking" type="button">Play</button>
 						<%= link_to profile_path(current_user), class: 'navbar-item navbar-btn' do %>
 							<button type="button">My Profile</button>
 						<% end %>

@@ -17,7 +17,6 @@ Rails.application.routes.draw do
 	end
 
 	resources :game, only: [:index, :show]
-	get '/matchmaking', to: 'profiles#friends'
 	get '/play', to: 'game#play'
 	get '/test', to: 'game#test'
 	get '/spectate/:id', to: 'game#spectate'

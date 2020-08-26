@@ -1,37 +1,90 @@
 import consumer from "./consumer"
+import matchmaking from "./matchmaking_channel"
 
-var sub = consumer.subscriptions.create("NotificationsChannel", {
-  connected() {
-  	console.log("connected to notif")
-    // Called when the subscription is ready for use on the server
-  },
+var alert;
+var timer_queue;
+var interval_matchmaking;
+var clear_matchmaking;
+var notif;
 
-  disconnected() {
-    // Called when the subscription has been terminated by the server
-  },
+export { interval_matchmaking };
 
-  received(data) {
-  	console.log(data);
-  	if (data.game_id && !data.from)
-			Turbolinks.visit("/game/" + data.game_id);
-		else if (data.game_id && data.from)
+export default notif = consumer.subscriptions.create("NotificationsChannel", {
+
+	connected() {
+	  	console.log("connected to notif");
+	},
+
+	disconnected() {
+	},
+
+	received(data) {
+		console.log(data);
+		if (data.type && data.type == "redirect")
+			Turbolinks.visit("/game/" + data.game.id);
+		else if (data.type && data.type == "invitation")
 		{
-			$("#alert-text").html(data.from + " invited you to play. " + " <a href='/game/" + data.game_id + "'>Click to join</a>");
+			$("#alert-text").html(data.message + " <a href='/game/" + data.game.id+ "'>Click to join</a>");
 			$(".alert").show();
 		}
-    // Called when there's incoming data on the websocket for this channel
-  }
-});
-
-document.addEventListener('turbolinks:load', () => {
-	var button = $("#game_invite");
-	if (button)
-	{
-  	button.click(function() {
-  		var to_nickname = $("#nickname").html();
-  		var from_nickname = $("#nav-nickname").attr("usernickname");
-			sub.perform('send_notif', { type: "play_casual", to: to_nickname, from: from_nickname });
-		});
+		else if (data.type && data.type == "in_queue" && !clear_matchmaking)
+		{
+			$("#alert-text").html(data.message + " - ");
+			timer_queue = $("<span id='time_queue'>00:00</span>");
+			$("#alert-text").append(timer_queue);
+			var timer_start = Date.now();
+			interval_matchmaking = setInterval(function() {
+				console.log("interval");
+				var res = (Date.now() - timer_start) / 1000;
+				var minutes = Math.floor(res / 60) % 60;
+				var seconds = Math.floor(res % 60);
+				if (minutes < 10)
+					minutes = "0" + minutes;
+				if (seconds < 10)
+					seconds = "0" + seconds;
+				$("#time_queue").html(minutes+":"+seconds);
+				alert = $("#alert-text");
+			}, 1000);
+			clear_matchmaking = function ()
+			{
+				matchmaking.perform("unsubscribe_queue");
+				clearInterval(interval_matchmaking);
+				var alert_parent = alert.parent().clone();
+				alert_parent.insertAfter("#toast-container");
+				alert = alert_parent.children("#alert-text");
+				alert.html("");
+				alert_parent.hide();
+				clear_matchmaking = null;
+			}
+			$(".alert .close").click(clear_matchmaking);
+			$(".alert").show();
+		}
+		alert = $("#alert-text");
 	}
 });
 
+document.addEventListener('turbolinks:load', () => {
+	if (alert)
+		$("#alert-text").html(alert.html());
+	else
+	{
+		alert = $("#alert-text");
+		alert.html("");
+	}
+	if (alert.html().length != 0)
+		$(".alert").show();
+	if (clear_matchmaking)
+		$(".alert .close").click(clear_matchmaking);
+	var button = $("#game_invite");
+	if (button)
+	{
+  		button.click(function() {
+  			var to_nickname = $("#nickname").html();
+  			var from_nickname = $("#nav-nickname").attr("usernickname");
+			notif.perform('send_notif', {
+				type: "play_casual",
+				to: to_nickname
+			});
+		});
+	}
+});

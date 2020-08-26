@@ -1,19 +1,30 @@
 import consumer from "./consumer"
+import notif from "./notifications_channel"
+import interval_matchmaking from "./notifications_channel"
 
-if (window.location.href.indexOf("matchmaking") != -1)
-{
-	consumer.subscriptions.create("MatchmakingChannel", {
-		connected() {
-			console.log("connected matchmaking");
-		},
+var matchmaking;
 
-		disconnected() {
-			console.log("disconnected matchmaking");
-		},
+export default matchmaking = consumer.subscriptions.create("MatchmakingChannel", {
+	connected() {
+		console.log("connected matchmaking");
+	},
 
-		received(data) {
-			console.log(data);
-			window.location.href = "/game/"+data.game.id;
-		}
+	disconnected() {
+		console.log("disconnected matchmaking");
+	},
+
+	received(data) {
+		$("#alert-text").html("");
+		clearInterval(interval_matchmaking);
+		Turbolinks.visit("/game/" + data.game_id);
+	}
+});
+
+document.addEventListener('turbolinks:load', () => {
+	$("#play_matchmaking").click(function() {
+		matchmaking.perform('register_to_queue');
+		notif.perform('send_notif', {
+			type: "play_matchmaking"
+		});
 	});
-}
+});
