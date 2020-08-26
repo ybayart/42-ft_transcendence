@@ -4,12 +4,23 @@ import matchmaking from "./matchmaking_channel"
 var alert;
 var timer_queue;
 var interval_matchmaking;
-var clear_matchmaking;
-var notif;
 
-export { interval_matchmaking };
+var add_notif = function(text)
+{
+	let new_one = $(".alert").last().clone();
+	$("#alerts-div").append(new_one);
+	new_one.find("#alert-text").html(text);
+	return (new_one);	
+}
 
-export default notif = consumer.subscriptions.create("NotificationsChannel", {
+var clear_matchmaking = function()
+{
+	matchmaking.perform("unsubscribe_queue");
+	clearInterval(interval_matchmaking);
+	clear_matchmaking = null;
+};
+
+var notif = consumer.subscriptions.create("NotificationsChannel", {
 
 	connected() {
 	  	console.log("connected to notif");
@@ -23,10 +34,7 @@ export default notif = consumer.subscriptions.create("NotificationsChannel", {
 		if (data.type && data.type == "redirect")
 			Turbolinks.visit("/game/" + data.game.id);
 		else if (data.type && data.type == "invitation")
-		{
-			$("#alert-text").html(data.message + " <a href='/game/" + data.game.id+ "'>Click to join</a>");
-			$(".alert").show();
-		}
+			add_notif(data.message + " <a href='/game/" + data.game.id+ "'>Click to join</a>").show();
 		else if (data.type && data.type == "in_queue" && !clear_matchmaking)
 		{
 			$("#alert-text").html(data.message + " - ");
@@ -45,17 +53,6 @@ export default notif = consumer.subscriptions.create("NotificationsChannel", {
 				$("#time_queue").html(minutes+":"+seconds);
 				alert = $("#alert-text");
 			}, 1000);
-			clear_matchmaking = function ()
-			{
-				matchmaking.perform("unsubscribe_queue");
-				clearInterval(interval_matchmaking);
-				var alert_parent = alert.parent().clone();
-				alert_parent.insertAfter("#toast-container");
-				alert = alert_parent.children("#alert-text");
-				alert.html("");
-				alert_parent.hide();
-				clear_matchmaking = null;
-			}
 			$(".alert .close").click(clear_matchmaking);
 			$(".alert").show();
 		}
@@ -88,3 +85,6 @@ document.addEventListener('turbolinks:load', () => {
 		});
 	}
 });
+
+export { interval_matchmaking, notif };
+

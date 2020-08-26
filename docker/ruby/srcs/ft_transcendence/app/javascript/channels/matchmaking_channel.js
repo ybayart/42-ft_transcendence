@@ -1,6 +1,5 @@
 import consumer from "./consumer"
-import notif from "./notifications_channel"
-import interval_matchmaking from "./notifications_channel"
+import { interval_matchmaking, notif } from "./notifications_channel"
 
 var matchmaking;
 
@@ -16,7 +15,7 @@ export default matchmaking = consumer.subscriptions.create("MatchmakingChannel",
 	received(data) {
 		$("#alert-text").html("");
 		clearInterval(interval_matchmaking);
-		Turbolinks.visit("/game/" + data.game_id);
+		Turbolinks.visit("/game/" + data.game.id);
 	}
 });
 
