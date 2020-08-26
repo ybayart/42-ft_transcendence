@@ -49,7 +49,6 @@ var notif = consumer.subscriptions.create("NotificationsChannel", {
 				if (seconds < 10)
 					seconds = "0" + seconds;
 				$("#time_queue").html(minutes+":"+seconds);
-				alert = new_notif.find("#alert-text");
 			}, 1000);
 			new_notif.find(".close").click(clear_matchmaking);
 			new_notif.show();
