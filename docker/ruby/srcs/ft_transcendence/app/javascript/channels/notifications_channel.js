@@ -1,13 +1,13 @@
 import consumer from "./consumer"
 import matchmaking from "./matchmaking_channel"
 
-var alert;
 var timer_queue;
 var interval_matchmaking;
 
-var add_notif = function(text)
+var add_notif = function(text, new_id)
 {
 	let new_one = $(".alert").last().clone();
+	new_one.attr("id", new_id);
 	$("#alerts-div").append(new_one);
 	new_one.find("#alert-text").html(text);
 	return (new_one);	
@@ -17,7 +17,6 @@ var clear_matchmaking = function()
 {
 	matchmaking.perform("unsubscribe_queue");
 	clearInterval(interval_matchmaking);
-	clear_matchmaking = null;
 };
 
 var notif = consumer.subscriptions.create("NotificationsChannel", {
@@ -34,12 +33,11 @@ var notif = consumer.subscriptions.create("NotificationsChannel", {
 		if (data.type && data.type == "redirect")
 			Turbolinks.visit("/game/" + data.game.id);
 		else if (data.type && data.type == "invitation")
-			add_notif(data.message + " <a href='/game/" + data.game.id+ "'>Click to join</a>").show();
-		else if (data.type && data.type == "in_queue" && !clear_matchmaking)
+			add_notif(data.message + " <a href='/game/" + data.game.id + "'>Click to join</a>").show();
+		else if (data.type && data.type == "in_queue")
 		{
-			$("#alert-text").html(data.message + " - ");
-			timer_queue = $("<span id='time_queue'>00:00</span>");
-			$("#alert-text").append(timer_queue);
+			var text = data.message + " - " + "<span id='time_queue'>00:00</span>";
+			var new_notif = add_notif(text, "matchmaking-alert");
 			var timer_start = Date.now();
 			interval_matchmaking = setInterval(function() {
 				console.log("interval");
@@ -51,33 +49,20 @@ var notif = consumer.subscriptions.create("NotificationsChannel", {
 				if (seconds < 10)
 					seconds = "0" + seconds;
 				$("#time_queue").html(minutes+":"+seconds);
-				alert = $("#alert-text");
+				alert = new_notif.find("#alert-text");
 			}, 1000);
-			$(".alert .close").click(clear_matchmaking);
-			$(".alert").show();
+			new_notif.find(".close").click(clear_matchmaking);
+			new_notif.show();
 		}
-		alert = $("#alert-text");
 	}
 });
 
 document.addEventListener('turbolinks:load', () => {
-	if (alert)
-		$("#alert-text").html(alert.html());
-	else
-	{
-		alert = $("#alert-text");
-		alert.html("");
-	}
-	if (alert.html().length != 0)
-		$(".alert").show();
-	if (clear_matchmaking)
-		$(".alert .close").click(clear_matchmaking);
 	var button = $("#game_invite");
 	if (button)
 	{
-  		button.click(function() {
-  			var to_nickname = $("#nickname").html();
-  			var from_nickname = $("#nav-nickname").attr("usernickname");
+		button.click(function() {
+			var to_nickname = $("#nickname").html();
 			notif.perform('send_notif', {
 				type: "play_casual",
 				to: to_nickname
