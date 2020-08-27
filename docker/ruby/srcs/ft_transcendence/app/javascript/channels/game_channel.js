@@ -1,13 +1,18 @@
 import consumer from "./consumer"
-import macthmaking from "./matchmaking_channel"
+import matchmaking from "./matchmaking_channel"
 import interval_matchmaking from "./notifications_channel"
 import Render from "../custom/render"
 import Paddle from "../custom/paddle"
 import Ball from "../custom/ball"
 
-document.addEventListener('turbolinks:load.game', () => {
-	if (this.sub)
+var sub;
+var logKey;
+
+document.addEventListener('turbolinks:load', () => {
+	if (sub)
 	{
+		if (logKey)
+			document.removeEventListener('keypress', logKey);
 		sub.unsubscribe();
 		console.log("unsub_game");
 	}
@@ -30,7 +35,7 @@ document.addEventListener('turbolinks:load.game', () => {
 			var inputs_id = 0;
 			var unverified_inputs = [];
 
-			function logKey(e) {
+			logKey = function(e) {
 				e.preventDefault();
 				var input;
 				if (e.key == 'w')
@@ -93,7 +98,7 @@ document.addEventListener('turbolinks:load.game', () => {
 					update_interval = setInterval(update, 1000 / update_rate);
 			}
 				
-			var sub = consumer.subscriptions.create({
+			sub = consumer.subscriptions.create({
 				channel: "GameChannel",
 				game: $('.GameInfo').attr("value")
 				}, {
@@ -102,15 +107,16 @@ document.addEventListener('turbolinks:load.game', () => {
 					if (!spectate)
 					{
 						document.addEventListener('keypress', logKey);
-						matchmaking.perform('unsubscribe_queue');
 						if ($("#matchmaking-alert").length)
 						{
+							matchmaking.perform('unsubscribe_queue');
 							$("#matchmaking-alert").remove();
 							clearInterval(interval_matchmaking);
 						}
-						$("#alert-text").each(function() {
+						$(".alert").each(function(index) {
 							$(this).hide();
-							$(this).remove();
+							if (index != 0)
+								$(this).remove();
 						});
 					}
 					setUpdateRate(50);
