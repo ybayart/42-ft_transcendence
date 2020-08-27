@@ -18,7 +18,9 @@
 	</p>
 <% end %>
 
-<button id="game_invite">Invite to play</button>
+<% if current_user != @profile %>
+	<button id="game_invite">Invite to play</button>
+<% end %>
 <br>
 
 <% if current_user == @profile %>
