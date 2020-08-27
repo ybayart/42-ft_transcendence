@@ -36,22 +36,25 @@ var notif = consumer.subscriptions.create("NotificationsChannel", {
 			add_notif(data.message + " <a href='/game/" + data.game.id + "'>Click to join</a>").show();
 		else if (data.type && data.type == "in_queue")
 		{
-			var text = data.message + " - " + "<span id='time_queue'>00:00</span>";
-			var new_notif = add_notif(text, "matchmaking-alert");
-			var timer_start = Date.now();
-			interval_matchmaking = setInterval(function() {
-				console.log("interval");
-				var res = (Date.now() - timer_start) / 1000;
-				var minutes = Math.floor(res / 60) % 60;
-				var seconds = Math.floor(res % 60);
-				if (minutes < 10)
-					minutes = "0" + minutes;
-				if (seconds < 10)
-					seconds = "0" + seconds;
-				$("#time_queue").html(minutes+":"+seconds);
-			}, 1000);
-			new_notif.find(".close").click(clear_matchmaking);
-			new_notif.show();
+			if (!$("#matchmaking-alert").length)
+			{
+				var text = data.message + " - " + "<span id='time_queue'>00:00</span>";
+				var new_notif = add_notif(text, "matchmaking-alert");
+				var timer_start = Date.now();
+				interval_matchmaking = setInterval(function() {
+					console.log("interval");
+					var res = (Date.now() - timer_start) / 1000;
+					var minutes = Math.floor(res / 60) % 60;
+					var seconds = Math.floor(res % 60);
+					if (minutes < 10)
+						minutes = "0" + minutes;
+					if (seconds < 10)
+						seconds = "0" + seconds;
+					$("#time_queue").html(minutes+":"+seconds);
+				}, 1000);
+				new_notif.find(".close").click(clear_matchmaking);
+				new_notif.show();
+			}
 		}
 	}
 });

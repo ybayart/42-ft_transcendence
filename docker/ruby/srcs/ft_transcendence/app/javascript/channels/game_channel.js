@@ -1,9 +1,16 @@
 import consumer from "./consumer"
+import macthmaking from "./matchmaking_channel"
+import interval_matchmaking from "./notifications_channel"
 import Render from "../custom/render"
 import Paddle from "../custom/paddle"
 import Ball from "../custom/ball"
 
-document.addEventListener('turbolinks:load', () => {
+document.addEventListener('turbolinks:load.game', () => {
+	if (this.sub)
+	{
+		sub.unsubscribe();
+		console.log("unsub_game");
+	}
 	$(document).ready(function () {
 		var render = new Render(document.querySelector('.myCanvas'));
 		if (render.canvas)
@@ -91,13 +98,26 @@ document.addEventListener('turbolinks:load', () => {
 				game: $('.GameInfo').attr("value")
 				}, {
 				connected() {
+					console.log("sub_game");
 					if (!spectate)
+					{
 						document.addEventListener('keypress', logKey);
+						matchmaking.perform('unsubscribe_queue');
+						if ($("#matchmaking-alert").length)
+						{
+							$("#matchmaking-alert").remove();
+							clearInterval(interval_matchmaking);
+						}
+						$("#alert-text").each(function() {
+							$(this).hide();
+							$(this).remove();
+						});
+					}
 					setUpdateRate(50);
 				},
 
 				disconnected() {
-
+					console.log("game unsub");
 				},
 
 				received(data) {
