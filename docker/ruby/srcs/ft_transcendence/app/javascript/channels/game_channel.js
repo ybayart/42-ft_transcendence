@@ -1,6 +1,6 @@
 import consumer from "./consumer"
 import matchmaking from "./matchmaking_channel"
-import interval_matchmaking from "./notifications_channel"
+import { interval_matchmaking } from "./notifications_channel"
 import Render from "../custom/render"
 import Paddle from "../custom/paddle"
 import Ball from "../custom/ball"
