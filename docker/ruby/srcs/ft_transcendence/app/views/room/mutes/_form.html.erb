@@ -1,4 +1,4 @@
-<%= form_with(model: room_mute, local: true) do |form| %>
+<%= form_with(model: room_mute, remote: true) do |form| %>
   <% if room_mute.errors.any? %>
     <div id="error_explanation">
       <h2><%= pluralize(room_mute.errors.count, "error") %> prohibited this room_mute from being saved:</h2>

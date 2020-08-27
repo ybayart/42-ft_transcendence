@@ -1,4 +1,4 @@
-<%= form_with(model: room_ban, local: true) do |form| %>
+<%= form_with(model: room_ban, remote: true) do |form| %>
   <% if room_ban.errors.any? %>
     <div id="error_explanation">
       <h2><%= pluralize(room_ban.errors.count, "error") %> prohibited this room_ban from being saved:</h2>
