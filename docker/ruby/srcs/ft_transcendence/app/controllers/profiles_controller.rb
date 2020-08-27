@@ -25,7 +25,7 @@ class ProfilesController < ApplicationController
 	end
 
 	def show
-		@matchs_history = Game.where(player1: current_user).or(Game.where(player2: current_user))
+		@matchs_history = Game.where(player1: @profile).or(Game.where(player2: @profile))
 	end
 
 	def edit

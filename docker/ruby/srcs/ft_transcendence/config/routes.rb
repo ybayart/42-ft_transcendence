@@ -16,6 +16,8 @@ Rails.application.routes.draw do
 		resources :admins, controller: 'room/admins', only: [:index, :new, :create, :destroy]
 	end
 
+	resources :dms
+
 	resources :game, only: [:index, :show]
 	get '/play', to: 'game#play'
 	get '/test', to: 'game#test'

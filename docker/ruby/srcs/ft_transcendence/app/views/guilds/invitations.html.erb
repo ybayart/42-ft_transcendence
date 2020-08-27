@@ -21,8 +21,8 @@
 				<td><%= invit.updated_at %></td>
 				<td><%= invit.state %>
 				<% if invit.state == "waiting" %>
-					<td><%= link_to 'Accept', invitationspost_guilds_path(invit, invitations: {state: "accepted"}), method: :patch, data: { confirm: 'Accepts an invitation replace your current guild! Are you sure?' } %></td>
-					<td><%= link_to 'Decline', invitationspost_guilds_path(invit, invitations: {state: "rejected"}), method: :patch %></td>
+					<td><%= link_to 'Accept', invitationspost_guilds_path(invit, invitations: {state: "accepted"}), method: :patch, data: { confirm: 'Accepts an invitation replace your current guild! Are you sure?' }, remote: true %></td>
+					<td><%= link_to 'Decline', invitationspost_guilds_path(invit, invitations: {state: "rejected"}), method: :patch, remote: true %></td>
 				<% end %>
 			</tr>
 		<% end %>

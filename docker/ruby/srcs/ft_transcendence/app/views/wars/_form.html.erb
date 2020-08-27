@@ -1,4 +1,4 @@
-<%= form_with(model: war, local: true) do |form| %>
+<%= form_with(model: war, remote: true) do |form| %>
   <% if war.errors.any? %>
     <div id="error_explanation">
       <h2><%= pluralize(war.errors.count, "error") %> prohibited this war from being saved:</h2>
