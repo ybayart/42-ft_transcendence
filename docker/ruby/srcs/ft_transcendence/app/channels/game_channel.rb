@@ -15,7 +15,7 @@ class GameChannel < ApplicationCable::Channel
 			@gameLogic.addSpec
 		end
 		if @game.player1 && @game.player2 && @game.status == "waiting"
-          if @@subscribers[@game.id].index(@game.player1.id) && @@subscribers[@game.id].index(@game.player2.id)
+			if @@subscribers[@game.id].index(@game.player1.id) && @@subscribers[@game.id].index(@game.player2.id)
 				@game.status = "running"
 				@game.save
 			end
@@ -62,6 +62,7 @@ class GameChannel < ApplicationCable::Channel
 		@@subscribers[@game.id].delete(current_user.id)
 		if @@subscribers[@game.id].length == 0
 			@@subscribers[@game.id] = nil
+		end
 		if @game && (@game.player1 == current_user || @game.player2 == current_user) 
 			if @game && @game.status == "running"
 				if @game.player1 == current_user
