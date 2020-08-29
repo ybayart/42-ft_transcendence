@@ -6,8 +6,12 @@ class UpdateGameStateJob < ApplicationJob
 		if @gameLogic
 			@game = @gameLogic.game
 		end
+    $i = 0
 	while @gameLogic
-			@game.reload(lock: true)
+            if $i >= 100
+			  @game.reload(lock: true)
+              $i = 0
+            end
 			if @game.status == "running"
 				process_inputs(@gameLogic)
 			  	if @gameLogic.state == "play"
@@ -22,6 +26,7 @@ class UpdateGameStateJob < ApplicationJob
 				end
 			end
 		  	@gameLogic = GameLogic.search(id)
+            $i += 10
 			sleep(1.0/20.0)
 		end
 	end
