@@ -74,6 +74,12 @@ class GameChannel < ApplicationCable::Channel
 			@game.status = "finished"
 			@game.player1_pts = @gameLogic.player_scores[0]
 			@game.player2_pts = @gameLogic.player_scores[1]
+			if @game.mode == "ranked"
+				@game.player1.rank = @game.player2.rank
+				@game.player2.rank = @game.player1.rank
+				@game.player1.save
+				@game.player2.save
+			end
 			@game.save
 		else
 			@gameLogic.removeSpec

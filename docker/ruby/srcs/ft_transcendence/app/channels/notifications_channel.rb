@@ -10,7 +10,7 @@ class NotificationsChannel < ApplicationCable::Channel
 		if data["type"] == "play_casual"
 			$to_user = User.find_by(nickname: data["to"])
 			if $from_user != $to_user
-				$game = Game.create(player1: $from_user, player2: $to_user, status: "waiting")
+				$game = Game.create(player1: $from_user, player2: $to_user, status: "waiting", mode: "casual")
 				$message = current_user.nickname + " invited you to play."
 				Notification.create(user: $to_user, message: $message)
 				NotificationsChannel.broadcast_to($to_user, {
