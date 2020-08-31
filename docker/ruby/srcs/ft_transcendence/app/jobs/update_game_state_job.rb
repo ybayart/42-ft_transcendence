@@ -47,14 +47,21 @@ class UpdateGameStateJob < ApplicationJob
 	def send_game_state(gameLogic, game)
 		if (@game.status == "waiting")
 			ActionCable.server.broadcast("game_#{@game.id}", {
-				status: @game.status
+				status: @game.status,
+				player2: @game.player2 ? @game.player2.nickname : nil
 			});
 		elsif (@game.status == "running")
 			ActionCable.server.broadcast("game_#{@game.id}", {
 				status: @game.status,
-				scores: {
-					player1: @gameLogic.player_scores[0],
-					player2: @gameLogic.player_scores[1]
+				players: {
+					nicknames: [
+						@game.player1.nickname,
+						@game.player2.nickname
+					],
+					scores: [
+						@gameLogic.player_scores[0],
+						@gameLogic.player_scores[1]
+					]
 				},
 				paddles: [
 				{
@@ -87,7 +94,7 @@ class UpdateGameStateJob < ApplicationJob
 		elsif (@game.status == "finished" && @game.winner)
 			ActionCable.server.broadcast("game_#{@game.id}", {
 				status: @game.status,
-				winner: @game.winner.login
+				winner: @game.winner.nickname
 			});
 		end
 	end

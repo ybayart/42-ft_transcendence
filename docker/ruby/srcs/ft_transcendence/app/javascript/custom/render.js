@@ -4,14 +4,12 @@ class Render {
 		this.canvas = canvas;
 		if (this.canvas)
 			this.ctx = canvas.getContext('2d');
-		this.background_color = "blue";
-		this.paddle_color = "black";
-		this.ball_color = "black";
+		this.background_color = "black";
+		this.paddle_color = "white";
+		this.ball_color = "white";
 		this.game_status = $("#game_status");
 		this.spec_count = $("#spec_count");
-		this.pts = [];
-		this.pts[0] = $("#p1_pts");
-		this.pts[1] = $("#p2_pts");
+		this.score = $("#score");
 	}
 
 	resetCanvas()
@@ -45,14 +43,26 @@ class Render {
 		this.spec_count.html(count);
 	}
 	
-	updateGameStatus(stat)
+	updateGameStatus(stat, player2)
 	{
-		this.game_status.html(stat);
+		let text;
+		if (stat == "waiting")
+		{
+			if (player2)
+				text = "waiting for " + player2 + "...";
+			else
+				text = "waiting for player...";
+		}
+		else
+			text = stat;
+		this.game_status.html(text);
 	}
 	
-	updatePts(player, score)
+	updatePts(players)
 	{
-		this.pts[player - 1].html(score);
+		let text = players.nicknames[0] + " " + players.scores[0] + " - ";
+		text += players.scores[1] + " " + players.nicknames[1];
+		this.score.html(text);
 	}
 }
 

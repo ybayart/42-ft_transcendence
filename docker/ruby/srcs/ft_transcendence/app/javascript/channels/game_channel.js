@@ -134,15 +134,14 @@ document.addEventListener('turbolinks:load', () => {
 				}
 				if (data.status == "waiting")
 				{
-					render.updateGameStatus("waiting");
+					render.updateGameStatus("waiting", data.player2);
 					render.updateSpecCount(data.spec_count);
 				}
 				else if (data.status == "running")
 				{
-					render.updateGameStatus("running");
+					render.updateGameStatus("running", null);
 					render.updateSpecCount(data.spec_count);
-					render.updatePts(1, data.scores.player1);
-					render.updatePts(2, data.scores.player2);
+					render.updatePts(data.players);
 
 					if (ball == null)
 						ball = new Ball(data.ball)
@@ -173,7 +172,7 @@ document.addEventListener('turbolinks:load', () => {
 				}
 				else if (data.status == "finished")
 				{
-					render.updateGameStatus(data.winner + " wins");
+					render.updateGameStatus(data.winner + " won !", null);
 					setUpdateRate(0);
 					render.resetCanvas();
 					sub.unsubscribe();
