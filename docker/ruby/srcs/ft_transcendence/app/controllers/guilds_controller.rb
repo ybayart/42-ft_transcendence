@@ -1,5 +1,7 @@
 class GuildsController < ApplicationController
 	before_action :set_guild, only: [:show, :edit, :update, :destroy]
+	before_action :is_mine, only: [:edit, :update, :destroy]
+	before_action :no_guild, only: [:new, :create]
 
 	# GET /guilds
 	# GET /guilds.json
@@ -90,6 +92,14 @@ class GuildsController < ApplicationController
 		# Use callbacks to share common setup or constraints between actions.
 		def set_guild
 			@guild = Guild.find(params[:id])
+		end
+
+		def is_mine
+			redirect_to guild_path(@guild), :alert => "It's not yours" and return unless @guild.owner == current_user
+		end
+
+		def no_guild
+			redirect_to guilds_path, :alert => "You're already enrolled" and return unless current_user.guild.nil?
 		end
 
 		# Only allow a list of trusted parameters through.

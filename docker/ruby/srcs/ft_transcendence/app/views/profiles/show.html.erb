@@ -25,7 +25,7 @@
 
 	<%= link_to 'Edit', edit_profile_path(@profile) %>
 <% elsif current_user.friends.exclude?(@profile) %>
-	<%= link_to 'Add to friend', profile_friends_path(current_user, friendship: {friend_b_id: @profile}), method: :post %>
+	<%= link_to 'Add to friend', profile_friends_path(current_user, friendship: {friend_b_id: @profile}), method: :post, remote: true %>
 <% end %>
 
 <br><hr>

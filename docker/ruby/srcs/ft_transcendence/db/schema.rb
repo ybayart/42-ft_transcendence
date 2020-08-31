@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_08_27_110329) do
+ActiveRecord::Schema.define(version: 2020_08_24_233610) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -36,25 +36,6 @@ ActiveRecord::Schema.define(version: 2020_08_27_110329) do
     t.index ["key"], name: "index_active_storage_blobs_on_key", unique: true
   end
 
-  create_table "dm_messages", force: :cascade do |t|
-    t.bigint "dm_id"
-    t.bigint "user_id"
-    t.text "message"
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
-    t.index ["dm_id"], name: "index_dm_messages_on_dm_id"
-    t.index ["user_id"], name: "index_dm_messages_on_user_id"
-  end
-
-  create_table "dms", force: :cascade do |t|
-    t.bigint "user1_id"
-    t.bigint "user2_id"
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
-    t.index ["user1_id"], name: "index_dms_on_user1_id"
-    t.index ["user2_id"], name: "index_dms_on_user2_id"
-  end
-
   create_table "friendships", id: false, force: :cascade do |t|
     t.bigint "friend_a_id"
     t.bigint "friend_b_id"
@@ -63,10 +44,10 @@ ActiveRecord::Schema.define(version: 2020_08_27_110329) do
   end
 
   create_table "games", force: :cascade do |t|
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
     t.bigint "player1_id"
     t.bigint "player2_id"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
     t.string "status"
     t.integer "player1_pts", default: 0
     t.integer "player2_pts", default: 0
@@ -160,6 +141,7 @@ ActiveRecord::Schema.define(version: 2020_08_27_110329) do
     t.string "privacy"
     t.string "password"
     t.bigint "owner_id"
+    t.boolean "dm"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["name"], name: "index_rooms_on_name", unique: true

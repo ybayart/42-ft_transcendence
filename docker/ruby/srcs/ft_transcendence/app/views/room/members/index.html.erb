@@ -14,7 +14,7 @@
     <% @room_members.each do |room_member| %>
       <tr>
         <td><%= room_member.nickname %></td>
-        <td><%= link_to 'Destroy', room_member_path(@room, room_member), method: :delete, data: { confirm: 'Are you sure?' } %></td>
+        <td><%= link_to 'Destroy', room_member_path(@room, room_member), method: :delete, data: { confirm: 'Are you sure?' }, remote: true %></td>
       </tr>
     <% end %>
   </tbody>

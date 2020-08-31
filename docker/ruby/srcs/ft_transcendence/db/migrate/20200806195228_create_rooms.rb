@@ -5,6 +5,7 @@ class CreateRooms < ActiveRecord::Migration[6.0]
 			t.string :privacy
 			t.string :password
 			t.references :owner
+			t.boolean :dm
 
 			t.timestamps
 		end

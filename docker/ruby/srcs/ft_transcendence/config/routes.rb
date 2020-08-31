@@ -34,6 +34,11 @@ Rails.application.routes.draw do
 	end
 	resources :wars
 
+	resources :admins, only: [:index]
+	namespace :admins do
+		resources :rooms, controller: 'admin/rooms'
+	end
+
 	namespace :api do
 		resources :room_users
 		resources :room_settings, only: [:show, :update, :destroy]

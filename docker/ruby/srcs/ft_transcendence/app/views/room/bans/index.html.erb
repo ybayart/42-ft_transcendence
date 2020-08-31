@@ -22,7 +22,7 @@
         <td><%= room_ban.end_at %></td>
         <td><%= link_to 'Show', room_ban_path(@room, room_ban) %></td>
         <td><%= link_to 'Edit', edit_room_ban_path(@room, room_ban) %></td>
-        <td><%= link_to 'Destroy', room_ban_path(@room, room_ban), method: :delete, data: { confirm: 'Are you sure?' } %></td>
+        <td><%= link_to 'Destroy', room_ban_path(@room, room_ban), method: :delete, data: { confirm: 'Are you sure?' }, remote: true %></td>
       </tr>
     <% end %>
   </tbody>
