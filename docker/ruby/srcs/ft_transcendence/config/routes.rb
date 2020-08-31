@@ -1,6 +1,6 @@
 Rails.application.routes.draw do
 
-	root to: 'profiles#friends'
+	root to: 'profile/friends#index'
 	resources :profiles do
 		get 'otp', on: :collection
 		post 'otppost', on: :collection
@@ -27,16 +27,15 @@ Rails.application.routes.draw do
 
 	resources :guilds do
 		get 'invitations', on: :collection
-		patch 'invitationspost/:id', to: 'guilds#invitationspost', on: :collection, as: "invitationspost"
+		patch 'invitationspost/:id', to: 'guilds#invitationspost', on: :collection
 		resources :invites, controller: 'guild/invites', only: [:index, :new, :create, :destroy]
 		resources :members, controller: 'guild/members', only: [:index, :destroy]
 		resources :officers, controller: 'guild/officers', only: [:index, :new, :create, :destroy]
 	end
 	resources :wars
 
-	resources :admins, only: [:index]
-	namespace :admins do
-		resources :rooms, controller: 'admin/rooms'
+	namespace :admin do
+		resources :rooms, controller: 'rooms', only: [:index, :show, :destroy]
 	end
 
 	namespace :api do

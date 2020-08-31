@@ -33,8 +33,18 @@
 						<%= link_to guilds_path, class: 'navbar-item navbar-btn' do %>
 							<button type="button">Guilds</button>
 						<% end %>
+						<% if current_user.staff %>
+							<%= link_to admin_rooms_path, class: 'navbar-item navbar-btn' do %>
+								<button type="button">Admins</button>
+							<% end %>
+						<% end %>
 					<% else %>
-						<button type="button">BTN Admin</button>
+						<%= link_to root_path, class: 'navbar-item navbar-btn' do %>
+							<button type="button">Site</button>
+						<% end %>
+						<%= link_to admin_rooms_path, class: 'navbar-item navbar-btn' do %>
+							<button type="button">Rooms</button>
+						<% end %>
 					<% end %>
 				</ul>
 				<ul class="navbar-nav">

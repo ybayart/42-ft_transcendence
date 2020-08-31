@@ -1,4 +1,65 @@
 <p id="notice"><%= notice %></p>
 
-<%= link_to 'Edit', edit_admin_room_path(@admin_room) %> |
+<%= link_to 'Destroy', room_path(@room, back: true), method: :delete, remote: true %> | 
 <%= link_to 'Back', admin_rooms_path %>
+<br>
+
+<div style="width: 100%; text-align: center;">
+	<div style="width: 20%; float: left;">
+		<p><b>Owner</b></p>
+		<p><%= @room.owner.nickname %></p>
+	</div>
+	<div style="width: 20%; float: left;">
+		<p><b>Admins</b></p>
+		<% @admins.each do |user| %>
+			<p>
+				<%= user.nickname %>
+				<%= link_to '>>', room_admin_path(@room, user, back: true), method: :delete, remote: true %>
+			</p>
+		<% end %>
+	</div>
+	<div style="width: 20%; float: left;">
+		<p><b>Members</b> <%= link_to '+', new_room_member_path(@room, redirect: request.path) %></p>
+		<% @members.each do |user| %>
+			<p>
+				<%= link_to '<<', room_admins_path(@room, room_admin: {user_id: user}, back: true), method: :post, remote: true %>
+				<%= user.nickname %>
+				<%= link_to 'x', room_member_path(@room, user, back: true), method: :delete, remote: true %>
+			</p>
+		<% end %>
+	</div>
+	<div style="width: 20%; float: left;">
+		<p><b>Bans</b></p>
+		<% @room.bans.where('end_at > ?', DateTime.now.utc).each do |ban| %>
+			<p><%= ban.user.nickname %></p>
+		<% end %>
+	</div>
+	<div style="width: 20%; float: left;">
+		<p><b>Mutes</b></p>
+		<% @room.mutes.where('end_at > ?', DateTime.now.utc).each do |mute| %>
+			<p><%= mute.user.nickname %></p>
+		<% end %>
+	</div>
+</div>
+
+<div style="width: 90%; margin: 5%; float: left; text-align: center;">
+	<hr>
+	<table style="width: 100%;">
+		<thead>
+			<tr>
+				<th>Sender</th>
+				<th>Message</th>
+				<th>Date</th>
+			</tr>
+		</thead>
+		<tbody>
+			<% @room.room_messages.order("created_at DESC").each do |message| %>
+				<tr>
+					<td><%= message.user.nickname %></td>
+					<td><%= message.message %></td>
+					<td><%= message.created_at %></td>
+				</tr>
+			<% end %>
+		</tbody>
+	</table>
+</div>

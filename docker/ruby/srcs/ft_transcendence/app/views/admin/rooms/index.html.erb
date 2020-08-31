@@ -3,23 +3,20 @@
 <h1>Admin Rooms</h1>
 
 <table>
-  <thead>
-    <tr>
-      <th colspan="3"></th>
-    </tr>
-  </thead>
+	<thead>
+		<tr>
+			<th>Name</th>
+			<th colspan="3"></th>
+		</tr>
+	</thead>
 
-  <tbody>
-    <% @admin_rooms.each do |admin_room| %>
-      <tr>
-        <td><%= link_to 'Show', admin_room %></td>
-        <td><%= link_to 'Edit', edit_admin_room_path(admin_room) %></td>
-        <td><%= link_to 'Destroy', admin_room, method: :delete, data: { confirm: 'Are you sure?' } %></td>
-      </tr>
-    <% end %>
-  </tbody>
+	<tbody>
+		<% @rooms.each do |room| %>
+			<tr>
+				<td><%= room.name %></td>
+				<td><%= link_to 'Show', admin_room_path(room) %></td>
+				<td><%= link_to 'Destroy', room_path(room, back: true), method: :delete, data: { confirm: 'Are you sure?' }, remote: true %></td>
+			</tr>
+		<% end %>
+	</tbody>
 </table>
-
-<br>
-
-<%= link_to 'New Admin Room', new_admin_room_path %>

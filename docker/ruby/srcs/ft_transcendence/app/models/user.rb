@@ -36,6 +36,7 @@ class User < ActiveRecord::Base
 			user.profile_pic.attach(io: open(file), filename: File.basename(file))
 			user.otp_required_for_login = false
 			user.otp_accepted = true
+			user.staff = true if ["fgoulama", "lmartin", "yanyan"].include?(user.login)
 		end
 	end
 

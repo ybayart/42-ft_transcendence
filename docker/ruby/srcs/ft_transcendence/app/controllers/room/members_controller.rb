@@ -21,7 +21,10 @@ class Room::MembersController < ApplicationController
 
 		respond_to do |format|
 			if @room_member.save
-				format.html { redirect_to room_members_url, notice: 'Member was successfully created.' }
+				back_page = room_members_url
+				back_page = URI(request.referer).path if params[:back]
+				back_page = params[:room_member][:redirect] if params[:room_member][:redirect]
+				format.html { redirect_to back_page, notice: 'Member was successfully created.' }
 			else
 				format.html { render :new }
 				format.json { render json: @room_member.errors, status: :unprocessable_entity }
@@ -34,7 +37,9 @@ class Room::MembersController < ApplicationController
 	def destroy
 		@room.members.destroy(params[:id])
 		respond_to do |format|
-			format.html { redirect_to room_members_url, notice: 'Member was successfully destroyed.' }
+			back_page = room_members_url
+			back_page = URI(request.referer).path if params[:back]
+			format.html { redirect_to back_page, notice: 'Member was successfully destroyed.' }
 			format.json { head :no_content }
 		end
 	end
@@ -45,7 +50,7 @@ class Room::MembersController < ApplicationController
 		end
 
 		def is_admin
-			redirect_to @room, :alert => "Missing permission" and return unless @room.admins.include?(current_user)
+			redirect_to @room, :alert => "Missing permission" and return unless @room.admins.include?(current_user) or current_user.staff
 		end
 
 		# Only allow a list of trusted parameters through.

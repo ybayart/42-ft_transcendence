@@ -16,6 +16,8 @@
 	<%= form.collection_select :user_id, User.all - @room.members, :id, :nickname %>
   </div>
 
+  <%= form.hidden_field :redirect, :value => params[:redirect] %>
+
   <div class="actions">
     <%= form.submit %>
   </div>

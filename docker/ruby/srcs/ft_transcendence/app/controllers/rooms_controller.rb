@@ -1,6 +1,7 @@
 class RoomsController < ApplicationController
 	before_action :load_entities
 	before_action :check_member, only: [:show, :password]
+	before_action :is_owner, only: [:destroy]
 
 	def index
 	end
@@ -62,6 +63,18 @@ class RoomsController < ApplicationController
 		end
 	end
 
+	# DELETE /guilds/1
+	# DELETE /guilds/1.json
+	def destroy
+		@room.destroy
+		respond_to do |format|
+			back_page = rooms_url
+			back_page = URI(request.referer).path if params[:back]
+			format.html { redirect_to back_page, notice: 'Room was successfully destroyed.' }
+			format.json { head :no_content }
+		end
+	end
+
 	protected
 
 	def load_entities
@@ -80,5 +93,9 @@ class RoomsController < ApplicationController
 
 	def check_member
 		redirect_to rooms_path, :alert => "You don't have permission to enter in this room" and return if @room.members.include?(current_user) == false && @room.privacy == "private"
+	end
+
+	def is_owner
+		redirect_to @room, :alert => "Missing permission" and return unless @room.owner == current_user or current_user.staff
 	end
 end

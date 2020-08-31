@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_08_24_233610) do
+ActiveRecord::Schema.define(version: 2020_08_25_105333) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -170,6 +170,7 @@ ActiveRecord::Schema.define(version: 2020_08_24_233610) do
     t.string "uid"
     t.string "nickname"
     t.string "state", default: "offline"
+    t.boolean "staff", default: false
     t.string "encrypted_otp_secret"
     t.string "encrypted_otp_secret_iv"
     t.string "encrypted_otp_secret_salt"
