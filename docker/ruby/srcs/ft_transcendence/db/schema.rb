@@ -88,6 +88,14 @@ ActiveRecord::Schema.define(version: 2020_08_24_233610) do
     t.index ["owner_id"], name: "index_guilds_on_owner_id"
   end
 
+  create_table "notifications", force: :cascade do |t|
+    t.string "message"
+    t.bigint "user_id", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["user_id"], name: "index_notifications_on_user_id"
+  end
+
   create_table "room_bans", force: :cascade do |t|
     t.bigint "user_id"
     t.bigint "by_id"
@@ -200,6 +208,7 @@ ActiveRecord::Schema.define(version: 2020_08_24_233610) do
   add_foreign_key "games", "users", column: "player2_id"
   add_foreign_key "games", "users", column: "winner_id"
   add_foreign_key "guild_invit_members", "users", column: "by_id"
+  add_foreign_key "notifications", "users"
   add_foreign_key "room_bans", "users", column: "by_id"
   add_foreign_key "room_messages", "rooms"
   add_foreign_key "room_messages", "users"

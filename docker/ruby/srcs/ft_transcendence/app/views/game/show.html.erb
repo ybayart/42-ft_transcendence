@@ -1,9 +1,1 @@
-<canvas class="myCanvas"></canvas>
-<br>
-<div class="player1" style="display:hidden;" value="<%= @game.player1.nickname %>"></div>
-<div class="GameInfo" value="<%= @game.id %>" >
-  <p> Game status : <div id="game_status"><%= @game.status %></div> </p>
-  <p> Player 1 points : <div id="p1_pts">0</div></p>
-  <p> Player 2 points : <div id="p2_pts">0</div></p>
-  <p> Spec count : <div id="spec_count">0</div></p>
-</div>
+<%= render 'game' %>

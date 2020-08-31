@@ -6,8 +6,12 @@ class UpdateGameStateJob < ApplicationJob
 		if @gameLogic
 			@game = @gameLogic.game
 		end
+    $i = 0
 	while @gameLogic
-			@game.reload(lock: true)
+            if $i >= 100
+			  @game.reload(lock: true)
+              $i = 0
+            end
 			if @game.status == "running"
 				process_inputs(@gameLogic)
 			  	if @gameLogic.state == "play"
@@ -22,6 +26,7 @@ class UpdateGameStateJob < ApplicationJob
 				end
 			end
 		  	@gameLogic = GameLogic.search(id)
+            $i += 10
 			sleep(1.0/20.0)
 		end
 	end
@@ -42,14 +47,21 @@ class UpdateGameStateJob < ApplicationJob
 	def send_game_state(gameLogic, game)
 		if (@game.status == "waiting")
 			ActionCable.server.broadcast("game_#{@game.id}", {
-				status: @game.status
+				status: @game.status,
+				player2: @game.player2 ? @game.player2.nickname : nil
 			});
 		elsif (@game.status == "running")
 			ActionCable.server.broadcast("game_#{@game.id}", {
 				status: @game.status,
-				scores: {
-					player1: @gameLogic.player_scores[0],
-					player2: @gameLogic.player_scores[1]
+				players: {
+					nicknames: [
+						@game.player1.nickname,
+						@game.player2.nickname
+					],
+					scores: [
+						@gameLogic.player_scores[0],
+						@gameLogic.player_scores[1]
+					]
 				},
 				paddles: [
 				{
@@ -82,7 +94,7 @@ class UpdateGameStateJob < ApplicationJob
 		elsif (@game.status == "finished" && @game.winner)
 			ActionCable.server.broadcast("game_#{@game.id}", {
 				status: @game.status,
-				winner: @game.winner.login
+				winner: @game.winner.nickname
 			});
 		end
 	end
