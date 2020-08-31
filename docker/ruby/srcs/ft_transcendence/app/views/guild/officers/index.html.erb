@@ -14,7 +14,7 @@
 		<% @guild_officers.each do |guild_officer| %>
 			<tr>
 				<td><%= guild_officer.nickname %></td>
-				<td><%= link_to 'Destroy', guild_officer_path(@guild, guild_officer), method: :delete, data: { confirm: 'Are you sure?' } %></td>
+				<td><%= link_to 'Destroy', guild_officer_path(@guild, guild_officer), method: :delete, data: { confirm: 'Are you sure?' }, remote: true %></td>
 			</tr>
 		<% end %>
 	</tbody>

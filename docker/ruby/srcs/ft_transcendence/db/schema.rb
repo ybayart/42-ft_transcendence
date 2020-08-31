@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_08_25_105333) do
+ActiveRecord::Schema.define(version: 2020_08_24_233610) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -44,10 +44,10 @@ ActiveRecord::Schema.define(version: 2020_08_25_105333) do
   end
 
   create_table "games", force: :cascade do |t|
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
     t.bigint "player1_id"
     t.bigint "player2_id"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
     t.string "status"
     t.integer "player1_pts", default: 0
     t.integer "player2_pts", default: 0
@@ -149,6 +149,7 @@ ActiveRecord::Schema.define(version: 2020_08_25_105333) do
     t.string "privacy"
     t.string "password"
     t.bigint "owner_id"
+    t.boolean "dm"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["name"], name: "index_rooms_on_name", unique: true
