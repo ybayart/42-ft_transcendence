@@ -54,7 +54,7 @@ document.addEventListener('turbolinks:load', () => {
 					paddles[me].goDown();
 			}
 			else if (e.key == ' ')
-				sub.perform('throw_ball', { id: inputs_id });
+				sub.perform('space', { id: inputs_id });
 			inputs_id++;
 		}
 

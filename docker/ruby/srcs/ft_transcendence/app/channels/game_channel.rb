@@ -14,12 +14,6 @@ class GameChannel < ApplicationCable::Channel
 		if current_user != @game.player1 && current_user != @game.player2
 			@gameLogic.addSpec
 		end
-		if @game.player1 && @game.player2 && @game.status == "waiting"
-			if @@subscribers[@game.id].index(@game.player1.id) && @@subscribers[@game.id].index(@game.player2.id)
-				@game.status = "running"
-				@game.save
-			end
-		end
 		ActionCable.server.broadcast("game_#{@game.id}", {
 			config:
 			{
@@ -44,7 +38,12 @@ class GameChannel < ApplicationCable::Channel
 		@gameLogic.addInput(data["type"], data["id"], getCurrentPlayerNumber)
 	end
 
-	def throw_ball
+	def space
+		if current_user == @game.player1 && !@gameLogic.player_ready[0]
+			@gameLogic.player_ready[0] = true
+		elsif current_user == @game.player2 && !@gameLogic.player_ready[1]
+			@gameLogic.player_ready[1] = true
+		end
 		if @game.status == "running" && @gameLogic.state == "pause"
 			if current_user == @game.player1 && @gameLogic.last_loser == 1
 				@gameLogic.start(1)
