@@ -34,6 +34,7 @@ class GameLogic
     @last_collision = if @last_loser == 1 then @paddles[0] else @paddles[1] end
     @ball = Ball.new(@last_loser, @paddles[@last_loser - 1])
     @player_scores = Array.new(2, 0)
+    @player_nicknames = Array.new(2)
     @state = "pause"
     @game = Game.find_by(id: id)
     @inputs = Array.new()
@@ -61,6 +62,15 @@ class GameLogic
 
   def player_scores
     @player_scores
+  end
+
+  def player_nicknames
+    @player_nicknames
+  end
+
+  def set_nicknames(player1, player2)
+  	@player_nicknames[0] = player1
+  	@player_nicknames[1] = player2
   end
 
   def last_loser
@@ -140,12 +150,14 @@ class GameLogic
     if (gameEnd)
       designate_winner
       if @game.mode == "ranked"
-        @game.player1.rank = @game.player2.rank
-        @game.player2.rank = @game.player1.rank
-        if @game.winner.rank == 5
-          @game.winner.rank = 4
-          @game.winner.save
-        end
+		$tmp = @game.player2.rank
+		@game.player2.rank = @game.player1.rank
+		@game.player1.rank = $tmp
+		$count = User.where("rank = ?", @game.winner.rank + 1).count
+		if $count == 0 && @game.winner.rank + 1 > 0
+			@game.winner.rank += 1
+			@game.winner.save
+		end
         @game.player1.save
         @game.player2.save
       end

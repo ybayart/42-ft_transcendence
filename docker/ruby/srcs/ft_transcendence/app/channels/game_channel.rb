@@ -75,10 +75,12 @@ class GameChannel < ApplicationCable::Channel
 			@game.player1_pts = @gameLogic.player_scores[0]
 			@game.player2_pts = @gameLogic.player_scores[1]
 			if @game.mode == "ranked"
-				@game.player1.rank = @game.player2.rank
+				$tmp = @game.player2.rank
 				@game.player2.rank = @game.player1.rank
-				if @game.winner.rank == 5
-					@game.winner.rank = 4
+				@game.player1.rank = $tmp
+				$count = User.where("rank = ?", @game.winner.rank + 1).count
+				if $count == 0 && @game.winner.rank + 1 > 0
+					@game.winner.rank += 1
 					@game.winner.save
 				end
 				@game.player1.save

@@ -2,12 +2,12 @@ class UpdateGameStateJob < ApplicationJob
 	queue_as :default
 
  	def perform(id)
-	@gameLogic = GameLogic.search(id)
+		@gameLogic = GameLogic.search(id)
 		if @gameLogic
 			@game = @gameLogic.game
 		end
-    $i = 0
-	while @gameLogic
+   		$i = 0
+		while @gameLogic
             if $i >= 100
 			  @game.reload(lock: true)
               $i = 0
@@ -51,12 +51,15 @@ class UpdateGameStateJob < ApplicationJob
 				player2: @game.player2 ? @game.player2.nickname : nil
 			});
 		elsif (@game.status == "running")
+			if @gameLogic.player_nicknames[0] == nil
+				@gameLogic.set_nicknames(@game.player1.nickname, @game.player1.nickname)
+			end
 			ActionCable.server.broadcast("game_#{@game.id}", {
 				status: @game.status,
 				players: {
 					nicknames: [
-						@game.player1.nickname,
-						@game.player2.nickname
+						@gameLogic.player_nicknames[0],
+						@gameLogic.player_nicknames[1]
 					],
 					scores: [
 						@gameLogic.player_scores[0],
