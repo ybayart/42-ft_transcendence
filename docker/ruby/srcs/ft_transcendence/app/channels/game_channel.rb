@@ -77,6 +77,10 @@ class GameChannel < ApplicationCable::Channel
 			if @game.mode == "ranked"
 				@game.player1.rank = @game.player2.rank
 				@game.player2.rank = @game.player1.rank
+				if @game.winner.rank == 5
+					@game.winner.rank = 4
+					@game.winner.save
+				end
 				@game.player1.save
 				@game.player2.save
 			end

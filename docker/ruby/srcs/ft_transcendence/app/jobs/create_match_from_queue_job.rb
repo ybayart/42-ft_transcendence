@@ -8,7 +8,7 @@ class CreateMatchFromQueueJob < ApplicationJob
 				@queue[0..-2].each_with_index do |p1, i|
 					$player1 = p1;
 					$player2 = nil;
-					@queue[i..-1].each_with_index do |p2, j|
+					@queue[i..-1].each do |p2|
 						if p2.rank == p1.rank + 1
 							$player2 = p2;
 							break

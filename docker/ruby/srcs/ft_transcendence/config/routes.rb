@@ -18,7 +18,7 @@ Rails.application.routes.draw do
 
 	resources :dms
 
-	resources :game, only: [:index, :show]
+	resources :game, only: [:index, :show, :update]
 	get '/play', to: 'game#play'
 	get '/test', to: 'game#test'
 	get '/spectate/:id', to: 'game#spectate'

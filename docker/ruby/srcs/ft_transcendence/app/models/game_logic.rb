@@ -40,7 +40,6 @@ class GameLogic
     @processed_inputs = Array.new(2)
     @processed_inputs[0] = []
     @processed_inputs[1] = []
-    @job_launched = false
     @spec_count = 0
   end
 
@@ -78,14 +77,6 @@ class GameLogic
 
   def spec_count
     @spec_count
-  end
-
-  def job_launched
-    @job_launched
-  end
-
-  def set_job
-    @job_launched = true
   end
 
   def addInput(type, id, player)
@@ -151,6 +142,10 @@ class GameLogic
       if @game.mode == "ranked"
         @game.player1.rank = @game.player2.rank
         @game.player2.rank = @game.player1.rank
+        if @game.winner.rank == 5
+          @game.winner.rank = 4
+          @game.winner.save
+        end
         @game.player1.save
         @game.player2.save
       end
