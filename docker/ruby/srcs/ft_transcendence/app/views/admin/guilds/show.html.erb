@@ -5,11 +5,11 @@
 
 <div style="width: 100%; text-align: center;">
 	<div style="width: 25%; float: left">
-		<p><b>Owner</b</p>
+		<p><b>Owner</b></p>
 		<p><%= @guild.owner.nickname %></p>
 	</div>
 	<div style="width: 25%; float: left">
-		<p><b>Officers</b</p>
+		<p><b>Officers</b></p>
 		<% @officers.each do |user| %>
 			<p>
 				<%= user.nickname %>
@@ -18,7 +18,7 @@
 		<% end %>
 	</div>
 	<div style="width: 25%; float: left">
-		<p><b>Members</b</p>
+		<p><b>Members</b></p>
 		<% @members.each do |user| %>
 			<p>
 				<%= link_to '<<', guild_officers_path(@guild, guild_officer: {user_id: user}, back: true), method: :post, remote: true %>
@@ -27,7 +27,7 @@
 		<% end %>
 	</div>
 	<div style="width: 25%; float: left">
-		<p><b>Pending invitations</b</p>
+		<p><b>Pending invitations</b></p>
 		<% @invits.each do |user| %>
 			<p>
 				<%= user.nickname %>
