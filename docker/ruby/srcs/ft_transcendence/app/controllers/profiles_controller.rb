@@ -21,7 +21,7 @@ class ProfilesController < ApplicationController
 	end
 
 	def show
-		@matchs_history = Game.where(player1: @profile).or(Game.where(player2: @profile))
+		@matchs_history = Game.where(player1: @profile).or(Game.where(player2: @profile)).order("updated_at DESC")
 	end
 
 	def edit

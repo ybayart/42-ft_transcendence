@@ -1,6 +1,7 @@
 class Guild::OfficersController < ApplicationController
 	before_action :set_guild
 	before_action :is_owner
+	before_action :not_empty, only: [:new, :create]
 
 	# GET /guild/officers
 	# GET /guild/officers.json
@@ -21,7 +22,9 @@ class Guild::OfficersController < ApplicationController
 
 		respond_to do |format|
 			if @guild_officer.save
-				format.html { redirect_to guild_officers_url, notice: 'Officer was successfully created.' }
+				back_page = guild_officers_url
+				back_page = URI(request.referer).path if params[:back]
+				format.html { redirect_to back_page, notice: 'Officer was successfully created.' }
 			else
 				format.html { render :new }
 				format.json { render json: @guild_officer.errors, status: :unprocessable_entity }
@@ -34,7 +37,9 @@ class Guild::OfficersController < ApplicationController
 	def destroy
 		@guild.officers.destroy(params[:id])
 		respond_to do |format|
-			format.html { redirect_to guild_officers_url, notice: 'Officer was successfully destroyed.' }
+			back_page = guild_officers_url
+			back_page = URI(request.referer).path if params[:back]
+			format.html { redirect_to back_page, notice: 'Officer was successfully destroyed.' }
 			format.json { head :no_content }
 		end
 	end
@@ -45,11 +50,15 @@ class Guild::OfficersController < ApplicationController
 		end
 
 		def is_owner
-			redirect_to @guild, :alert => "Missing permission" and return unless @guild.owner == current_user
+			redirect_to @guild, :alert => "Missing permission" and return unless @guild.owner == current_user or current_user.staff
 		end
 
 		# Only allow a list of trusted parameters through.
 		def guild_officer_params
 			params.require(:guild_officer).permit(:user_id)
+		end
+
+		def not_empty
+			redirect_to guild_officers_path, :alert => "No user to add" and return if (@guild.members - @guild.officers).empty?
 		end
 end

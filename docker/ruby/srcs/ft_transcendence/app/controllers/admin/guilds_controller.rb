@@ -10,6 +10,9 @@ class Admin::GuildsController < AdminController
 	# GET /admin/guilds/1
 	# GET /admin/guilds/1.json
 	def show
+		@officers = @guild.officers.order("nickname ASC") - [@guild.owner]
+		@members = @guild.members.order("nickname ASC") - @guild.officers
+		@invits = @guild.invites.where(state: "waiting").map(&:user)
 	end
 
 	private
