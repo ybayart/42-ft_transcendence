@@ -83,8 +83,17 @@ class GameChannel < ApplicationCable::Channel
 					@game.winner.rank += 1
 					@game.winner.save
 				end
+				if @game.winner.guild
+					@game.winner.guild.points += 3
+					@game.winner.guild.save
+				end
 				@game.player1.save
 				@game.player2.save
+			elsif @game.mode == "casual"
+				if @game.winner.guild
+					@game.winner.guild.points += 1
+					@game.winner.guild.save
+				end
 			end
 			@game.save
 		else
