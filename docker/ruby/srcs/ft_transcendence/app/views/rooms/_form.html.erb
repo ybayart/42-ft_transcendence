@@ -1,25 +1,14 @@
-<%= form_with(model: @room, remote: true) do |form| %>
-	<% if @room.errors.any? %>
-		<div id="error_explanation">
-			<h2>
-				<%= pluralize(@room.errors.count, "error") %> prohibited this modification from being saved:
-			</h2>
-			<ul>
-				<% @room.errors.full_messages.each do |msg| %>
-					<li><%= msg %></li>
-				<% end %>
-			</ul>
-		</div>
-	<% end %>
-
+<%= form_with(model: @room) do |form| %>
 	<p>
 		<%= form.label :name %><br>
 		<%= form.text_field :name %>
+		<%= form.error_for :name %>
 	</p>
 
 	<p>
 		<%= form.label :password %><br>
 		<%= form.password_field :password %>
+		<%= form.error_for :password %>
 	</p>
 
 	<p>

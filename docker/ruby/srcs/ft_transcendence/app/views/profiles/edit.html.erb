@@ -1,28 +1,19 @@
 <h1>Edit profile</h1>
 
-<%= form_for(@profile, :as => "profile", url: profile_path(@profile), remote: true) do |form| %>
-	<% if @profile.errors.any? %>
-		<div id="error_explanation">
-			<h2>
-				<%= pluralize(@profile.errors.count, "error") %> prohibited this modification from being saved:
-			</h2>
-			<ul>
-				<% @profile.errors.full_messages.each do |msg| %>
-					<li><%= msg %></li>
-				<% end %>
-			</ul>
-		</div>
-	<% end %>
-
+<%= form_with(model: @profile, url: profile_path(@profile)) do |form| %>
 	<p>
 		<%= form.label :nickname %><br>
 		<%= form.text_field :nickname %>
+		<%= form.error_for :nickname %>
 	</p>
 
 	<p>
 		<%= form.label :profile_pic %><br>
 		<%= form.file_field :profile_pic %>
+		<br>
+		<br>
 		<img src="<%= url_for(@profile.profile_pic) %>" style="max-height: 100px; max-width: 100px;">
+		<%= form.error_for :profile_pic %>
 	</p>
 
 	<br><br>

@@ -36,6 +36,7 @@ Rails.application.routes.draw do
 
 	namespace :admin do
 		resources :rooms, controller: 'rooms', only: [:index, :show, :destroy]
+		resources :guilds, controller: 'guilds', only: [:index, :show]
 	end
 
 	namespace :api do

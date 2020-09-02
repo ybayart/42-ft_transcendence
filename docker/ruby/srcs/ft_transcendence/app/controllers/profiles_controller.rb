@@ -46,18 +46,22 @@ class ProfilesController < ApplicationController
 
 	def update
 		unless @profile.nickname.blank?
-			params[:profile][:otp_required_for_login] = true if (@profile.otp_required_for_login and params[:profile][:otp_required_for_login] == true) or (params[:otp_code] and @profile.current_otp == params[:otp_code])
+			params[:user][:otp_required_for_login] = true if (@profile.otp_required_for_login and params[:user][:otp_required_for_login] == true) or (params[:otp_code] and @profile.current_otp == params[:otp_code])
 		end
-		if @profile.update(profile_params)
-			redirect_to profile_path(@profile)
-		else
-			render 'edit'
+		respond_to do |format|
+			if @profile.update(profile_params)
+				format.html {redirect_to profile_path(@profile), notice: 'Profile was successfully updated.' }
+				format.json { render :show, status: :ok, location: profile_path(@profile) }
+			else
+				format.html { broadcast_errors @profile, profile_params }
+				format.json { render json: @profile.errors, status: :unprocesable_entity }
+			end
 		end
 	end
 
 	private
 		def profile_params
-			params.require(:profile).permit(:nickname, :profile_pic, :otp_required_for_login)
+			params.require(:user).permit(:nickname, :profile_pic, :otp_required_for_login)
 		end
 
 		def set_profile

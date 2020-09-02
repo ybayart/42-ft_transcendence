@@ -1,4 +1,4 @@
-class Admin::RoomsController < ApplicationController
+class Admin::RoomsController < AdminController
 	before_action :set_admin_room, only: [:show, :edit, :update, :destroy]
 
 	# GET /admin/rooms

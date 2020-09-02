@@ -35,14 +35,17 @@ class RoomsController < ApplicationController
 	end
 
 	def create
-		@room = Room.new permitted_parameters
+		@room = Room.new room_params
 		@room.owner = current_user
 
-		if @room.save
-			flash[:success] = "Room #{@room.name} was created successfully"
-			redirect_to rooms_path
-		else
-			render :new
+		respond_to do |format|
+			if @room.save
+				format.html { redirect_to @room, notice: 'Room was successfully created.' }
+				format.json { render :show, status: :created, location: @room }
+			else
+				format.html { broadcast_errors @room, room_params }
+				format.json { render json: @room.errors, status: :unprocessable_entity }
+			end
 		end
 	end
 
@@ -52,7 +55,7 @@ class RoomsController < ApplicationController
 
 	def update
 		if @room.owner == current_user
-			if @room.update_attributes(permitted_parameters)
+			if @room.update_attributes(room_params)
 				flash[:success] = "Room #{@room.name} was updated successfully"
 				redirect_to rooms_path
 			else
@@ -87,7 +90,7 @@ class RoomsController < ApplicationController
 		end
 	end
 
-	def permitted_parameters
+	def room_params
 		params.require(:room).permit(:name, :privacy, :password)
 	end
 
