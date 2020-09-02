@@ -1,8 +1,9 @@
 class Room::MutesController < ApplicationController
 	before_action :set_room
-	before_action	:is_admin
+	before_action :is_admin
 	before_action :set_room_mute, only: [:show, :edit, :update, :destroy]
 	before_action :not_empty, only: [:new, :create]
+	before_action :active, only: [:edit, :update, :destroy]
 
 	# GET /room/mutes
 	# GET /room/mutes.json
@@ -88,5 +89,9 @@ class Room::MutesController < ApplicationController
 
 		def not_empty
 			redirect_to room_mutes_path, :alert => "No user to add" and return if (@room.members - @room.admins).empty?
+		end
+
+		def active
+			redirect_to room_mutes_path, :alert => "Already ended" and return if @room_mute.end_at.past?
 		end
 end
