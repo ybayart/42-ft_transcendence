@@ -46,7 +46,7 @@ class GameChannel < ApplicationCable::Channel
 	def getCurrentPlayerNumber
 		if current_user == @game.player1
 			return 1
-        elsif current_user == @game.player2
+		elsif current_user == @game.player2
 			return 2
 		end
 	end
@@ -56,12 +56,16 @@ class GameChannel < ApplicationCable::Channel
 	end
 
 	def space
-		if current_user == @game.player1 && !@gameLogic.player_ready[0]
-			@gameLogic.player_ready[0] = true
-		elsif current_user == @game.player2 && !@gameLogic.player_ready[1]
-			@gameLogic.player_ready[1] = true
+		if @game.status == "waiting"
+			@game.reload(lock: true)
+			if current_user == @game.player1 && !@gameLogic.player_ready[0]
+				@gameLogic.player_ready[0] = true
+			elsif current_user == @game.player2 && !@gameLogic.player_ready[1]
+				@gameLogic.player_ready[1] = true
+			end
 		end
 		if @game.status == "running" && @gameLogic.state == "pause"
+			@game.reload(lock: true)
 			if current_user == @game.player1 && @gameLogic.last_loser == 1
 				@gameLogic.start(1)
 			elsif current_user == @game.player2 && @gameLogic.last_loser == 2

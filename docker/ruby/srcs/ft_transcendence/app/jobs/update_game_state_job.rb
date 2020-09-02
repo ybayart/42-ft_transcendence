@@ -8,29 +8,28 @@ class UpdateGameStateJob < ApplicationJob
 		end
    		$i = 0
 		while @gameLogic
-            if $i >= 100
-			  @game.reload(lock: true)
-              $i = 0
-            end
+			if $i >= 100
+				@game.reload(lock: true)
+				$i = 0
+			end
 			if @game.status == "waiting"
 				if @gameLogic.player_ready[0] && @gameLogic.player_ready[1]
 					@game.status = "running"
 					@game.save
 				end
-			elsif @game.status == "running"
+			end
+			if @game.status == "running"
 				process_inputs(@gameLogic)
 			  	if @gameLogic.state == "play"
 					@gameLogic.updateBallPos
-			    end
-            end
+				end
+			end
+			send_game_state(@gameLogic, @game)
 			if @game.status == "finished"
-			    send_game_state(@gameLogic, @game)
 				GameLogic.delete(id)
 				if (!@game.winner)
 					Game.delete(id)
 				end
-            else
-			    send_game_state(@gameLogic, @game)
             end
 		  	@gameLogic = GameLogic.search(id)
             $i += 10
