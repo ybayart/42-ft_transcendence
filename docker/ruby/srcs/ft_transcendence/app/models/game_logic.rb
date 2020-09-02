@@ -38,6 +38,7 @@ class GameLogic
 		@player_ready = [false, false]
 		@state = "pause"
 		@game = Game.find_by(id: id)
+	    set_nicknames(@game.player1.nickname, @game.player2.nickname)
 		@inputs = Array.new()
 		@processed_inputs = Array.new(2)
 		@processed_inputs[0] = []

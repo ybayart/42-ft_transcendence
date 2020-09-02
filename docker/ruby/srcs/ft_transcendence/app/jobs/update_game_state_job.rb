@@ -22,13 +22,16 @@ class UpdateGameStateJob < ApplicationJob
 			  	if @gameLogic.state == "play"
 					@gameLogic.updateBallPos
 			    end
-			elsif @game.status == "finished"
+            end
+			if @game.status == "finished"
+			    send_game_state(@gameLogic, @game)
 				GameLogic.delete(id)
 				if (!@game.winner)
 					Game.delete(id)
 				end
-			end
-			send_game_state(@gameLogic, @game)
+            else
+			    send_game_state(@gameLogic, @game)
+            end
 		  	@gameLogic = GameLogic.search(id)
             $i += 10
 			sleep(1.0/20.0)
@@ -53,7 +56,7 @@ class UpdateGameStateJob < ApplicationJob
 			$status = @game.status
 			if !@gameLogic.player_ready[0] && @gameLogic.player_ready[1]
 				$status = "waiting for #{@gameLogic.player_nicknames[0]}"
-			elsif @gameLogic.player_ready[0] && !@gameLogic.player_read[1]
+			elsif @gameLogic.player_ready[0] && !@gameLogic.player_ready[1]
 				$status = "waiting for #{@gameLogic.player_nicknames[1]}"
 			end
 			ActionCable.server.broadcast("game_#{@game.id}", {
@@ -62,9 +65,6 @@ class UpdateGameStateJob < ApplicationJob
 				player2: @game.player2 ? @game.player2.nickname : nil
 			});
 		elsif (@game.status == "running")
-			if @gameLogic.player_nicknames[0] == nil
-				@gameLogic.set_nicknames(@game.player1.nickname, @game.player1.nickname)
-			end
 			ActionCable.server.broadcast("game_#{@game.id}", {
 				status: @game.status,
 				msg_status: "running",
@@ -113,7 +113,7 @@ class UpdateGameStateJob < ApplicationJob
 			end
 			ActionCable.server.broadcast("game_#{@game.id}", {
 				status: @game.status,
-				msg_status: "finished",
+				msg_status: $status,
 				winner: @game.winner.nickname
 			});
 		end
