@@ -37,6 +37,7 @@ class GameLogic
 	@player_nicknames = Array.new(2)
 	@state = "pause"
 	@game = Game.find_by(id: id)
+	@max_points = @game.max_points
 	@inputs = Array.new()
 	@processed_inputs = Array.new(2)
 	@processed_inputs[0] = []
@@ -234,7 +235,7 @@ class GameLogic
   end
 
   def gameEnd
-	(@player_scores[0] == 5 || @player_scores[1] == 5)
+	(@player_scores[0] == @max_points || @player_scores[1] == @max_points)
   end
 
   def designate_winner

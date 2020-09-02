@@ -97,7 +97,17 @@ class UpdateGameStateJob < ApplicationJob
 		elsif (@game.status == "finished" && @game.winner)
 			ActionCable.server.broadcast("game_#{@game.id}", {
 				status: @game.status,
-				winner: @game.winner.nickname
+				winner: @game.winner.nickname,
+				players: {
+					nicknames: [
+						@gameLogic.player_nicknames[0],
+						@gameLogic.player_nicknames[1]
+					],
+					scores: [
+						@gameLogic.player_scores[0],
+						@gameLogic.player_scores[1]
+					]
+				}
 			});
 		end
 	end

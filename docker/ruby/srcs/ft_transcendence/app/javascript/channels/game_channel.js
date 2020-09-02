@@ -173,6 +173,7 @@ document.addEventListener('turbolinks:load', () => {
 				else if (data.status == "finished")
 				{
 					render.updateGameStatus(data.winner + " won !", null);
+					render.updatePts(data.players);
 					setUpdateRate(0);
 					render.resetCanvas();
 					sub.unsubscribe();
