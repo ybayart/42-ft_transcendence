@@ -191,7 +191,7 @@ class GameLogic
 	end
 
 	def manage_collide
-		paddle = nil
+		$paddle = nil
 		if @ball.collidesLeft(@paddles[0].posX, @paddles[0].posY, @paddles[0].width, @paddles[0].height)
 			$paddle = @paddles[0]
 			if @ball.posX - @ball.radius < @paddles[0].posX + @paddles[0].width
