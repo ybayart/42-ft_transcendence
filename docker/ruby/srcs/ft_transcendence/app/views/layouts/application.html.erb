@@ -9,7 +9,7 @@
 		<%= javascript_pack_tag 'application', 'data-turbolinks-track': 'reload' %>
 	</head>
 
-	<body controller="<%= ({controller: controller_path, action: action_name}).to_json %>" mutes="<%= current_user.mutes.map(&:id) %>">
+	<body controller="<%= ({controller: controller_path, action: action_name}).to_json %>" mutes="<%= current_user.mutes.map(&:id) if user_signed_in? %>">
 		<% if !@nonavbar && user_signed_in? %>
 			<nav class="navbar navbar-light" style="align-items: first baseline;">
 				<%= link_to root_path, class: 'navbar-brand' do %>
