@@ -23,12 +23,7 @@ class GameController < ApplicationController
   end
 
   def test
-    @game = find_test_game
-    if @game.creator_id == current_user.id
-      render 'rules'
-    else
-      render 'show_rules'
-    end
+    find_test_game
   end
 
   def find_game

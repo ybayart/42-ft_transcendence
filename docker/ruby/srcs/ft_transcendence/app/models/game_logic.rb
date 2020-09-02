@@ -151,13 +151,14 @@ class GameLogic
 	if (gameEnd)
 	  designate_winner
 	  if @game.mode == "ranked"
-		$tmp = @game.player2.rank
-		@game.player2.rank = @game.player1.rank
-		@game.player1.rank = $tmp
 		$count = User.where("rank = ?", @game.winner.rank + 1).count
-		if $count == 0 && @game.winner.rank + 1 > 0
+		if $count == 0 && @game.winner.rank + 1 > 0 && @game.player1.rank == @game.player2.rank
 			@game.winner.rank += 1
 			@game.winner.save
+		else
+			$tmp = @game.player2.rank
+			@game.player2.rank = @game.player1.rank
+			@game.player1.rank = $tmp
 		end
 		if @game.winner.guild
 			@game.winner.guild.points += 3
