@@ -134,12 +134,12 @@ document.addEventListener('turbolinks:load', () => {
 				}
 				if (data.status == "waiting")
 				{
-					render.updateGameStatus("waiting", data.player2);
+					render.updateGameStatus(data.msg_status);
 					render.updateSpecCount(data.spec_count);
 				}
 				else if (data.status == "running")
 				{
-					render.updateGameStatus("running", null);
+					render.updateGameStatus(data.msg_status);
 					render.updateSpecCount(data.spec_count);
 					render.updatePts(data.players);
 
@@ -172,7 +172,7 @@ document.addEventListener('turbolinks:load', () => {
 				}
 				else if (data.status == "finished")
 				{
-					render.updateGameStatus(data.winner + " won !", null);
+					render.updateGameStatus(data.msg_status);
 					setUpdateRate(0);
 					render.resetCanvas();
 					sub.unsubscribe();

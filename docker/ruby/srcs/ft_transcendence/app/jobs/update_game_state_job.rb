@@ -57,7 +57,8 @@ class UpdateGameStateJob < ApplicationJob
 				$status = "waiting for #{@gameLogic.player_nicknames[1]}"
 			end
 			ActionCable.server.broadcast("game_#{@game.id}", {
-				status: $status,
+				status: "waiting",
+				msg_status: $status,
 				player2: @game.player2 ? @game.player2.nickname : nil
 			});
 		elsif (@game.status == "running")
@@ -66,6 +67,7 @@ class UpdateGameStateJob < ApplicationJob
 			end
 			ActionCable.server.broadcast("game_#{@game.id}", {
 				status: @game.status,
+				msg_status: "running",
 				players: {
 					nicknames: [
 						@gameLogic.player_nicknames[0],
@@ -105,8 +107,13 @@ class UpdateGameStateJob < ApplicationJob
 			});
 			@gameLogic.clear_processed
 		elsif (@game.status == "finished" && @game.winner)
+			$status = "finished";
+			if @game.winner.nickname
+				$status = "#{@game.winner.nickname} won !"
+			end
 			ActionCable.server.broadcast("game_#{@game.id}", {
 				status: @game.status,
+				msg_status: "finished",
 				winner: @game.winner.nickname
 			});
 		end
