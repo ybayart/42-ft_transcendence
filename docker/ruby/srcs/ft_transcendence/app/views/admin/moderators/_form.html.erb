@@ -1,0 +1,11 @@
+<%= form_with(url: admin_moderators_path) do |form| %>
+	<div class="field">
+		<%= form.label :user_id %>
+		<%= form.collection_select :id, @admin_moderators, :id, :nickname %>
+	</div>
+
+
+	<div class="actions">
+		<%= form.submit %>
+	</div>
+<% end %>

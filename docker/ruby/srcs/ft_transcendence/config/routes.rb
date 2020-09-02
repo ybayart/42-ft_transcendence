@@ -35,8 +35,9 @@ Rails.application.routes.draw do
 	resources :wars
 
 	namespace :admin do
-		resources :rooms, controller: 'rooms', only: [:index, :show, :destroy]
-		resources :guilds, controller: 'guilds', only: [:index, :show]
+		resources :rooms, only: [:index, :show, :destroy]
+		resources :guilds, only: [:index, :show]
+		resources :moderators, only: [:index, :new, :create, :destroy]
 	end
 
 	namespace :api do
