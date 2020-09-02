@@ -38,7 +38,9 @@ class Profile::FriendsController < ApplicationController
 	def destroy
 		@profile.friends.destroy(params[:id])
 		respond_to do |format|
-			format.html { redirect_to profile_friends_url, notice: 'Friend was successfully destroyed.' }
+			back_page = profile_friends_path
+			back_page = URI(request.referer).path if params[:back]
+			format.html { redirect_to back_page, notice: 'Friend was successfully destroyed.' }
 			format.json { head :no_content }
 		end
 	end
@@ -51,7 +53,7 @@ class Profile::FriendsController < ApplicationController
 		end
 
 		def is_mine
-			redirect_to @profile, :alert => "It's not you :)" and return unless @profile == current_user
+			redirect_to profile_path(@profile), :alert => "It's not you :)" and return unless @profile == current_user
 		end
 
 		# Only allow a list of trusted parameters through.

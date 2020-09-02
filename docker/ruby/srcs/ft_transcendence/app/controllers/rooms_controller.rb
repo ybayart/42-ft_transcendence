@@ -23,7 +23,7 @@ class RoomsController < ApplicationController
 			@room.members << current_user
 		end
 		@room_message = RoomMessage.new room: @room
-		@room_messages = @room.room_messages.includes(:user)
+		@room_messages = @room.room_messages.where("user_id NOT IN (?)", current_user.mutes.map(&:id)).includes(:user)
 	end
 
 	def new

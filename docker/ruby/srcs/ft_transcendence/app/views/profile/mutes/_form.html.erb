@@ -1,0 +1,11 @@
+<%= form_with(model: profile_mute, url: profile_mutes_path) do |form| %>
+	<div class="field">
+		<%= form.label :user %>
+		<%= form.collection_select :muted_id, User.where.not(id: @profile.id) - @profile.mutes, :id, :nickname %>
+		<%= form.error_for :muted_id %>
+	</div>
+
+	<div class="actions">
+		<%= form.submit %>
+	</div>
+<% end %>

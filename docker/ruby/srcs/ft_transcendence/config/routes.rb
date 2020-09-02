@@ -5,6 +5,7 @@ Rails.application.routes.draw do
 		get 'otp', on: :collection
 		post 'otppost', on: :collection
 		resources :friends, controller: 'profile/friends', only: [:index, :new, :create, :destroy]
+		resources :mutes, controller: 'profile/mutes', only: [:index, :new, :create, :destroy]
 	end
 	resources :rooms do
 		get 'join', on: :collection

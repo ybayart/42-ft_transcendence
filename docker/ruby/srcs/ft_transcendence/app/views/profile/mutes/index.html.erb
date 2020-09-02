@@ -1,0 +1,27 @@
+<p id="notice"><%= notice %></p>
+
+<h1>Mutes</h1>
+
+<br>
+
+<%= link_to 'New Profile Mute', new_profile_mute_path %>
+
+<br>
+
+<table>
+	<thead>
+		<tr>
+			<th>Nickname</th>
+			<th colspan="3"></th>
+		</tr>
+	</thead>
+
+	<tbody>
+		<% @profile_mutes.each do |profile_mute| %>
+			<tr>
+				<td><%= link_to profile_mute.nickname, profile_path(profile_mute) %>
+				<td><%= link_to 'Destroy', profile_mute_path(@profile, profile_mute), method: :delete, data: { confirm: 'Are you sure?' }, remote: true %></td>
+			</tr>
+		<% end %>
+	</tbody>
+</table>

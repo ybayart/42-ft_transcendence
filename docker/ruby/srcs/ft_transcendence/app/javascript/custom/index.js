@@ -8,4 +8,5 @@ document.addEventListener("turbolinks:load", () => {
 	$("time.timeago").timeago();
 	$('[name=toast-alert]').toast('show').attr('name', 'toast-alert-printed');
 	window.controller = JSON.parse($('body').attr('controller'));
+	window.mutes = JSON.parse($('body').attr('mutes'));
 });
