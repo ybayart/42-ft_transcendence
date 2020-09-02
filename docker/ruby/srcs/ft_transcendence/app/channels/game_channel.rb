@@ -21,6 +21,23 @@ class GameChannel < ApplicationCable::Channel
 				{
 					width: @gameLogic.canvasWidth,
 					height: @gameLogic.canvasHeight
+				},
+				paddles: [
+					{
+						width: @gameLogic.paddles[0].width,
+						height: @gameLogic.paddles[0].height,
+						velocity: @gameLogic.paddles[0].velocity
+					},
+					{
+						width: @gameLogic.paddles[1].width,
+						height: @gameLogic.paddles[1].height,
+						velocity: @gameLogic.paddles[1].velocity
+					}
+				],
+				ball:
+				{
+					speed: @gameLogic.ball.speed,
+					radius: @gameLogic.ball.radius
 				}
 			}
 		})
