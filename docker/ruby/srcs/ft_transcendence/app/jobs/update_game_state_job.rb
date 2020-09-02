@@ -8,15 +8,15 @@ class UpdateGameStateJob < ApplicationJob
 		end
    		$i = 0
 		while @gameLogic
-            if $i >= 100
-			  @game.reload(lock: true)
-              $i = 0
-            end
+			if $i >= 100
+				@game.reload(lock: true)
+				$i = 0
+			end
 			if @game.status == "running"
 				process_inputs(@gameLogic)
 			  	if @gameLogic.state == "play"
 					@gameLogic.updateBallPos
-			    end
+				end
 			end
 			send_game_state(@gameLogic, @game)
 			if @game.status == "finished"
@@ -24,9 +24,9 @@ class UpdateGameStateJob < ApplicationJob
 				if (!@game.winner)
 					Game.delete(id)
 				end
-			end
+            end
 		  	@gameLogic = GameLogic.search(id)
-            $i += 10
+			$i += 10
 			sleep(1.0/20.0)
 		end
 	end
@@ -46,16 +46,21 @@ class UpdateGameStateJob < ApplicationJob
 
 	def send_game_state(gameLogic, game)
 		if (@game.status == "waiting")
+			$status = @game.status
+			if !@gameLogic.player_ready[0] && @gameLogic.player_ready[1]
+				$status = "waiting for #{@gameLogic.player_nicknames[0]}"
+			elsif @gameLogic.player_ready[0] && !@gameLogic.player_ready[1]
+				$status = "waiting for #{@gameLogic.player_nicknames[1]}"
+			end
 			ActionCable.server.broadcast("game_#{@game.id}", {
-				status: @game.status,
+				status: "waiting",
+				msg_status: $status,
 				player2: @game.player2 ? @game.player2.nickname : nil
 			});
 		elsif (@game.status == "running")
-			if @gameLogic.player_nicknames[0] == nil
-				@gameLogic.set_nicknames(@game.player1.nickname, @game.player1.nickname)
-			end
 			ActionCable.server.broadcast("game_#{@game.id}", {
 				status: @game.status,
+				msg_status: "running",
 				players: {
 					nicknames: [
 						@gameLogic.player_nicknames[0],
@@ -95,8 +100,13 @@ class UpdateGameStateJob < ApplicationJob
 			});
 			@gameLogic.clear_processed
 		elsif (@game.status == "finished" && @game.winner)
+			$status = "finished";
+			if @game.winner.nickname
+				$status = "#{@game.winner.nickname} won !"
+			end
 			ActionCable.server.broadcast("game_#{@game.id}", {
 				status: @game.status,
+				msg_status: $status,
 				winner: @game.winner.nickname,
 				players: {
 					nicknames: [

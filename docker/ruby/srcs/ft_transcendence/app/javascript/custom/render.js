@@ -43,18 +43,8 @@ class Render {
 		this.spec_count.html(count);
 	}
 	
-	updateGameStatus(stat, player2)
+	updateGameStatus(text)
 	{
-		let text;
-		if (stat == "waiting")
-		{
-			if (player2)
-				text = "waiting for " + player2 + "...";
-			else
-				text = "waiting for player...";
-		}
-		else
-			text = stat;
 		this.game_status.html(text);
 	}
 	

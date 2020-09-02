@@ -14,12 +14,6 @@ class GameChannel < ApplicationCable::Channel
 		if current_user != @game.player1 && current_user != @game.player2
 			@gameLogic.addSpec
 		end
-		if @game.player1 && @game.player2 && @game.status == "waiting"
-			if @@subscribers[@game.id].index(@game.player1.id) && @@subscribers[@game.id].index(@game.player2.id)
-				@game.status = "running"
-				@game.save
-			end
-		end
 		ActionCable.server.broadcast("game_#{@game.id}", {
 			config:
 			{
@@ -27,15 +21,32 @@ class GameChannel < ApplicationCable::Channel
 				{
 					width: @gameLogic.canvasWidth,
 					height: @gameLogic.canvasHeight
+				},
+				paddles: [
+					{
+						width: @gameLogic.paddles[0].width,
+						height: @gameLogic.paddles[0].height,
+						velocity: @gameLogic.paddles[0].velocity
+					},
+					{
+						width: @gameLogic.paddles[1].width,
+						height: @gameLogic.paddles[1].height,
+						velocity: @gameLogic.paddles[1].velocity
+					}
+				],
+				ball:
+				{
+					speed: @gameLogic.ball.speed,
+					radius: @gameLogic.ball.radius
 				}
 			}
 		})
 	end
 
 	def getCurrentPlayerNumber
-		if current_user == @game.player1
+        if current_user == @game.player1
 			return 1
-        elsif current_user == @game.player2
+		elsif current_user == @game.player2
 			return 2
 		end
 	end
@@ -44,8 +55,18 @@ class GameChannel < ApplicationCable::Channel
 		@gameLogic.addInput(data["type"], data["id"], getCurrentPlayerNumber)
 	end
 
-	def throw_ball
-		if @game.status == "running" && @gameLogic.state == "pause"
+	def space
+		if @game.status == "waiting"
+			if current_user == @game.player1 && !@gameLogic.player_ready[0]
+				@gameLogic.player_ready[0] = true
+			elsif current_user == @game.player2 && !@gameLogic.player_ready[1]
+				@gameLogic.player_ready[1] = true
+			end
+            if @gameLogic.player_ready[0] && @gameLogic.player_ready[1]
+                @game.status = "running"
+                @game.save
+            end
+		elsif @game.status == "running" && @gameLogic.state == "pause"
 			if current_user == @game.player1 && @gameLogic.last_loser == 1
 				@gameLogic.start(1)
 			elsif current_user == @game.player2 && @gameLogic.last_loser == 2

@@ -35,6 +35,7 @@ class GameLogic
 	@ball = Ball.new(@last_loser, @paddles[@last_loser - 1])
 	@player_scores = Array.new(2, 0)
 	@player_nicknames = Array.new(2)
+	@player_ready = [false, false]
 	@state = "pause"
 	@game = Game.find_by(id: id)
 	@max_points = @game.max_points
@@ -67,6 +68,10 @@ class GameLogic
 
   def player_nicknames
 	@player_nicknames
+  end
+
+  def player_ready
+	@player_ready
   end
 
   def set_nicknames(player1, player2)
@@ -252,5 +257,4 @@ class GameLogic
 	  @game.save
 	end
   end
-
 end
