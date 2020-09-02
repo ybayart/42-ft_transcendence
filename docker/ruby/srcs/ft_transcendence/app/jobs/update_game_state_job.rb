@@ -12,12 +12,6 @@ class UpdateGameStateJob < ApplicationJob
 				@game.reload(lock: true)
 				$i = 0
 			end
-			if @game.status == "waiting"
-				if @gameLogic.player_ready[0] && @gameLogic.player_ready[1]
-					@game.status = "running"
-					@game.save
-				end
-			end
 			if @game.status == "running"
 				process_inputs(@gameLogic)
 			  	if @gameLogic.state == "play"
@@ -32,7 +26,7 @@ class UpdateGameStateJob < ApplicationJob
 				end
             end
 		  	@gameLogic = GameLogic.search(id)
-            $i += 10
+			$i += 10
 			sleep(1.0/20.0)
 		end
 	end
