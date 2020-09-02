@@ -50,8 +50,14 @@ class UpdateGameStateJob < ApplicationJob
 
 	def send_game_state(gameLogic, game)
 		if (@game.status == "waiting")
+			$status = @game.status
+			if !@gameLogic.player_ready[0] && @gameLogic.player_ready[1]
+				$status = "waiting for #{@gameLogic.player_nicknames[0]}"
+			elsif @gameLogic.player_ready[0] && !@gameLogic.player_read[1]
+				$status = "waiting for #{@gameLogic.player_nicknames[1]}"
+			end
 			ActionCable.server.broadcast("game_#{@game.id}", {
-				status: @game.status,
+				status: $status,
 				player2: @game.player2 ? @game.player2.nickname : nil
 			});
 		elsif (@game.status == "running")
