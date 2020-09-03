@@ -24,7 +24,7 @@
         <td><%= link_to 'Edit', edit_tournament_path(tournament) %></td>
         <td><%= link_to 'Destroy', tournament, method: :delete, data: { confirm: 'Are you sure?' } %></td>
         <% if Time.now < tournament.start_time %>
-          <td><%= link_to 'Join' %></td>
+          <td><%= link_to 'Register', controller: "tournaments", action: "register", id: tournament.id %></td>
         <% end %>
       </tr>
     <% end %>

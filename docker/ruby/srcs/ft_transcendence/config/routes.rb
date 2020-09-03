@@ -1,6 +1,5 @@
 Rails.application.routes.draw do
 
-  resources :tournaments
 	root to: 'profile/friends#index'
 	resources :profiles do
 		get 'otp', on: :collection
@@ -23,6 +22,10 @@ Rails.application.routes.draw do
 	get '/play', to: 'game#play'
 	get '/test', to: 'game#test'
 	get '/spectate/:id', to: 'game#spectate'
+
+	resources :tournaments
+	get '/register/:id', to: 'tournaments#register'
+
 
 	resources :room_messages
 

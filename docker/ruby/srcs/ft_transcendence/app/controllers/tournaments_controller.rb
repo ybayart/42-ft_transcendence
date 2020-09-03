@@ -1,5 +1,5 @@
 class TournamentsController < ApplicationController
-  before_action :set_tournament, only: [:show, :edit, :update, :destroy]
+  before_action :set_tournament, only: [:show, :edit, :update, :destroy, :register]
 
   # GET /tournaments
   # GET /tournaments.json
@@ -59,6 +59,15 @@ class TournamentsController < ApplicationController
       format.html { redirect_to tournaments_url, notice: 'Tournament was successfully destroyed.' }
       format.json { head :no_content }
     end
+  end
+
+  def register
+    @tournamentLogic = TournamentLogic.create(params[:id])
+    @tournamentLogic.players.push(current_user);
+    respond_to do |format|
+      format.html { redirect_to @tournament, notice: 'Registered to tournament.' }
+    end
+    return 
   end
 
   private
