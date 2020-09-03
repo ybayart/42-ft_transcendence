@@ -26,7 +26,6 @@ class TournamentLogic
   end
 
   def initialize(id)
-  	@players = Array.new();
   	@tournament = Tournament.find_by(id: id);
   	@games = Array.new();
   	@players_points = Array.new();

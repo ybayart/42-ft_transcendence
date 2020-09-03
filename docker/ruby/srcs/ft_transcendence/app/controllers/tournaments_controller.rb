@@ -62,10 +62,11 @@ class TournamentsController < ApplicationController
   end
 
   def register
-    @tournamentLogic = TournamentLogic.create(params[:id])
-    @tournamentLogic.players.push(current_user);
+    current_user.tournament = @tournament
     respond_to do |format|
-      format.html { redirect_to @tournament, notice: 'Registered to tournament.' }
+      if current_user.save
+        format.html { redirect_to @tournament, notice: 'Registered to tournament.' }
+      end
     end
     return 
   end
