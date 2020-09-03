@@ -1,0 +1,24 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>Mode:</strong>
+  <%= @tournament.mode %>
+</p>
+
+<p>
+  <strong>Max player:</strong>
+  <%= @tournament.max_player %>
+</p>
+
+<p>
+  <strong>Start at:</strong>
+  <%= @tournament.start_time %>
+</p>
+
+<p>
+  <strong>Points award:</strong>
+  <%= @tournament.points_award %>
+</p>
+
+<%= link_to 'Edit', edit_tournament_path(@tournament) %> |
+<%= link_to 'Back', tournaments_path %>

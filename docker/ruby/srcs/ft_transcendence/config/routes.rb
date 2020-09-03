@@ -1,5 +1,6 @@
 Rails.application.routes.draw do
 
+  resources :tournaments
 	root to: 'profile/friends#index'
 	resources :profiles do
 		get 'otp', on: :collection
