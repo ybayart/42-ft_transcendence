@@ -8,12 +8,6 @@ class GameController < ApplicationController
     @game = Game.find(params[:id])
   end
 
-  def update
-    @game = Game.find(params[:id])
-    @game.update(game_params)
-    redirect_to game_path
-  end
-
   def spectate
     @game = Game.find(params[:id])
   end

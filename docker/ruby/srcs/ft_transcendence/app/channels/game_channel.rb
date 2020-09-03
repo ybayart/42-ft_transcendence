@@ -58,16 +58,12 @@ class GameChannel < ApplicationCable::Channel
 
 	def space
 		if @game.status == "waiting"
-			puts "waiting"
 			if current_user == @game.player1 && !@gameLogic.player_ready[0]
-				puts "ready 0"
 				@gameLogic.player_ready[0] = true
 			elsif current_user == @game.player2 && !@gameLogic.player_ready[1]
 				@gameLogic.player_ready[1] = true
-				puts "ready 1"
 			end
             if @gameLogic.player_ready[0] && @gameLogic.player_ready[1]
-				puts "runrun go"
                 @game.status = "running"
                 @game.save
             end

@@ -1,5 +1,0 @@
-<%= form_for @game do |f| %>
-	<%= f.label :max_points %><br>
-	<%= f.number_field :max_points, in: 1.0..20.0, step: 1 %>
-	<%= f.submit "Submit" %>
-<% end %>

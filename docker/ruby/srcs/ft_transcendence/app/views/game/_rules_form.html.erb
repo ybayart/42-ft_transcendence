@@ -1,0 +1,39 @@
+<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">Invite to play</button>
+
+<!-- Modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Game options</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form>
+			<div class="field">
+				<label for="cwidth">Canvas width:</label><br>
+				<input type="text" id="cwidth" name="cwidth">
+			</div>
+			<div class="field">
+				<label for="cheight">Canvas height:</label><br>
+				<input type="text" id="cheight" name="cheight">
+			</div>
+			<div class="field">
+				<label for="bradius">Ball radius:</label><br>
+				<input type="text" id="bradius" name="bradius">
+			</div>
+			<div class="field">
+				<label for="max_points">Max points:</label><br>
+				<input type="text" id="max_points" name="max_points">
+			</div>
+		</form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary" id="game_invite">Save changes</button>
+      </div>
+    </div>
+  </div>
+</div>
