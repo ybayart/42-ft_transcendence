@@ -1,27 +1,28 @@
 class GameLogic
   include ActiveModel::Model
 
+  @@games = Hash.new
 
   def self.create(id, canvasWidth = 600, canvasHeight = 400, ballRadius = 10)
-	@games ||= Hash.new
-	if !@games.key?(id)
-	  @games[:id] ||= GameLogic.new(id, canvasWidth, canvasHeight, ballRadius)
+	if !@@games[:id]
+	  @@games[:id] ||= GameLogic.new(id, canvasWidth, canvasHeight, ballRadius)
 	end
-	@games[:id]
+	@@games[:id]
   end
 
   def self.delete(id)
-	if @games && @games.key?(id)
-	  @games.except!(id)
+	if @@games && @@games[:id]
+      @@games[:id] = nil
+	  @@games.delete(id)
 	end
   end
 
   def self.search(id)
-	@game = nil
-	if @games && @games.key?(id)
-	  @game = @games[:id]
+	$game = nil
+	if @@games && @@games[:id]
+	  $game = @@games[:id]
 	end
-	@game
+	$game
   end
 
   def initialize(id, canvasWidth, canvasHeight, ballRadius)

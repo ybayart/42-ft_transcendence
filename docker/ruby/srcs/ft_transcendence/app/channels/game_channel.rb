@@ -14,7 +14,7 @@ class GameChannel < ApplicationCable::Channel
 		if current_user != @game.player1 && current_user != @game.player2
 			@gameLogic.addSpec
 		end
-		ActionCable.server.broadcast("game_#{@game.id}", {
+		ActionCable.server.broadcast("game_#{params[:game]}", {
 			config:
 			{
 				canvas:
@@ -58,12 +58,16 @@ class GameChannel < ApplicationCable::Channel
 
 	def space
 		if @game.status == "waiting"
+			puts "waiting"
 			if current_user == @game.player1 && !@gameLogic.player_ready[0]
+				puts "ready 0"
 				@gameLogic.player_ready[0] = true
 			elsif current_user == @game.player2 && !@gameLogic.player_ready[1]
 				@gameLogic.player_ready[1] = true
+				puts "ready 1"
 			end
             if @gameLogic.player_ready[0] && @gameLogic.player_ready[1]
+				puts "runrun go"
                 @game.status = "running"
                 @game.save
             end
@@ -96,6 +100,7 @@ class GameChannel < ApplicationCable::Channel
 			@game.status = "finished"
 			@game.player1_pts = @gameLogic.player_scores[0]
 			@game.player2_pts = @gameLogic.player_scores[1]
+			GameLogic.delete(@game.id)
 			if @game.mode == "ranked"
 				$count = User.where("rank = ?", @game.winner.rank + 1).count
 				if $count == 0 && @game.winner.rank + 1 > 0 && @game.player1.rank == @game.player2.rank
@@ -106,14 +111,14 @@ class GameChannel < ApplicationCable::Channel
 					@game.player2.rank = @game.player1.rank
 					@game.player1.rank = $tmp
 				end
-				if @game.winner.guild
+				if @game.winner && @game.winner.guild
 					@game.winner.guild.points += 3
 					@game.winner.guild.save
 				end
 				@game.player1.save
 				@game.player2.save
 			elsif @game.mode == "casual"
-				if @game.winner.guild
+				if @game.winner && @game.winner.guild
 					@game.winner.guild.points += 1
 					@game.winner.guild.save
 				end
