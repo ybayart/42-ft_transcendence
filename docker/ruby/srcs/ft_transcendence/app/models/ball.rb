@@ -1,8 +1,8 @@
 class Ball
 	include ActiveModel::Model
 
-	def initialize(player, paddle)
-		@radius = 10
+	def initialize(player, paddle, radius)
+		@radius = radius
 		if player == 1
 			@posX = paddle.posX + (paddle.width + 10 + @radius)
 		elsif player == 2

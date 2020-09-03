@@ -38,7 +38,8 @@ class GameChannel < ApplicationCable::Channel
 				{
 					speed: @gameLogic.ball.speed,
 					radius: @gameLogic.ball.radius
-				}
+				},
+				max_points: @gameLogic.max_points
 			}
 		})
 	end

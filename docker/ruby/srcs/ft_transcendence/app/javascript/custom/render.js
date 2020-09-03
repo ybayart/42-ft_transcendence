@@ -12,6 +12,21 @@ class Render {
 		this.score = $("#score");
 	}
 
+	config(config)
+	{
+		$("#canvas_width").html(config.canvas.width);
+		$("#canvas_height").html(config.canvas.height);
+		$(".paddle_width").first().html(config.paddles[0].width);
+		$(".paddle_height").first().html(config.paddles[0].height);
+		$(".paddle_velocity").first().html(config.paddles[0].velocity);
+		$(".paddle_width").eq(1).html(config.paddles[1].width);
+		$(".paddle_height").eq(1).html(config.paddles[1].height);
+		$(".paddle_velocity").eq(1).html(config.paddles[1].velocity);
+		$("#ball_radius").html(config.ball.radius);
+		$("#ball_speed").html(config.ball.speed);
+		$("#max_points").html(config.max_points);
+	}
+
 	resetCanvas()
 	{
 		this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);

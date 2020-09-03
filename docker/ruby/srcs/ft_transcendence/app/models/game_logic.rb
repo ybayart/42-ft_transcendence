@@ -1,38 +1,40 @@
 class GameLogic
   include ActiveModel::Model
 
-  def self.create(id)
+
+  def self.create(id, canvasWidth = 600, canvasHeight = 400, ballRadius = 10)
 	@games ||= Hash.new
-	if !@games[id]
-	  @games[id] ||= GameLogic.new(id)
+	if !@games.key?(id)
+	  @games[:id] ||= GameLogic.new(id, canvasWidth, canvasHeight, ballRadius)
 	end
-	@games[id]
+	@games[:id]
   end
 
   def self.delete(id)
-	if @games && @games[id]
+	if @games && @games.key?(id)
 	  @games.except!(id)
 	end
   end
 
   def self.search(id)
 	@game = nil
-	if @games && @games[id]
-	  @game = @games[id]
+	if @games && @games.key?(id)
+	  @game = @games[:id]
 	end
 	@game
   end
 
-  def initialize(id)
-	@canvasWidth = 600
-	@canvasHeight = 400
+  def initialize(id, canvasWidth, canvasHeight, ballRadius)
+	@canvasWidth = canvasWidth
+	@canvasHeight = canvasHeight
+	@ballRadius = ballRadius
 	@paddles = Array.new(2)
 	$paddle_height = 50
 	@paddles[0] = Paddle.new(5, @canvasHeight / 2 - ($paddle_height / 2), $paddle_height)
 	@paddles[1] = Paddle.new(@canvasWidth - 20, @canvasHeight / 2 - ($paddle_height / 2), $paddle_height)
 	@last_loser = rand(1..2)
 	@last_collision = if @last_loser == 1 then @paddles[0] else @paddles[1] end
-	@ball = Ball.new(@last_loser, @paddles[@last_loser - 1])
+	@ball = Ball.new(@last_loser, @paddles[@last_loser - 1], @ballRadius)
 	@player_scores = Array.new(2, 0)
 	@player_nicknames = Array.new(2)
 	@player_ready = [false, false]
@@ -87,6 +89,10 @@ class GameLogic
 	@state
   end
 
+  def max_points
+	@max_points
+  end
+
   def game
 	@game
   end
@@ -131,7 +137,7 @@ class GameLogic
 
   def reset_ball(player)
 	@state = "pause"
-	@ball = Ball.new(player, @paddles[player - 1])
+	@ball = Ball.new(player, @paddles[player - 1], @ballRadius)
   end
 
   def reset_paddles
