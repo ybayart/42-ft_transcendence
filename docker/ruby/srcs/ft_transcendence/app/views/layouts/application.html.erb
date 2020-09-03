@@ -34,6 +34,9 @@
 						<%= link_to rooms_path, class: 'navbar-item navbar-btn' do %>
 							<button type="button">Rooms</button>
 						<% end %>
+						<%= link_to dms_path, class: 'navbar-item navbar-btn' do %>
+							<button type="button">dms</button>
+						<% end %>
 						<%= link_to guilds_path, class: 'navbar-item navbar-btn' do %>
 							<button type="button">Guilds</button>
 						<% end %>
@@ -60,12 +63,16 @@
 				<ul class="navbar-nav">
 					<li id="navbar-user" class="nav-item navbar-btn">
 						<button type="button" data-toggle="collapse" data-target="#user-logout" aria-controls="user-logout" aria-expanded="false">
-						<img src="<%= url_for(current_user.profile_pic) %>" class="avatar">
+							<img src="<%= url_for(current_user.profile_pic) %>" class="avatar">
 							<span id="nav-nickname" class="responsive-large" userid="<%= current_user[:id] %>" userlogin="<%= current_user[:login] %>" usernickname="<%= current_user[:nickname] %>">
 								<%= current_user[:nickname] %>
 							</span>
 						</button>
-						<div id="user-logout" class="collapse">
+						<div id="user-logout" class="collapse" style="text-align: center;">
+							<br>
+							<button onClick="reloadWithTurbolinks();">
+								Refresh
+							</button>
 							<hr>
 							<%= link_to raw("
 								<img src=" + asset_path('logout.svg') + " class='logo-svg' style='height: 35px;margin-right: 15px;'>

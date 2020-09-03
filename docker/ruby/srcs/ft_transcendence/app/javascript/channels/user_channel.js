@@ -18,9 +18,22 @@ consumer.subscriptions.create("UserChannel", {
 	},
 
 	received(data) {
-		console.log(data);
-		if (window.controller.controller == "rooms" && window.controller.action == "show") {
-			updateView();
+		if (data.type == "message") {
+			$('input#dm_message_message').val('');
+			var dm_id = $('#dm_message_dm_id').val(),
+				messageTemplate = $('[data-role="message-template"]');
+			if (dm_id == data.content.dm_id) {
+				var content = messageTemplate.children().clone(true, true);
+				content.find('[data-role="user-avatar"]').attr("src", data.content.pic).attr("title", data.content.nickname);
+				content.find('[data-role="message-text"]').text(data.content.message);
+				content.find('[data-role="message-date"] > time').attr("datetime", data.content.date).addClass("timeago");
+				$('div.chat').append(content);
+				$("time.timeago").timeago();
+			}
+		} else {
+			if (window.controller.controller == "rooms" && window.controller.action == "show") {
+				updateView();
+			}
 		}
 	},
 

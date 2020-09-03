@@ -1,0 +1,11 @@
+<%= form_with(model: dm) do |form| %>
+	<div class="field">
+		<%= form.label :user %>
+		<%= form.collection_select :user2_id, User.all - @existing1 - @existing2, :id, :nickname %>
+		<%= form.error_for :user2_id %>
+	</div>
+
+	<div class="actions">
+		<%= form.submit %>
+	</div>
+<% end %>

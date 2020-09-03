@@ -1,5 +1,6 @@
 Rails.application.routes.draw do
 
+  resources :dms
 	root to: 'profile/friends#index'
 	resources :profiles do
 		get 'otp', on: :collection
@@ -17,14 +18,16 @@ Rails.application.routes.draw do
 		resources :admins, controller: 'room/admins', only: [:index, :new, :create, :destroy]
 	end
 
-	resources :dms
+	resources :room_messages, only: [:create]
+
+	resources :dms, only: [:index, :new, :create, :show, :destroy]
+
+	resources :dm_messages, only: [:create]
 
 	resources :game, only: [:index, :show]
 	get '/play', to: 'game#play'
 	get '/test', to: 'game#test'
 	get '/spectate/:id', to: 'game#spectate'
-
-	resources :room_messages
 
 	resources :guilds do
 		get 'invitations', on: :collection
