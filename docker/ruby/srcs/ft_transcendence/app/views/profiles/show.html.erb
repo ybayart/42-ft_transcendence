@@ -24,9 +24,7 @@
 <% end %>
 
 <% if current_user != @profile %>
-	<p>
-		<button id="game_invite">Invite to play</button>
-	</p>
+	<%= render 'form' %>
 <% end %>
 
 <% if current_user == @profile %>

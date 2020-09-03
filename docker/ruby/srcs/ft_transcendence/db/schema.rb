@@ -52,7 +52,9 @@ ActiveRecord::Schema.define(version: 2020_08_31_195656) do
     t.integer "player1_pts", default: 0
     t.integer "player2_pts", default: 0
     t.bigint "winner_id"
+    t.bigint "creator_id"
     t.string "mode"
+    t.integer "max_points", default: 5
     t.index ["player1_id"], name: "index_games_on_player1_id"
     t.index ["player2_id"], name: "index_games_on_player2_id"
     t.index ["winner_id"], name: "index_games_on_winner_id"
