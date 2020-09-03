@@ -130,6 +130,7 @@ document.addEventListener('turbolinks:load', () => {
 				if (data.config)
 				{
 					console.log(data.config);
+					render.config(data.config);
 					render.canvas.width = data.config.canvas.width;
 					render.canvas.height = data.config.canvas.height;
 					render.resetCanvas();
