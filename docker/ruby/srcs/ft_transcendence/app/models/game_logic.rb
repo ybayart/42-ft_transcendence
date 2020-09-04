@@ -25,6 +25,22 @@ class GameLogic
 	$game
   end
 
+  def self.check_rules(rules)
+	if rules["max_points"].to_i < 1 || rules["max_points"].to_i > 20
+		return false
+	end
+	if rules["canvas"]["width"].to_i < 200 || rules["canvas"]["width"].to_i > 3000
+		return false
+	end
+	if rules["canvas"]["height"].to_i < 200 || rules["canvas"]["height"].to_i > 3000
+		return false
+	end
+	if rules["ball"]["radius"].to_i < 1 || (rules["ball"]["radius"].to_i * 2) > rules["canvas"]["height"].to_i || (rules["ball"]["radius"].to_i * 2) > rules["canvas"]["width"].to_i
+		return false
+	end
+	return true
+  end
+
   def initialize(id, canvasWidth, canvasHeight, ballRadius)
 	@canvasWidth = canvasWidth
 	@canvasHeight = canvasHeight

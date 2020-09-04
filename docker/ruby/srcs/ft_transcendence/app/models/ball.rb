@@ -2,6 +2,7 @@ class Ball
 	include ActiveModel::Model
 
 	def initialize(player, paddle, radius)
+		@startingSpeed = 4
 		@radius = radius
 		if player == 1
 			@posX = paddle.posX + (paddle.width + 10 + @radius)
@@ -15,9 +16,9 @@ class Ball
 
 	def throw(player)
 		if player == 1
-			@velocityX = 4
+			@velocityX = @startingSpeed
 		elsif player == 2
-			@velocityX = -4
+			@velocityX = -@startingSpeed
 		end
 	end
 
@@ -56,6 +57,10 @@ class Ball
 
 	def velocityX
 		@velocityX
+	end
+
+	def startingSpeed
+		@startingSpeed
 	end
 
     def speed

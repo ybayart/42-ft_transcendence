@@ -14,19 +14,19 @@
         <form>
 			<div class="field">
 				<label for="cwidth">Canvas width:</label><br>
-				<input type="text" id="cwidth" name="cwidth">
+				<input type="number" id="cwidth" name="cwidth" min=200 max=3000 step=1>
 			</div>
 			<div class="field">
 				<label for="cheight">Canvas height:</label><br>
-				<input type="text" id="cheight" name="cheight">
+				<input type="number" id="cheight" name="cheight" min=200 max=3000 step=1>
 			</div>
 			<div class="field">
-				<label for="bradius">Ball radius:</label><br>
-				<input type="text" id="bradius" name="bradius">
+				<label for="bradius">Ball radius (must be inferior to (canvas side / 2)):</label><br>
+				<input type="number" id="bradius" name="bradius" min=1 step=1>
 			</div>
 			<div class="field">
 				<label for="max_points">Max points:</label><br>
-				<input type="text" id="max_points" name="max_points">
+				<input type="number" id="max_points" name="max_points" min=1 max=20 step=1>
 			</div>
 		</form>
       </div>
