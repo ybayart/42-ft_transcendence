@@ -1,6 +1,7 @@
 class ApplicationController < ActionController::Base
 	before_action :authenticate_user!
 	before_action :check
+	before_action :check_war_state
 
 	private
 		def check
@@ -15,5 +16,11 @@ class ApplicationController < ActionController::Base
 
 		def check_sign_out
 			return controller_path != "devise/sessions" || action_name != "destroy"
+		end
+
+		def check_war_state
+			War.where(state: "waiting for war times").each do |war|
+				war.update(state: "aborted") if war.start_at.past?
+			end
 		end
 end

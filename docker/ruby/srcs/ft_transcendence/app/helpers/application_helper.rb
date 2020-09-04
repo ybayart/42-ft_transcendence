@@ -20,10 +20,4 @@ module ApplicationHelper
 			guild.members << user unless guild.members.include?(user)
 		end
 	end
-
-	def check_war_state
-		War.where(state: "waiting for war times").each do |war|
-			war.update(state: "aborted") if war.start_at.past?
-		end
-	end
 end
