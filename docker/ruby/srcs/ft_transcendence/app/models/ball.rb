@@ -10,8 +10,8 @@ class Ball
 			@posX = paddle.posX - (10 + @radius)
 		end
 		@posY = paddle.posY + paddle.height / 2
-		@velocityY = 0
-		@velocityX = 0
+		@velocityY = 0.0
+		@velocityX = 0.0
 	end
 
 	def throw(player)
@@ -64,7 +64,7 @@ class Ball
 	end
 
     def speed
-        (Math.sqrt(@velocityX ** 2 + @velocityY ** 2))
+        (Math.sqrt(@velocityX ** 2.0 + @velocityY ** 2.0))
     end
 
     def setPosX(value)

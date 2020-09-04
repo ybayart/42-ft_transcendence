@@ -53,7 +53,7 @@ class GameLogic
 	@canvasHeight = @game.game_rules.canvas_height
 	@ballRadius = @game.game_rules.ball_radius
 	@paddles = Array.new(2)
-	$paddle_height = 50
+	$paddle_height = 50.0
 	@paddles[0] = Paddle.new(5, @canvasHeight / 2 - ($paddle_height / 2), $paddle_height)
 	@paddles[1] = Paddle.new(@canvasWidth - 20, @canvasHeight / 2 - ($paddle_height / 2), $paddle_height)
 	@last_loser = rand(1..2)
@@ -244,10 +244,12 @@ class GameLogic
 	  end
 	end
 	if $paddle
-	  $offset = (@ball.posY + @ball.radius * 2 - $paddle.posY) / ($paddle.height + @ball.radius * 2)
-	  $phi = 0.25 * Math::PI * (2 * $offset - 1)
-	  @ball.setVelocityX(@ball.velocityX * -1)
-	  @ball.setVelocityY(@ball.speed * Math.sin($phi))
+	  $offset = (@ball.posY + @ball.radius * 2.0 - $paddle.posY) / ($paddle.height + @ball.radius * 2.0)
+	  $phi = 0.25 * Math::PI * (2.0 * $offset - 1.0)
+	  @ball.setVelocityX(@ball.velocityX * -1.0)
+	  if @ball.velocityY != 0 || @ball.posY != $paddle.getCenter
+		@ball.setVelocityY(@ball.speed * Math.sin($phi))
+	  end
 	  if $paddle != @last_collision
 		if @ball.speed < $paddle.width
 		  @ball.increaseSpeed
