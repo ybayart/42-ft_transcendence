@@ -69,6 +69,7 @@ class GameLogic
 	@processed_inputs[0] = []
 	@processed_inputs[1] = []
 	@spec_count = 0
+	@job_launched = false
   end
 
   def canvasWidth
@@ -118,6 +119,14 @@ class GameLogic
 
   def game
 	@game
+  end
+
+  def job_launched
+  	@job_launched
+  end
+
+  def set_job
+  	@job_launched = true
   end
 
   def spec_count
