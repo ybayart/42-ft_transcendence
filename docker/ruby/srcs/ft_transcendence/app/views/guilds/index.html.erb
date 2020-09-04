@@ -35,4 +35,4 @@
 
 <br>
 
-<%= link_to 'New Guild', new_guild_path %>
+<%= link_to raw('New Guild<br>'), new_guild_path unless current_user.guild %>

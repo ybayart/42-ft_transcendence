@@ -225,6 +225,15 @@ ActiveRecord::Schema.define(version: 2020_09_04_040400) do
     t.index ["uid"], name: "index_users_on_uid"
   end
 
+  create_table "war_times", force: :cascade do |t|
+    t.bigint "war_id"
+    t.datetime "start_at"
+    t.datetime "end_at"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["war_id"], name: "index_war_times_on_war_id"
+  end
+
   create_table "wars", force: :cascade do |t|
     t.bigint "guild1_id"
     t.bigint "guild2_id"
@@ -233,7 +242,7 @@ ActiveRecord::Schema.define(version: 2020_09_04_040400) do
     t.integer "points_to_win"
     t.integer "points1"
     t.integer "points2"
-    t.integer "agree"
+    t.string "state"
     t.boolean "all_match"
     t.bigint "winner_id"
     t.datetime "created_at", precision: 6, null: false
