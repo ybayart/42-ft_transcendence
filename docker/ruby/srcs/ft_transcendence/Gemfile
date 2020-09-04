@@ -10,6 +10,8 @@ gem 'date'
 gem 'openssl'
 gem 'time_difference'
 gem 'rqrcode'
+gem 'optimism'
+gem 'activestorage-validator'
 
 gem 'dotenv'
 

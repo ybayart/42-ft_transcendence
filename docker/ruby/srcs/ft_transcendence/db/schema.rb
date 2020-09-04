@@ -10,7 +10,11 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
+<<<<<<< HEAD
 ActiveRecord::Schema.define(version: 2020_09_03_152145) do
+=======
+ActiveRecord::Schema.define(version: 2020_09_04_040400) do
+>>>>>>> 7b8069bc0080c196b6d727cf27f6113ec70df068
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -36,11 +40,40 @@ ActiveRecord::Schema.define(version: 2020_09_03_152145) do
     t.index ["key"], name: "index_active_storage_blobs_on_key", unique: true
   end
 
+  create_table "dm_messages", force: :cascade do |t|
+    t.bigint "dm_id", null: false
+    t.bigint "user_id", null: false
+    t.string "message"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["dm_id"], name: "index_dm_messages_on_dm_id"
+    t.index ["user_id"], name: "index_dm_messages_on_user_id"
+  end
+
+  create_table "dms", force: :cascade do |t|
+    t.bigint "user1_id"
+    t.bigint "user2_id"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["user1_id"], name: "index_dms_on_user1_id"
+    t.index ["user2_id"], name: "index_dms_on_user2_id"
+  end
+
   create_table "friendships", id: false, force: :cascade do |t|
     t.bigint "friend_a_id"
     t.bigint "friend_b_id"
     t.index ["friend_a_id"], name: "index_friendships_on_friend_a_id"
     t.index ["friend_b_id"], name: "index_friendships_on_friend_b_id"
+  end
+
+  create_table "game_rules", force: :cascade do |t|
+    t.integer "canvas_width", default: 600
+    t.integer "canvas_height", default: 400
+    t.integer "ball_radius", default: 10
+    t.integer "ball_speed", default: 4
+    t.integer "max_points", default: 5
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
   end
 
   create_table "games", force: :cascade do |t|
@@ -52,11 +85,17 @@ ActiveRecord::Schema.define(version: 2020_09_03_152145) do
     t.integer "player1_pts", default: 0
     t.integer "player2_pts", default: 0
     t.bigint "winner_id"
+<<<<<<< HEAD
     t.bigint "creator_id"
     t.bigint "tournament_id"
     t.string "mode"
     t.integer "max_points", default: 5
     t.datetime "start_time"
+=======
+    t.string "mode"
+    t.bigint "game_rules_id"
+    t.index ["game_rules_id"], name: "index_games_on_game_rules_id"
+>>>>>>> 7b8069bc0080c196b6d727cf27f6113ec70df068
     t.index ["player1_id"], name: "index_games_on_player1_id"
     t.index ["player2_id"], name: "index_games_on_player2_id"
     t.index ["winner_id"], name: "index_games_on_winner_id"
@@ -92,6 +131,13 @@ ActiveRecord::Schema.define(version: 2020_09_03_152145) do
     t.index ["anagram"], name: "index_guilds_on_anagram", unique: true
     t.index ["name"], name: "index_guilds_on_name", unique: true
     t.index ["owner_id"], name: "index_guilds_on_owner_id"
+  end
+
+  create_table "muteships", id: false, force: :cascade do |t|
+    t.bigint "user_id"
+    t.bigint "muted_id"
+    t.index ["muted_id"], name: "index_muteships_on_muted_id"
+    t.index ["user_id"], name: "index_muteships_on_user_id"
   end
 
   create_table "notifications", force: :cascade do |t|
@@ -205,6 +251,15 @@ ActiveRecord::Schema.define(version: 2020_09_03_152145) do
     t.index ["uid"], name: "index_users_on_uid"
   end
 
+  create_table "war_times", force: :cascade do |t|
+    t.bigint "war_id"
+    t.datetime "start_at"
+    t.datetime "end_at"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["war_id"], name: "index_war_times_on_war_id"
+  end
+
   create_table "wars", force: :cascade do |t|
     t.bigint "guild1_id"
     t.bigint "guild2_id"
@@ -213,7 +268,7 @@ ActiveRecord::Schema.define(version: 2020_09_03_152145) do
     t.integer "points_to_win"
     t.integer "points1"
     t.integer "points2"
-    t.integer "agree"
+    t.string "state"
     t.boolean "all_match"
     t.bigint "winner_id"
     t.datetime "created_at", precision: 6, null: false

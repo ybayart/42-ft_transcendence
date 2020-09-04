@@ -2,6 +2,7 @@ class Ball
 	include ActiveModel::Model
 
 	def initialize(player, paddle, radius)
+		@startingSpeed = 4
 		@radius = radius
 		if player == 1
 			@posX = paddle.posX + (paddle.width + 10 + @radius)
@@ -9,15 +10,15 @@ class Ball
 			@posX = paddle.posX - (10 + @radius)
 		end
 		@posY = paddle.posY + paddle.height / 2
-		@velocityY = 0
-		@velocityX = 0
+		@velocityY = 0.0
+		@velocityX = 0.0
 	end
 
 	def throw(player)
 		if player == 1
-			@velocityX = 4
+			@velocityX = @startingSpeed
 		elsif player == 2
-			@velocityX = -4
+			@velocityX = -@startingSpeed
 		end
 	end
 
@@ -58,8 +59,12 @@ class Ball
 		@velocityX
 	end
 
+	def startingSpeed
+		@startingSpeed
+	end
+
     def speed
-        (Math.sqrt(@velocityX ** 2 + @velocityY ** 2))
+        (Math.sqrt(@velocityX ** 2.0 + @velocityY ** 2.0))
     end
 
     def setPosX(value)

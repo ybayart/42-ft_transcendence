@@ -1,6 +1,7 @@
 class Room::MembersController < ApplicationController
 	before_action :set_room
 	before_action :is_admin
+	before_action :not_empty, only: [:new, :create]
 
 	# GET /room/members
 	# GET /room/members.json
@@ -23,7 +24,7 @@ class Room::MembersController < ApplicationController
 			if @room_member.save
 				back_page = room_members_url
 				back_page = URI(request.referer).path if params[:back]
-				back_page = params[:room_member][:redirect] if params[:room_member][:redirect]
+				back_page = params[:room_member][:redirect] unless params[:room_member][:redirect].empty?
 				format.html { redirect_to back_page, notice: 'Member was successfully created.' }
 			else
 				format.html { render :new }
@@ -56,5 +57,9 @@ class Room::MembersController < ApplicationController
 		# Only allow a list of trusted parameters through.
 		def room_member_params
 			params.require(:room_member).permit(:user_id)
+		end
+
+		def not_empty
+			redirect_to room_members_path, :alert => "No user to add" and return if (User.all - @room.members).empty?
 		end
 end

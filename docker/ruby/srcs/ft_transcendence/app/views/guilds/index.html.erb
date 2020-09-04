@@ -26,7 +26,7 @@
         <td><%= link_to 'Show', guild %></td>
 		<% if guild.owner == current_user %>
 			<td><%= link_to 'Edit', edit_guild_path(guild) %></td>
-			<td><%= link_to 'Destroy', guild, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+			<td><%= link_to 'Destroy', guild, method: :delete, data: { confirm: 'Are you sure?' }, remote: true %></td>
 		<% end %>
       </tr>
     <% end %>
@@ -35,4 +35,4 @@
 
 <br>
 
-<%= link_to 'New Guild', new_guild_path %>
+<%= link_to raw('New Guild<br>'), new_guild_path unless current_user.guild %>

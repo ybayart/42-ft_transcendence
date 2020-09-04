@@ -1,6 +1,7 @@
 class Guild::InvitesController < ApplicationController
 	before_action :set_guild
 	before_action :is_admin
+	before_action :not_empty, only: [:new, :create]
 
 	# GET /guild/invites
 	# GET /guild/invites.json
@@ -54,5 +55,9 @@ class Guild::InvitesController < ApplicationController
 		# Only allow a list of trusted parameters through.
 		def guild_invite_params
 			params.require(:guild_invite).permit(:user_id)
+		end
+
+		def not_empty
+			redirect_to guild_invites_path, :alert => "No user to add" and return if (User.all - @guild.members - @guild.invites.where(state: "waiting").map(&:user)).empty?
 		end
 end

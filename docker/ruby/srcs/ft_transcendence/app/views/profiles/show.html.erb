@@ -32,9 +32,18 @@
 		otp required: <b><%= @profile.otp_required_for_login == true %></b>
 	</p>
 
-	<%= link_to 'Edit', edit_profile_path(@profile) %>
-<% elsif current_user.friends.exclude?(@profile) %>
-	<%= link_to 'Add to friend', profile_friends_path(current_user, friendship: {friend_b_id: @profile}, back: true), method: :post, remote: true %>
+	<%= link_to raw('Edit<br>'), edit_profile_path(@profile) %>
+<% else %>
+	<% if current_user.friends.exclude?(@profile) %>
+		<%= link_to raw('Add to friend<br>'), profile_friends_path(current_user, friendship: {friend_b_id: @profile}, back: true), method: :post, remote: true %>
+	<% else %>
+		<%= link_to raw('Remove this friend<br>'), profile_friend_path(current_user, @profile, back: true), method: :delete, remote: true %>
+	<% end %>
+	<% if current_user.mutes.exclude?(@profile) %>
+		<%= link_to raw('Mute this user<br>'), profile_mutes_path(current_user, muteship: {muted_id: @profile}, back: true), method: :post, remote: true %>
+	<% else %>
+		<%= link_to raw('Unmute this user<br>'), profile_mute_path(current_user, @profile, back: true), method: :delete, remote: true %>
+	<% end %>
 <% end %>
 
 <br><hr>

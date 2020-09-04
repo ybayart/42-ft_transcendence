@@ -19,11 +19,17 @@ class User < ActiveRecord::Base
 	has_many :send_invites, class_name: "GuildInvitMember", foreign_key: "by_id", inverse_of: :by
 	has_many :receive_invites, class_name: "GuildInvitMember", foreign_key: "user_id", inverse_of: :user
 	has_many :notifications, dependent: :destroy
+	has_many :mutes_ship, class_name: "Muteship", foreign_key: "user_id"
+	has_many :mutes, through: :mutes_ship, :source => :muted
+	has_many :muted_ship, class_name: "Muteship", foreign_key: "muted_id"
+	has_many :muted, through: :muted_ship, :source => :user
 
+	validates	:profile_pic, presence: true, blob: { content_type: :image , size_range: 0..1.megabytes }
 	validate	:check_columns
 
 	devise	:rememberable, :validatable,
 			:two_factor_authenticatable,
+			:database_authenticatable,
 			:omniauthable, omniauth_providers: [:marvin],
 			:otp_secret_encryption_key => ENV['TOTP_KEY']
 
@@ -37,7 +43,7 @@ class User < ActiveRecord::Base
 			user.profile_pic.attach(io: open(file), filename: File.basename(file))
 			user.otp_required_for_login = false
 			user.otp_accepted = true
-			user.staff = true if ["fgoulama", "lmartin", "yanyan"].include?(user.login)
+			user.staff = true if ["fgoulama", "lmartin", "ybayart"].include?(user.login)
 		end
 	end
 

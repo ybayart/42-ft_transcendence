@@ -3,9 +3,15 @@ class GameLogic
 
   @@games = Hash.new
 
-  def self.create(id, canvasWidth = 600, canvasHeight = 400, ballRadius = 10)
+  def self.create(id)
 	if !@@games[:id]
-	  @@games[:id] ||= GameLogic.new(id, canvasWidth, canvasHeight, ballRadius)
+		$game = Game.find_by(id: id)
+		if !$game.game_rules
+			$game_rules = GameRule.create()
+			$game.game_rules = $game_rules
+			$game.save
+		end
+	  @@games[:id] ||= GameLogic.new(id)
 	end
 	@@games[:id]
   end
@@ -25,12 +31,29 @@ class GameLogic
 	$game
   end
 
-  def initialize(id, canvasWidth, canvasHeight, ballRadius)
-	@canvasWidth = canvasWidth
-	@canvasHeight = canvasHeight
-	@ballRadius = ballRadius
+  def self.check_rules(rules)
+	if rules["max_points"].to_i < 1 || rules["max_points"].to_i > 20
+		return false
+	end
+	if rules["canvas"]["width"].to_i < 200 || rules["canvas"]["width"].to_i > 3000
+		return false
+	end
+	if rules["canvas"]["height"].to_i < 200 || rules["canvas"]["height"].to_i > 3000
+		return false
+	end
+	if rules["ball"]["radius"].to_i < 1 || (rules["ball"]["radius"].to_i * 2) > rules["canvas"]["height"].to_i || (rules["ball"]["radius"].to_i * 2) > rules["canvas"]["width"].to_i
+		return false
+	end
+	return true
+  end
+
+  def initialize(id)
+	@game = Game.find_by(id: id)
+	@canvasWidth = @game.game_rules.canvas_width
+	@canvasHeight = @game.game_rules.canvas_height
+	@ballRadius = @game.game_rules.ball_radius
 	@paddles = Array.new(2)
-	$paddle_height = 50
+	$paddle_height = 50.0
 	@paddles[0] = Paddle.new(5, @canvasHeight / 2 - ($paddle_height / 2), $paddle_height)
 	@paddles[1] = Paddle.new(@canvasWidth - 20, @canvasHeight / 2 - ($paddle_height / 2), $paddle_height)
 	@last_loser = rand(1..2)
@@ -40,8 +63,7 @@ class GameLogic
 	@player_nicknames = Array.new(2)
 	@player_ready = [false, false]
 	@state = "pause"
-	@game = Game.find_by(id: id)
-	@max_points = @game.max_points
+	@max_points = @game.game_rules.max_points
 	@inputs = Array.new()
 	@processed_inputs = Array.new(2)
 	@processed_inputs[0] = []
@@ -222,10 +244,12 @@ class GameLogic
 	  end
 	end
 	if $paddle
-	  $offset = (@ball.posY + @ball.radius * 2 - $paddle.posY) / ($paddle.height + @ball.radius * 2)
-	  $phi = 0.25 * Math::PI * (2 * $offset - 1)
-	  @ball.setVelocityX(@ball.velocityX * -1)
-	  @ball.setVelocityY(@ball.speed * Math.sin($phi))
+	  $offset = (@ball.posY + @ball.radius * 2.0 - $paddle.posY) / ($paddle.height + @ball.radius * 2.0)
+	  $phi = 0.25 * Math::PI * (2.0 * $offset - 1.0)
+	  @ball.setVelocityX(@ball.velocityX * -1.0)
+	  if @ball.velocityY != 0 || @ball.posY != $paddle.getCenter
+		@ball.setVelocityY(@ball.speed * Math.sin($phi))
+	  end
 	  if $paddle != @last_collision
 		if @ball.speed < $paddle.width
 		  @ball.increaseSpeed

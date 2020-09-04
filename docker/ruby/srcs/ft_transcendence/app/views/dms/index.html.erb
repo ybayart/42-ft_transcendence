@@ -1,0 +1,32 @@
+<p id="notice"><%= notice %></p>
+
+<h1>Dms</h1>
+
+<table>
+	<thead>
+		<tr>
+			<th>With</th>
+			<th colspan="3"></th>
+		</tr>
+	</thead>
+
+	<tbody>
+		<% @dms.each do |dm| %>
+			<% if dm.user1 == current_user %>
+				<% user = dm.user2 %>
+			<% else %>
+				<% user = dm.user1 %>
+			<% end %>
+			<% if @mutes.exclude?(user) %>
+				<tr>
+					<td><%= link_to user.nickname, dm %></td>
+					<td><%= link_to 'Destroy', dm, method: :delete, data: { confirm: 'Are you sure?' }, remote: true %></td>
+				</tr>
+			<% end %>
+		<% end %>
+	</tbody>
+</table>
+
+<br>
+
+<%= link_to 'New Dm', new_dm_path %>

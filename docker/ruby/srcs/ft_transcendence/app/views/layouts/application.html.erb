@@ -7,10 +7,11 @@
 
 		<%= stylesheet_link_tag 'application', media: 'all', 'data-turbolinks-track': 'reload' %>
 		<%= javascript_pack_tag 'application', 'data-turbolinks-track': 'reload' %>
+		<meta name="viewport" content="width=device-width" />
 	</head>
 
-	<body controller="<%= ({controller: controller_path, action: action_name}).to_json %>">
-		<% if !@nonavbar && user_signed_in? %>
+	<body controller="<%= ({controller: controller_path, action: action_name}).to_json %>" mutes="<%= current_user.mutes.map(&:id) if user_signed_in? %>">
+		<% if user_signed_in? and current_user.otp_accepted == true and current_user.nickname.nil? == false %>
 			<nav class="navbar navbar-light" style="align-items: first baseline;">
 				<%= link_to root_path, class: 'navbar-brand' do %>
 					<img src='<%= asset_path('42-header.svg') %>' height='60px'>
@@ -24,14 +25,23 @@
 						<%= link_to profile_friends_path(current_user), class: 'navbar-item navbar-btn' do %>
 							<button type="button">My Friends</button>
 						<% end %>
+						<%= link_to profile_mutes_path(current_user), class: 'navbar-item navbar-btn' do %>
+							<button type="button">My Mutes</button>
+						<% end %>
 						<%= link_to profiles_path, class: 'navbar-item navbar-btn' do %>
 							<button type="button">Users</button>
 						<% end %>
 						<%= link_to rooms_path, class: 'navbar-item navbar-btn' do %>
 							<button type="button">Rooms</button>
 						<% end %>
+						<%= link_to dms_path, class: 'navbar-item navbar-btn' do %>
+							<button type="button">dms</button>
+						<% end %>
 						<%= link_to guilds_path, class: 'navbar-item navbar-btn' do %>
 							<button type="button">Guilds</button>
+						<% end %>
+						<%= link_to wars_path, class: 'navbar-item navbar-btn' do %>
+							<button type="button">Wars</button>
 						<% end %>
 						<% if current_user.staff %>
 							<%= link_to admin_rooms_path, class: 'navbar-item navbar-btn' do %>
@@ -45,17 +55,27 @@
 						<%= link_to admin_rooms_path, class: 'navbar-item navbar-btn' do %>
 							<button type="button">Rooms</button>
 						<% end %>
+						<%= link_to admin_guilds_path, class: 'navbar-item navbar-btn' do %>
+							<button type="button">Guilds</button>
+						<% end %>
+						<%= link_to admin_moderators_path, class: 'navbar-item navbar-btn' do %>
+							<button type="button">Moderators</button>
+						<% end %>
 					<% end %>
 				</ul>
 				<ul class="navbar-nav">
 					<li id="navbar-user" class="nav-item navbar-btn">
 						<button type="button" data-toggle="collapse" data-target="#user-logout" aria-controls="user-logout" aria-expanded="false">
-						<img src="<%= url_for(current_user.profile_pic) %>" class="avatar">
+							<img src="<%= url_for(current_user.profile_pic) %>" class="avatar">
 							<span id="nav-nickname" class="responsive-large" userid="<%= current_user[:id] %>" userlogin="<%= current_user[:login] %>" usernickname="<%= current_user[:nickname] %>">
 								<%= current_user[:nickname] %>
 							</span>
 						</button>
-						<div id="user-logout" class="collapse">
+						<div id="user-logout" class="collapse" style="text-align: center;">
+							<br>
+							<button onClick="reloadWithTurbolinks();">
+								Refresh
+							</button>
 							<hr>
 							<%= link_to raw("
 								<img src=" + asset_path('logout.svg') + " class='logo-svg' style='height: 35px;margin-right: 15px;'>

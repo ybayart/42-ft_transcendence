@@ -1,6 +1,7 @@
 class Room::AdminsController < ApplicationController
 	before_action :set_room
 	before_action :is_owner
+	before_action :not_empty, only: [:new, :create]
 
 	# GET /room/admins
 	# GET /room/admins.json
@@ -55,5 +56,9 @@ class Room::AdminsController < ApplicationController
 		# Only allow a list of trusted parameters through.
 		def room_admin_params
 			params.require(:room_admin).permit(:user_id)
+		end
+
+		def not_empty
+			redirect_to room_admins_path, :alert => "No user to add" and return if (@room.members - @room.admins).empty?
 		end
 end

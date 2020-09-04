@@ -58,7 +58,7 @@ class GuildsController < ApplicationController
 				format.html { redirect_to @guild, notice: 'Guild was successfully created.' }
 				format.json { render :show, status: :created, location: @guild }
 			else
-				format.html { render :new }
+				format.html { broadcast_errors @guild, guild_params }
 				format.json { render json: @guild.errors, status: :unprocessable_entity }
 			end
 		end
@@ -72,7 +72,7 @@ class GuildsController < ApplicationController
 				format.html { redirect_to @guild, notice: 'Guild was successfully updated.' }
 				format.json { render :show, status: :ok, location: @guild }
 			else
-				format.html { render :edit }
+				format.html { broadcast_errors @guild, guild_params }
 				format.json { render json: @guild.errors, status: :unprocessable_entity }
 			end
 		end

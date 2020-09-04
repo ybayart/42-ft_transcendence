@@ -1,19 +1,8 @@
-<%= form_for(profile_friend, :as => "friendship", url: profile_friends_path, remote: true) do |form| %>
-  <% if profile_friend.errors.any? %>
-    <div id="error_explanation">
-      <h2><%= pluralize(profile_friend.errors.count, "error") %> prohibited this profile_friend from being saved:</h2>
-
-      <ul>
-        <% profile_friend.errors.full_messages.each do |message| %>
-          <li><%= message %></li>
-        <% end %>
-      </ul>
-    </div>
-  <% end %>
-
+<%= form_with(model: profile_friend, url: profile_friends_path) do |form| %>
   <div class="field">
     <%= form.label :user %>
 	<%= form.collection_select :friend_b_id, User.all - @profile.friends, :id, :nickname %>
+    <%= form.error_for :friend_b_id %>
   </div>
 
   <div class="actions">

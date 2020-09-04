@@ -1,6 +1,7 @@
 class Profile::FriendsController < ApplicationController
 	before_action :set_profile
 	before_action :is_mine
+	before_action :not_empty, only: [:new, :create]
 
 	# GET /profile/friends
 	# GET /profile/friends.json
@@ -21,11 +22,12 @@ class Profile::FriendsController < ApplicationController
 
 		respond_to do |format|
 			if @profile_friend.save
-				back_page = profile_friends_url
+				back_page = profile_friends_path
 				back_page = URI(request.referer).path if params[:back]
 				format.html { redirect_to back_page, notice: 'Friend was successfully created.' }
+				format.json { render :show, status: :created, location: back_page }
 			else
-				format.html { render :new }
+				format.html { broadcast_errors @profile_friend, profile_friend_params }
 				format.json { render json: @profile_friend.errors, status: :unprocessable_entity }
 			end
 		end
@@ -36,7 +38,9 @@ class Profile::FriendsController < ApplicationController
 	def destroy
 		@profile.friends.destroy(params[:id])
 		respond_to do |format|
-			format.html { redirect_to profile_friends_url, notice: 'Friend was successfully destroyed.' }
+			back_page = profile_friends_path
+			back_page = URI(request.referer).path if params[:back]
+			format.html { redirect_to back_page, notice: 'Friend was successfully destroyed.' }
 			format.json { head :no_content }
 		end
 	end
@@ -49,11 +53,15 @@ class Profile::FriendsController < ApplicationController
 		end
 
 		def is_mine
-			redirect_to @profile, :alert => "It's not you :)" and return unless @profile == current_user
+			redirect_to profile_path(@profile), :alert => "It's not you :)" and return unless @profile == current_user
 		end
 
 		# Only allow a list of trusted parameters through.
 		def profile_friend_params
 			params.require(:friendship).permit(:friend_b_id)
+		end
+
+		def not_empty
+			redirect_to profile_friends_path, :alert => "No user to add" and return if (User.all - @profile.friends).empty?
 		end
 end

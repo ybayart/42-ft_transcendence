@@ -8,6 +8,7 @@ class Guild < ApplicationRecord
 	has_many :members, class_name: "User", foreign_key: "guild_id", inverse_of: :guild
 	has_many :wars
 
+	validates	:anagram, presence: true, length: { maximum: 5 }
 	validate	:check_columns
 
 	after_commit	:apply_modifications

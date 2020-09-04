@@ -8,7 +8,7 @@ class CreateWars < ActiveRecord::Migration[6.0]
       t.integer :points_to_win
       t.integer :points1
       t.integer :points2
-      t.integer :agree
+      t.string :state
       t.boolean :all_match
       t.references :winner
 

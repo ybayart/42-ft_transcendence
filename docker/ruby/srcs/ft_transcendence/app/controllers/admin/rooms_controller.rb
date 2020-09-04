@@ -1,4 +1,4 @@
-class Admin::RoomsController < ApplicationController
+class Admin::RoomsController < AdminController
 	before_action :set_admin_room, only: [:show, :edit, :update, :destroy]
 
 	# GET /admin/rooms
@@ -10,8 +10,8 @@ class Admin::RoomsController < ApplicationController
 	# GET /admin/rooms/1
 	# GET /admin/rooms/1.json
 	def show
-		@admins = @room.admins - [@room.owner]
-		@members = @room.members - @room.admins
+		@admins = @room.admins.order("nickname ASC") - [@room.owner]
+		@members = @room.members.order("nickname ASC") - @room.admins
 	end
 
 	# DELETE /admin/rooms/1
