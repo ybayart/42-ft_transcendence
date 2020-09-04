@@ -5,7 +5,7 @@ class Paddle
 		@posX = x
 		@posY = y
 		@height = h
-		@width = 15
+		@width = 15.0
 		@velocity = 10
 	end
 
@@ -38,6 +38,6 @@ class Paddle
 	end
 
 	def getCenter
-		return (@posY + @height / 2)
+		return (@posY + @height / 2.0)
 	end
 end
