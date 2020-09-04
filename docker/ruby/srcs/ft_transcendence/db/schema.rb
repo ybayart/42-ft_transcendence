@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_09_03_155343) do
+ActiveRecord::Schema.define(version: 2020_09_04_040400) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -62,6 +62,15 @@ ActiveRecord::Schema.define(version: 2020_09_03_155343) do
     t.index ["friend_b_id"], name: "index_friendships_on_friend_b_id"
   end
 
+  create_table "game_rules", force: :cascade do |t|
+    t.integer "canvas_width", default: 600
+    t.integer "canvas_height", default: 400
+    t.integer "ball_radius", default: 10
+    t.integer "ball_speed", default: 4
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+  end
+
   create_table "games", force: :cascade do |t|
     t.bigint "player1_id"
     t.bigint "player2_id"
@@ -74,6 +83,8 @@ ActiveRecord::Schema.define(version: 2020_09_03_155343) do
     t.bigint "creator_id"
     t.string "mode"
     t.integer "max_points", default: 5
+    t.bigint "game_rules_id"
+    t.index ["game_rules_id"], name: "index_games_on_game_rules_id"
     t.index ["player1_id"], name: "index_games_on_player1_id"
     t.index ["player2_id"], name: "index_games_on_player2_id"
     t.index ["winner_id"], name: "index_games_on_winner_id"
