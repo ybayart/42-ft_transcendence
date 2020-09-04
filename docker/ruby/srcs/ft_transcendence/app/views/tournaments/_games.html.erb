@@ -4,6 +4,7 @@
       <th>Player1</th>
       <th>Player2</th>
       <th>Status</th>
+      <th>Start time</th>
       <th colspan="3"></th>
     </tr>
   </thead>
@@ -14,6 +15,7 @@
         <td><%= game.player1.nickname %></td>
         <td><%= game.player2.nickname %></td>
         <td><%= game.status %></td>
+        <td><%= game.start_time %></td>
         <td><%= link_to 'Show', game %></td>
       </tr>
     <% end %>

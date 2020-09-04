@@ -4,14 +4,19 @@ class CreateTournamentGamesJob < ApplicationJob
   def perform(tournament)
     tournament.reload
 
-    $players = tournament.users
-    if ($players.length < 2)
+    $count = tournament.users.count
+    if ($count < 2)
       tournament.delete
       return
     end
 
-    if $players.length % 2 == 1
+    $players = Array.new($count, nil)
+    if $count % 2 == 1
       $players.push(nil)
+    end
+
+    for i in 0...$count
+      $players[i] = tournament.users[i]
     end
 
     $rounds_nb = $players.length - 1
@@ -19,16 +24,18 @@ class CreateTournamentGamesJob < ApplicationJob
     $time = Time.now
 
     $playersIndex = [];
-    $players.each_with_index do |p, i|
-      $playersIndex.push(i + 1)
+    for i in 0...$players.length
+      $playersIndex.push(i)
     end
-    $playersIndex.slice(1..-1)
+    $playersIndex.shift
     
     for i in 0...$rounds_nb
-      $time += i * 600
+      if i != 0
+        $time += 600
+      end
       $newPlayerIndex = [0].concat($playersIndex)
       $firstHalf = $newPlayerIndex.slice(0...$half);
-      $secondHalf = $newPlayerIndex.slice($half...$players.length);
+      $secondHalf = $newPlayerIndex.slice($half...$players.length).reverse();
       for i in 0...$firstHalf.length
         $p1 = $players[$firstHalf[i]]
         $p2 = $players[$secondHalf[i]]

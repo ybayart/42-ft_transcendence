@@ -62,11 +62,15 @@ class TournamentsController < ApplicationController
   end
 
   def register
-    current_user.tournament = @tournament
+    if @tournament.users.count + 1 <= @tournament.max_player
+      current_user.tournament = @tournament
+      current_user.save
+      $notice = 'Registered to tournament.'
+    else
+      $notice = 'Tournament is full.'
+    end
     respond_to do |format|
-      if current_user.save
-        format.html { redirect_to @tournament, notice: 'Registered to tournament.' }
-      end
+      format.html { redirect_to @tournament, notice: $notice }
     end
   end
 
