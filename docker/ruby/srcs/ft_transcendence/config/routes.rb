@@ -29,15 +29,11 @@ Rails.application.routes.draw do
 	get '/test', to: 'game#test'
 	get '/spectate/:id', to: 'game#spectate'
 
-<<<<<<< HEAD
 	resources :tournaments
 	get '/register/:id', to: 'tournaments#register'
 
-
 	resources :room_messages
 
-=======
->>>>>>> 7b8069bc0080c196b6d727cf27f6113ec70df068
 	resources :guilds do
 		get 'invitations', on: :collection
 		patch 'invitationspost/:id', as: 'invitationspost', to: 'guilds#invitationspost', on: :collection

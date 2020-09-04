@@ -10,11 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-<<<<<<< HEAD
-ActiveRecord::Schema.define(version: 2020_09_03_152145) do
-=======
 ActiveRecord::Schema.define(version: 2020_09_04_040400) do
->>>>>>> 7b8069bc0080c196b6d727cf27f6113ec70df068
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -85,17 +81,11 @@ ActiveRecord::Schema.define(version: 2020_09_04_040400) do
     t.integer "player1_pts", default: 0
     t.integer "player2_pts", default: 0
     t.bigint "winner_id"
-<<<<<<< HEAD
-    t.bigint "creator_id"
     t.bigint "tournament_id"
     t.string "mode"
-    t.integer "max_points", default: 5
     t.datetime "start_time"
-=======
-    t.string "mode"
     t.bigint "game_rules_id"
     t.index ["game_rules_id"], name: "index_games_on_game_rules_id"
->>>>>>> 7b8069bc0080c196b6d727cf27f6113ec70df068
     t.index ["player1_id"], name: "index_games_on_player1_id"
     t.index ["player2_id"], name: "index_games_on_player2_id"
     t.index ["winner_id"], name: "index_games_on_winner_id"
