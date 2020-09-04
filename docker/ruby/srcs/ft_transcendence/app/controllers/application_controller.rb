@@ -22,5 +22,8 @@ class ApplicationController < ActionController::Base
 			War.where(state: ["waiting for war times", "declared"]).each do |war|
 				war.update(state: "aborted") if war.start_at.past?
 			end
+			War.where(state: ["pending"]).each do |war|
+				war.update(state: "active") if war.start_at.past?
+			end
 		end
 end
