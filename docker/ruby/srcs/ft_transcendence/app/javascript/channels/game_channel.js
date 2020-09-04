@@ -54,7 +54,7 @@ document.addEventListener('turbolinks:load', () => {
 					paddles[me].goDown();
 			}
 			else if (e.key == ' ')
-				sub.perform('throw_ball', { id: inputs_id });
+				sub.perform('space', { id: inputs_id });
 			inputs_id++;
 		}
 
@@ -126,20 +126,23 @@ document.addEventListener('turbolinks:load', () => {
 			},
 
 			received(data) {
+				console.log(data);
 				if (data.config)
 				{
+					console.log(data.config);
+					render.config(data.config);
 					render.canvas.width = data.config.canvas.width;
 					render.canvas.height = data.config.canvas.height;
 					render.resetCanvas();
 				}
 				if (data.status == "waiting")
 				{
-					render.updateGameStatus("waiting", data.player2);
+					render.updateGameStatus(data.msg_status);
 					render.updateSpecCount(data.spec_count);
 				}
 				else if (data.status == "running")
 				{
-					render.updateGameStatus("running", null);
+					render.updateGameStatus(data.msg_status);
 					render.updateSpecCount(data.spec_count);
 					render.updatePts(data.players);
 
@@ -172,7 +175,8 @@ document.addEventListener('turbolinks:load', () => {
 				}
 				else if (data.status == "finished")
 				{
-					render.updateGameStatus(data.winner + " won !", null);
+					render.updatePts(data.players);
+					render.updateGameStatus(data.msg_status);
 					setUpdateRate(0);
 					render.resetCanvas();
 					sub.unsubscribe();

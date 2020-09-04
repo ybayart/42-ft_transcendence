@@ -9,8 +9,13 @@
 </p>
 
 <p>
-	Nickname <b id="nickname"><%= @profile.nickname %></b>
+	Nickname: <b id="nickname"><%= @profile.nickname %></b>
 </p>
+
+<p>
+	Rank: <b><%= @profile.rank %></b>
+</p>
+
 
 <% if @profile.guild %>
 	<p>
@@ -19,9 +24,7 @@
 <% end %>
 
 <% if current_user != @profile %>
-	<p>
-		<button id="game_invite">Invite to play</button>
-	</p>
+	<%= render 'game/rules_form' %>
 <% end %>
 
 <% if current_user == @profile %>

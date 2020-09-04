@@ -64,10 +64,23 @@ document.addEventListener('turbolinks:load', () => {
 	if (button)
 	{
 		button.click(function() {
+			console.log("clicked");
+			var canvas_width = $("#cwidth").val();
+			var canvas_height = $("#cheight").val();
+			var ball_radius = $("#bradius").val();
+			var max_points = $("#max_points").val();
 			var to_nickname = $("#nickname").html();
 			notif.perform('send_notif', {
 				type: "play_casual",
-				to: to_nickname
+				to: to_nickname,
+				canvas: {
+					width: canvas_width,
+					height: canvas_height
+				},
+				ball: {
+					radius: ball_radius
+				},
+				max_points: max_points
 			});
 		});
 	}
