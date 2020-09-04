@@ -67,6 +67,7 @@ ActiveRecord::Schema.define(version: 2020_09_04_040400) do
     t.integer "canvas_height", default: 400
     t.integer "ball_radius", default: 10
     t.integer "ball_speed", default: 4
+    t.integer "max_points", default: 5
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
   end
@@ -82,7 +83,6 @@ ActiveRecord::Schema.define(version: 2020_09_04_040400) do
     t.bigint "winner_id"
     t.bigint "creator_id"
     t.string "mode"
-    t.integer "max_points", default: 5
     t.bigint "game_rules_id"
     t.index ["game_rules_id"], name: "index_games_on_game_rules_id"
     t.index ["player1_id"], name: "index_games_on_player1_id"
@@ -242,7 +242,7 @@ ActiveRecord::Schema.define(version: 2020_09_04_040400) do
     t.integer "points_to_win"
     t.integer "points1"
     t.integer "points2"
-    t.string "state"
+    t.integer "agree"
     t.boolean "all_match"
     t.bigint "winner_id"
     t.datetime "created_at", precision: 6, null: false

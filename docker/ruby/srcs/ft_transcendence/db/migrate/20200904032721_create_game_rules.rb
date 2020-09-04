@@ -5,6 +5,7 @@ class CreateGameRules < ActiveRecord::Migration[6.0]
       t.integer :canvas_height
       t.integer :ball_radius
       t.integer :ball_speed
+      t.integer :max_points
       t.timestamps
     end
   end

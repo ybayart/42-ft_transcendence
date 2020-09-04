@@ -63,7 +63,7 @@ class GameLogic
 	@player_nicknames = Array.new(2)
 	@player_ready = [false, false]
 	@state = "pause"
-	@max_points = @game.max_points
+	@max_points = @game.game_rules.max_points
 	@inputs = Array.new()
 	@processed_inputs = Array.new(2)
 	@processed_inputs[0] = []
