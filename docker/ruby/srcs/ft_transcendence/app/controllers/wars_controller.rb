@@ -1,7 +1,8 @@
 class WarsController < ApplicationController
 	before_action :in_guild, only: [:new, :create]
-	before_action :set_war, only: [:show]
+	before_action :set_war, only: [:show, :destroy]
 	before_action :not_empty, only: [:new, :create]
+	before_action :authored, only: [:destroy]
 
 	# GET /wars
 	# GET /wars.json
@@ -40,6 +41,16 @@ class WarsController < ApplicationController
 		end
 	end
 
+	# DELETE /wars/1
+	# DELETE /wars/1.json
+	def destroy
+		@war.update(state: "aborted")
+		respond_to do |format|
+			format.html { redirect_to wars_url, notice: 'War was successfully aborted.' }
+			format.json { head :no_content }
+		end
+	end
+
 	private
 		def in_guild
 			redirect_to wars_path, :alert => "You're not in a guild" and return unless current_user.guild
@@ -48,7 +59,6 @@ class WarsController < ApplicationController
 
 		# Use callbacks to share common setup or constraints between actions.
 		def set_war
-			ApplicationController.helpers.check_war_state
 			begin
 				@war = War.find(params[:id])
 			rescue
@@ -63,5 +73,9 @@ class WarsController < ApplicationController
 
 		def not_empty
 			redirect_to wars_path, :alert => "No guild available" and return if (Guild.all.where.not(id: current_user.guild)).empty?
+		end
+
+		def authored
+			redirect_to wars_path, :alert => "It's not the time to do that" and return unless @war.state == "waiting for war times"
 		end
 end

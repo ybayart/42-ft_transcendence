@@ -11,7 +11,7 @@
 	</head>
 
 	<body controller="<%= ({controller: controller_path, action: action_name}).to_json %>" mutes="<%= current_user.mutes.map(&:id) if user_signed_in? %>">
-		<% if !@nonavbar && user_signed_in? %>
+		<% if user_signed_in? and current_user.otp_accepted == true and current_user.nickname.nil? == false %>
 			<nav class="navbar navbar-light" style="align-items: first baseline;">
 				<%= link_to root_path, class: 'navbar-brand' do %>
 					<img src='<%= asset_path('42-header.svg') %>' height='60px'>

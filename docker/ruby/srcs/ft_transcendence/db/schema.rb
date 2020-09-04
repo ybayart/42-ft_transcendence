@@ -81,7 +81,6 @@ ActiveRecord::Schema.define(version: 2020_09_04_040400) do
     t.integer "player1_pts", default: 0
     t.integer "player2_pts", default: 0
     t.bigint "winner_id"
-    t.bigint "creator_id"
     t.string "mode"
     t.bigint "game_rules_id"
     t.index ["game_rules_id"], name: "index_games_on_game_rules_id"
@@ -242,7 +241,7 @@ ActiveRecord::Schema.define(version: 2020_09_04_040400) do
     t.integer "points_to_win"
     t.integer "points1"
     t.integer "points2"
-    t.integer "agree"
+    t.string "state"
     t.boolean "all_match"
     t.bigint "winner_id"
     t.datetime "created_at", precision: 6, null: false

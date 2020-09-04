@@ -28,6 +28,7 @@ class User < ActiveRecord::Base
 
 	devise	:rememberable, :validatable,
 			:two_factor_authenticatable,
+			:database_authenticatable,
 			:omniauthable, omniauth_providers: [:marvin],
 			:otp_secret_encryption_key => ENV['TOTP_KEY']
 

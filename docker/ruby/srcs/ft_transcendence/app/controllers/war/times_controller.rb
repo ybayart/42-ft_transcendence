@@ -66,7 +66,6 @@ class War::TimesController < WarsController
 	private
 		# Use callbacks to share common setup or constraints between actions.
 		def set_war
-			ApplicationController.helpers.check_war_state
 			begin
 				@war = War.find(params[:war_id])
 			rescue

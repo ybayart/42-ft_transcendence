@@ -16,7 +16,7 @@
 			<tr>
 				<td><%= war_time.start_at %></td>
 				<td><%= war_time.end_at %></td>
-				<% if @war.guild1.officers.include?(current_user) %>
+				<% if @war.guild1.officers.include?(current_user) and @war.state == "waiting for war times" %>
 					<td><%= link_to 'Edit', edit_war_time_path(@war, war_time) %></td>
 					<td><%= link_to 'Destroy', war_time_path(@war, war_time), method: :delete, data: { confirm: 'Are you sure?' }, remote: true %></td>
 				<% end %>
