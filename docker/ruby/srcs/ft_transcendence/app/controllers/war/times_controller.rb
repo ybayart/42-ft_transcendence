@@ -1,4 +1,4 @@
-class War::TimesController < WarsController
+class War::TimesController < ApplicationController
 	before_action :set_war
 	before_action :set_war_time, only: [:edit, :update, :destroy]
 	before_action :authored, only: [:new, :create, :edit, :update, :destroy]

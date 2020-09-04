@@ -22,6 +22,7 @@ class User < ActiveRecord::Base
 	has_many :mutes, through: :mutes_ship, :source => :muted
 	has_many :muted_ship, class_name: "Muteship", foreign_key: "muted_id"
 	has_many :muted, through: :muted_ship, :source => :user
+	has_many :notifications, inverse_of: :user
 
 	validates	:profile_pic, presence: true, blob: { content_type: :image , size_range: 0..1.megabytes }
 	validate	:check_columns

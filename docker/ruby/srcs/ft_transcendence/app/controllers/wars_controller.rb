@@ -1,6 +1,6 @@
 class WarsController < ApplicationController
 	before_action :in_guild, only: [:new, :create]
-	before_action :set_war, only: [:show, :destroy]
+	before_action :set_war, only: [:show, :update, :destroy]
 	before_action :not_empty, only: [:new, :create]
 	before_action :authored, only: [:destroy]
 
@@ -32,8 +32,10 @@ class WarsController < ApplicationController
 
 		respond_to do |format|
 			if @war.save
-				format.html { redirect_to @war, notice: 'War was successfully created.' }
-				format.json { render :show, status: :created, location: @war }
+				back_page = @war
+				back_page = URI(request.referer).path if params[:back]
+				format.html { redirect_to back_page, notice: 'War was successfully created.' }
+				format.json { render :show, status: :created, location: back_page }
 			else
 				format.html { broadcast_errors @war, (['guild2_id', 'start_at', 'end_at', 'points_to_win', 'all_match']) }
 				format.json { render json: @war.errors, status: :unprocessable_entity }
@@ -41,20 +43,35 @@ class WarsController < ApplicationController
 		end
 	end
 
-	# DELETE /wars/1
-	# DELETE /wars/1.json
-	def destroy
-		@war.update(state: "aborted")
+	# PATCH/PUT /war/times/1
+	# PATCH/PUT /war/times/1.json
+	def update
 		respond_to do |format|
-			format.html { redirect_to wars_url, notice: 'War was successfully aborted.' }
-			format.json { head :no_content }
+			back_page = @war
+			back_page = URI(request.referer).path if params[:back]
+			error_msg = "Invalid state." unless params[:state] and ["aborted", "declared", "pending", "rejected"].include?(params[:state])
+			if ["aborted", "declared"].include?(params[:state])
+				error_msg = "War already locked" unless error_msg or @war.state == "waiting for war times"
+				error_msg = "Missing permission" unless error_msg or @war.guild1.officers.include?(current_user)
+			else
+				error_msg = "War already locked" unless error_msg or @war.state == "declared"
+				error_msg = "Missing permission" unless error_msg or @war.guild2.officers.include?(current_user)
+			end
+			if error_msg.nil?
+				@war.update(state: params[:state])
+				format.html { redirect_to back_page, notice: 'War was successfully updated.' }
+				format.json { render :show, status: :updated, location: back_page }
+			else
+				format.html { redirect_to back_page, notice: error_msg }
+				format.json { render status: :unprocessable_entity }
+			end
 		end
 	end
 
 	private
 		def in_guild
 			redirect_to wars_path, :alert => "You're not in a guild" and return unless current_user.guild
-			redirect_to wars_path, :alert => "Missing permission" and return if current_user.guild.officers.exclude?(current_user)
+			redirect_to wars_path, :alert => "Go elsewhere" and return unless helpers.ready_for_war
 		end
 
 		# Use callbacks to share common setup or constraints between actions.

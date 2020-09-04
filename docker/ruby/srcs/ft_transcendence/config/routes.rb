@@ -41,6 +41,8 @@ Rails.application.routes.draw do
 		resources :times, controller: 'war/times', only: [:index, :new, :create, :edit, :update, :destroy]
 	end
 
+	resources :notifications, only: [:index, :show]
+
 	namespace :admin do
 		resources :rooms, only: [:index, :show, :destroy]
 		resources :guilds, only: [:index, :show]

@@ -56,6 +56,10 @@ var notif = consumer.subscriptions.create("NotificationsChannel", {
 				new_notif.show();
 			}
 		}
+		else
+		{
+			createToast("New notification: " + data.title + "<br><a href=" + data.href + ">Open</a>");
+		}
 	}
 });
 

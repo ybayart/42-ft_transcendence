@@ -19,7 +19,7 @@ class ApplicationController < ActionController::Base
 		end
 
 		def check_war_state
-			War.where(state: "waiting for war times").each do |war|
+			War.where(state: ["waiting for war times", "declared"]).each do |war|
 				war.update(state: "aborted") if war.start_at.past?
 			end
 		end
