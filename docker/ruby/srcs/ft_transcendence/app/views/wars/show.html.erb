@@ -1,54 +1,55 @@
 <p id="notice"><%= notice %></p>
 
 <p>
-  <strong>Guild1:</strong>
-  <%= @war.guild1_id %>
+	<strong>Guild 1:</strong>
+	<%= link_to @war.guild1.name, @war.guild1 %>
 </p>
 
 <p>
-  <strong>Guild2:</strong>
-  <%= @war.guild2_id %>
+	<strong>Guild 2:</strong>
+	<%= link_to @war.guild2.name, @war.guild2 %>
 </p>
 
 <p>
-  <strong>Start at:</strong>
-  <%= @war.start_at %>
+	<strong>Start at:</strong>
+	<%= @war.start_at %>
 </p>
 
 <p>
-  <strong>End at:</strong>
-  <%= @war.end_at %>
+	<strong>End at:</strong>
+	<%= @war.end_at %>
 </p>
 
 <p>
-  <strong>Points to win:</strong>
-  <%= @war.points_to_win %>
+	<strong>Points to win:</strong>
+	<%= @war.points_to_win %>
 </p>
 
 <p>
-  <strong>Points1:</strong>
-  <%= @war.points1 %>
+	<strong>Points 1:</strong>
+	<%= @war.points1 %>
 </p>
 
 <p>
-  <strong>Points2:</strong>
-  <%= @war.points2 %>
+	<strong>Points 2:</strong>
+	<%= @war.points2 %>
 </p>
 
 <p>
-  <strong>Agree:</strong>
-  <%= @war.agree %>
+	<strong>State:</strong>
+	<%= @war.state %>
 </p>
 
 <p>
-  <strong>All match:</strong>
-  <%= @war.all_match %>
+	<strong>All match:</strong>
+	<%= @war.all_match %>
 </p>
 
 <p>
-  <strong>Winner:</strong>
-  <%= @war.winner_id %>
+	<strong>Winner:</strong>
+	<%= @war.winner.nickname if @war.winner %>
 </p>
 
-<%= link_to 'Edit', edit_war_path(@war) %> |
+<%= link_to raw('War times<br>'), war_times_path(@war) %>
+
 <%= link_to 'Back', wars_path %>

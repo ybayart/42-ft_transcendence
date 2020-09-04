@@ -36,7 +36,10 @@ Rails.application.routes.draw do
 		resources :members, controller: 'guild/members', only: [:index, :destroy]
 		resources :officers, controller: 'guild/officers', only: [:index, :new, :create, :destroy]
 	end
-	resources :wars
+
+	resources :wars do
+		resources :times, controller: 'war/times', only: [:index, :new, :create, :edit, :update, :destroy]
+	end
 
 	namespace :admin do
 		resources :rooms, only: [:index, :show, :destroy]

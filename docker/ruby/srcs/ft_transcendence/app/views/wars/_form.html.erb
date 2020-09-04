@@ -1,67 +1,38 @@
-<%= form_with(model: war, remote: true) do |form| %>
-  <% if war.errors.any? %>
-    <div id="error_explanation">
-      <h2><%= pluralize(war.errors.count, "error") %> prohibited this war from being saved:</h2>
+<%= form_with(model: war) do |form| %>
+	<div class="field">
+		<%= form.label :guild %>
+		<%= form.collection_select :guild2_id, Guild.all.where.not(id: current_user.guild), :id, :name %>
+		<%= form.error_for :guild2_id %>
+	</div>
 
-      <ul>
-        <% war.errors.full_messages.each do |message| %>
-          <li><%= message %></li>
-        <% end %>
-      </ul>
-    </div>
-  <% end %>
+	<div class="field">
+		<%= form.label :start_at %>
+		<%= form.datetime_select :start_at %>
+		<%= form.error_for :start_at %>
+		<h6><b>WARNING:</b> This DateTime is in UTC (-<%= DateTime.now.utc_offset / 1.hours %>h)</h6>
+	</div>
 
-  <div class="field">
-    <%= form.label :guild1_id %>
-    <%= form.text_field :guild1_id %>
-  </div>
+	<div class="field">
+		<%= form.label :end_at %>
+		<%= form.datetime_select :end_at %>
+		<%= form.error_for :end_at %>
+		<h6><b>WARNING:</b> This DateTime is in UTC (-<%= DateTime.now.utc_offset / 1.hours %>h)</h6>
+	</div>
 
-  <div class="field">
-    <%= form.label :guild2_id %>
-    <%= form.text_field :guild2_id %>
-  </div>
+	<div class="field">
+		<%= form.label :points_to_win %>
+		<%= form.number_field :points_to_win %>
+		<%= form.error_for :points_to_win %>
+	</div>
 
-  <div class="field">
-    <%= form.label :start_at %>
-    <%= form.datetime_select :start_at %>
-  </div>
+	<div class="field">
+		<%= form.label :all_match %>
+		<%= form.check_box :all_match %>
+		<%= form.error_for :all_match %>
+		<p>Check this box if you want all matchs played on tournament or ladder counts in wars points</p>
+	</div>
 
-  <div class="field">
-    <%= form.label :end_at %>
-    <%= form.datetime_select :end_at %>
-  </div>
-
-  <div class="field">
-    <%= form.label :points_to_win %>
-    <%= form.number_field :points_to_win %>
-  </div>
-
-  <div class="field">
-    <%= form.label :points1 %>
-    <%= form.number_field :points1 %>
-  </div>
-
-  <div class="field">
-    <%= form.label :points2 %>
-    <%= form.number_field :points2 %>
-  </div>
-
-  <div class="field">
-    <%= form.label :agree %>
-    <%= form.number_field :agree %>
-  </div>
-
-  <div class="field">
-    <%= form.label :all_match %>
-    <%= form.check_box :all_match %>
-  </div>
-
-  <div class="field">
-    <%= form.label :winner_id %>
-    <%= form.text_field :winner_id %>
-  </div>
-
-  <div class="actions">
-    <%= form.submit %>
-  </div>
+	<div class="actions">
+		<%= form.submit %>
+	</div>
 <% end %>

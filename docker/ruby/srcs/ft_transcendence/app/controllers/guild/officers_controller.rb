@@ -1,5 +1,6 @@
 class Guild::OfficersController < ApplicationController
 	before_action :set_guild
+	before_action :is_mine, only: [:destroy]
 	before_action :is_owner
 	before_action :not_empty, only: [:new, :create]
 
@@ -50,7 +51,11 @@ class Guild::OfficersController < ApplicationController
 		end
 
 		def is_owner
-			redirect_to @guild, :alert => "Missing permission" and return unless @guild.owner == current_user or current_user.staff
+			redirect_to @guild, :alert => "Missing permission" and return unless @guild.owner == current_user or current_user.staff or @bypass
+		end
+
+		def is_mine
+			@bypass = (User.find(params[:id]) == current_user)
 		end
 
 		# Only allow a list of trusted parameters through.
