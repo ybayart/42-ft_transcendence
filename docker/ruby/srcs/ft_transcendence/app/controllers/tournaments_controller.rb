@@ -68,7 +68,6 @@ class TournamentsController < ApplicationController
         format.html { redirect_to @tournament, notice: 'Registered to tournament.' }
       end
     end
-    return 
   end
 
   private

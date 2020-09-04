@@ -20,5 +20,7 @@
   <%= @tournament.points_award %>
 </p>
 
+<%= render 'games' %>
+
 <%= link_to 'Edit', edit_tournament_path(@tournament) %> |
 <%= link_to 'Back', tournaments_path %>

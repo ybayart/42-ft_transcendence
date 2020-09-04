@@ -53,11 +53,14 @@ ActiveRecord::Schema.define(version: 2020_09_03_152145) do
     t.integer "player2_pts", default: 0
     t.bigint "winner_id"
     t.bigint "creator_id"
+    t.bigint "tournament_id"
     t.string "mode"
     t.integer "max_points", default: 5
+    t.datetime "start_time"
     t.index ["player1_id"], name: "index_games_on_player1_id"
     t.index ["player2_id"], name: "index_games_on_player2_id"
     t.index ["winner_id"], name: "index_games_on_winner_id"
+    t.index ["tournament_id"], name: "index_games_on_tournament_id"
   end
 
   create_table "guild_invit_members", force: :cascade do |t|
@@ -164,8 +167,11 @@ ActiveRecord::Schema.define(version: 2020_09_03_152145) do
     t.integer "max_player"
     t.integer "points_award"
     t.datetime "start_time"
+    t.string "status"
+    t.bigint "winner_id"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.index ["winner_id"], name: "index_tournaments_on_winner_id"
   end
 
   create_table "users", force: :cascade do |t|

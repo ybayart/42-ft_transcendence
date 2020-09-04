@@ -1,0 +1,21 @@
+<table>
+  <thead>
+    <tr>
+      <th>Player1</th>
+      <th>Player2</th>
+      <th>Status</th>
+      <th colspan="3"></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @tournament.games.each do |game| %>
+      <tr>
+        <td><%= game.player1.nickname %></td>
+        <td><%= game.player2.nickname %></td>
+        <td><%= game.status %></td>
+        <td><%= link_to 'Show', game %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
