@@ -3,9 +3,15 @@ class GameLogic
 
   @@games = Hash.new
 
-  def self.create(id, canvasWidth = 600, canvasHeight = 400, ballRadius = 10)
+  def self.create(id)
 	if !@@games[:id]
-	  @@games[:id] ||= GameLogic.new(id, canvasWidth, canvasHeight, ballRadius)
+		$game = Game.find_by(id: id)
+		if !$game.game_rules
+			$game_rules = GameRule.create()
+			$game.game_rules = $game_rules
+			$game.save
+		end
+	  @@games[:id] ||= GameLogic.new(id)
 	end
 	@@games[:id]
   end
@@ -41,10 +47,11 @@ class GameLogic
 	return true
   end
 
-  def initialize(id, canvasWidth, canvasHeight, ballRadius)
-	@canvasWidth = canvasWidth
-	@canvasHeight = canvasHeight
-	@ballRadius = ballRadius
+  def initialize(id)
+	@game = Game.find_by(id: id)
+	@canvasWidth = @game.game_rules.canvas_width
+	@canvasHeight = @game.game_rules.canvas_height
+	@ballRadius = @game.game_rules.ball_radius
 	@paddles = Array.new(2)
 	$paddle_height = 50
 	@paddles[0] = Paddle.new(5, @canvasHeight / 2 - ($paddle_height / 2), $paddle_height)
@@ -56,8 +63,7 @@ class GameLogic
 	@player_nicknames = Array.new(2)
 	@player_ready = [false, false]
 	@state = "pause"
-	@game = Game.find_by(id: id)
-	@max_points = @game.max_points
+	@max_points = @game.game_rules.max_points
 	@inputs = Array.new()
 	@processed_inputs = Array.new(2)
 	@processed_inputs[0] = []
