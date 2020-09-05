@@ -70,6 +70,18 @@ class WarsController < ApplicationController
 		end
 	end
 
+	# DELETE /wars/1
+	# DELETE /wars/1.json
+	def destroy
+		@war.destroy
+		respond_to do |format|
+			back_page = wars_path
+			back_page = URI(request.referer).path if params[:back]
+			format.html { redirect_to back_page, notice: 'War was successfully destroyed.' }
+			format.json { head :no_content }
+		end
+	end
+
 	private
 		def in_guild
 			redirect_to wars_path, :alert => "You're not in a guild" and return unless current_user.guild
