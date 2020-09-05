@@ -1,4 +1,5 @@
 Rails.application.configure do
+
   # Settings specified here will take precedence over those in config/application.rb.
 
   # In the development environment your application's code is reloaded on
@@ -15,7 +16,6 @@ Rails.application.configure do
   config.hosts << "dump-accueil-2.42.fr"
   config.hosts << "e1r13p4.42.fr"
   config.hosts << "yann5.hexanyn.fr"
-  config.hosts << "ec55688e1218.eu.ngrok.io"
 
   # Enable/disable caching. By default caching is disabled.
   # Run rails dev:cache to toggle caching.

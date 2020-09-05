@@ -2,20 +2,17 @@ class PickTournamentWinnerJob < ApplicationJob
   queue_as :default
 
   def perform(tournament)
-  	$unfinished = Game.where(tournament: tournament, status: "running")
-  	while $unfinished.length > 0
-  		sleep(60)
-  		$unfinished.each do |g|
-  			g.reload
-  			if g.status == "finished"
-  				$unfinished.delete(g)
-  			end
-  		end
-  	end
+    Game.uncached do
+    	$unfinished = Game.where(tournament: tournament, status: "running")
+    	while $unfinished.length > 0
+    		sleep(30)
+        $unfinished.reload
+    	end
+    end
 
   	$max_win = 0
   	$winner = nil
-  	$users = User.where(tournament: tournament)
+  	$users = tournament.users
   	$users.each do |u|
 	  	$wins = 0
   		$games = Game.where(player1: u, tournament: tournament).or(Game.where(player2: u, tournament: tournament))

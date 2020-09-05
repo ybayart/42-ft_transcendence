@@ -90,7 +90,8 @@ class GameChannel < ApplicationCable::Channel
 			@@subscribers[@game.id] = nil
 		end
 		if @game && (@game.player1 == current_user || @game.player2 == current_user) 
-			if @game && @game.status == "running"
+			if @game.status == "running"
+				@game.status = "finished"
 				if @game.player1 == current_user
 					@game.winner = @game.player2
 				elsif @game.player2 == current_user

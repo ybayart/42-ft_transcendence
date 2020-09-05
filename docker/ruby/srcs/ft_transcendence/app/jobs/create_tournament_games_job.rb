@@ -33,7 +33,7 @@ class CreateTournamentGamesJob < ApplicationJob
     
     for i in 0...$rounds_nb
       if i != 0
-        $time += 600
+        $time += 300
       end
       $newPlayerIndex = [0].concat($playersIndex)
       $firstHalf = $newPlayerIndex.slice(0...$half);
@@ -45,7 +45,7 @@ class CreateTournamentGamesJob < ApplicationJob
           $game = Game.create(player1: $p1, player2: $p2, status: "waiting", mode: "tournament", tournament: tournament, start_time: $time) 
           CheckTournamentGameJob.set(wait_until: $game.start_time + 300).perform_later(tournament, $game)
           if i == $rounds_nb - 1 && j == $firstHalf.length - 1
-            PickTournamentWinnerJob.set(wait_until: $game.start_time + 600).perform_later(tournament)
+            PickTournamentWinnerJob.set(wait_until: $game.start_time + 500).perform_later(tournament)
           end
         end
         $playersIndex.push($playersIndex.shift())

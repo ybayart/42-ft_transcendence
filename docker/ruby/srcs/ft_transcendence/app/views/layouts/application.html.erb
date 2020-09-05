@@ -43,6 +43,9 @@
 						<%= link_to wars_path, class: 'navbar-item navbar-btn' do %>
 							<button type="button">Wars</button>
 						<% end %>
+						<%= link_to tournaments_path, class: 'navbar-item navbar-btn' do %>
+							<button type="button">Tournaments</button>
+						<% end %>
 						<% if current_user.staff %>
 							<%= link_to admin_rooms_path, class: 'navbar-item navbar-btn' do %>
 								<button type="button">Admins</button>
