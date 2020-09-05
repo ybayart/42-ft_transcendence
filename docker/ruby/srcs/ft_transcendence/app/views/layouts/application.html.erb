@@ -77,8 +77,8 @@
 								<%= link_to profile_path(current_user), class: 'navbar-item navbar-btn' do %>
 									<button type="button">My Profile</button>
 								<% end %>
-								<br>
 								<% unless current_user.guild.nil? %>
+									<br>
 									<%= link_to guild_path(current_user.guild), class: 'navbar-item navbar-btn' do %>
 										<button type="button">My Guild</button>
 									<% end %>
