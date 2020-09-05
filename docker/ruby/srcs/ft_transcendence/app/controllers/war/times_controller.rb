@@ -80,7 +80,7 @@ class War::TimesController < ApplicationController
 
 		# Only allow a list of trusted parameters through.
 		def war_time_params
-			params.require(:war_time).permit(:start_at, :end_at)
+			params.require(:war_time).permit(:start_at, :end_at, :max_unanswered)
 		end
 
 		def authored

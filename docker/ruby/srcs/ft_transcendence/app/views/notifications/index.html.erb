@@ -15,7 +15,7 @@
 		<% @notifications.each do |notification| %>
 			<tr>
 				<td><%= notification.title %></td>
-				<td><%= notification.updated_at %></td>
+				<td><%= create_timeago(notification.updated_at) %></td>
 				<td><%= link_to 'Open', notification %></td>
 			</tr>
 		<% end %>

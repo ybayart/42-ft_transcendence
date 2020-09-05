@@ -5,7 +5,7 @@ class NotificationsController < ApplicationController
 	# GET /notifications
 	# GET /notifications.json
 	def index
-		@notifications = current_user.notifications
+		@notifications = current_user.notifications.order("updated_at DESC")
 	end
 
 	# GET /notifications/1

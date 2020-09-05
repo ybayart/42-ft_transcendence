@@ -29,7 +29,7 @@
 
 						<div class="text-right">
 							<small>
-								<time class="timeago" datetime="<%= dm_message.created_at.in_time_zone('Europe/Paris').strftime("%F %T") %>"></time>
+								<%= create_timeago(dm_message.created_at) %>
 							</small>
 						</div>
 					</div>

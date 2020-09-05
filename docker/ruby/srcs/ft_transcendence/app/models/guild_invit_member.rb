@@ -14,6 +14,6 @@ class GuildInvitMember < ApplicationRecord
 	after_create :notif
 
 	def notif
-		Notification.create(user: self.user, title: 'Guild invitation', message: "#{link_to self.by.nickname, profile_path(self.by)} invited you in his guild (<b>#{link_to self.guild.name, guild_path(self.guild)}</b>)<br>You can asnwer #{link_to 'here', invitations_guilds_path}")
+		Notification.create(user: self.user, title: 'Guild invitation', message: "#{link_to self.by.nickname, profile_path(self.by)} invited you in his guild (#{link_to self.guild.name, guild_path(self.guild)})<br>You can asnwer #{link_to 'here', invitations_guilds_path}")
 	end
 end

@@ -13,6 +13,12 @@
 		<h6><b>WARNING:</b> This DateTime is in UTC (-<%= DateTime.now.utc_offset / 1.hours %>h)</h6>
 	</div>
 
+	<div class="field">
+		<%= form.label :max_unanswered %>
+		<%= form.number_field :max_unanswered %>
+		<%= form.error_for :max_unanswered %>
+	</div>
+
 	<div class="actions">
 		<%= form.submit %>
 	</div>

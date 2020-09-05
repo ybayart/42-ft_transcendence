@@ -7,6 +7,7 @@
 		<tr>
 			<th>Start at</th>
 			<th>End at</th>
+			<th>Max unanswered matchs</th>
 			<th colspan="3"></th>
 		</tr>
 	</thead>
@@ -14,8 +15,9 @@
 	<tbody>
 		<% @war_times.each do |war_time| %>
 			<tr>
-				<td><%= war_time.start_at %></td>
-				<td><%= war_time.end_at %></td>
+				<td><%= create_timeago(war_time.start_at) %></td>
+				<td><%= create_timeago(war_time.end_at) %></td>
+				<td><%= war_time.max_unanswered %></td>
 				<% if @war.guild1.officers.include?(current_user) and @war.state == "waiting for war times" %>
 					<td><%= link_to 'Edit', edit_war_time_path(@war, war_time) %></td>
 					<td><%= link_to 'Destroy', war_time_path(@war, war_time), method: :delete, data: { confirm: 'Are you sure?' }, remote: true %></td>

@@ -20,4 +20,11 @@ module ApplicationHelper
 			guild.members << user unless guild.members.include?(user)
 		end
 	end
+
+	def create_timeago(datetime)
+		datetime = datetime.in_time_zone('Europe/Paris')
+		encoded = datetime.strftime("%F %T")
+		human = datetime.strftime("%H:%M\n%d/%m/%Y")
+		raw("<time class='timeago' datetime='#{encoded}'>#{human}</time>")
+	end
 end

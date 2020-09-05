@@ -19,7 +19,7 @@
         <td><%= link_to guild_invite.user.nickname, profile_path(guild_invite.user) %></td>
         <td><%= link_to guild_invite.by.nickname, profile_path(guild_invite.by) %></td>
 		<td><%= guild_invite.state %></td>
-        <td><%= guild_invite.updated_at %></td>
+        <td><%= create_timeago(guild_invite.updated_at) %></td>
 		<% if guild_invite.state == "waiting" %>
 			<td><%= link_to 'Destroy', guild_invite_path(@guild, guild_invite), method: :delete, data: { confirm: 'Are you sure?' }, remote: true %></td>
 		<% end %>

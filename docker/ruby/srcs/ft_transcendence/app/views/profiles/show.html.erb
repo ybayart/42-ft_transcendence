@@ -1,7 +1,11 @@
 <h1><%= @profile.nickname %> profile</h1>
 
 <p>
-	Member since: <b><%= @profile.created_at %></b>
+	Member since: <b><%= create_timeago(@profile.created_at) %></b>
+</p>
+
+<p>
+	Status: <b><%= @profile.state %></b>
 </p>
 
 <p>
@@ -23,9 +27,11 @@
 	</p>
 <% end %>
 
-<% if current_user != @profile %>
-	<%= render 'game/rules_form' %>
-<% end %>
+<p>
+	<% if current_user != @profile and @profile.state == "online" %>
+		<%= render 'game/rules_form' %>
+	<% end %>
+</p>
 
 <% if current_user == @profile %>
 	<p>
@@ -70,7 +76,7 @@
 				<td>-</td>
 				<td><%= set_bold(match.player2_pts, match.player2, match.winner) %></td>
 				<td><%= set_bold(match.player2.nickname, match.player2, match.winner) %></td>
-				<td><%= match.updated_at %></td>
+				<td><%= create_timeago(match.updated_at) %></td>
 			</tr>
 		<% end %>
 	</tbody>

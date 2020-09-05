@@ -12,7 +12,7 @@
 
 <p>
   <strong>Last update:</strong>
-  <%= @guild_invite.updated_at %>
+  <%= create_timeago(@guild_invite.updated_at) %>
 </p>
 
 <%= link_to 'Back', :back %>

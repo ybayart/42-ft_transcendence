@@ -4,6 +4,7 @@ class CreateWarTime < ActiveRecord::Migration[6.0]
 			t.references :war
 			t.datetime :start_at
 			t.datetime :end_at
+			t.integer :max_unsanswered
 
 			t.timestamps
 		end
