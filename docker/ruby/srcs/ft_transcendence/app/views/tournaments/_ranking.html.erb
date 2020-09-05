@@ -1,0 +1,25 @@
+ 
+ <table>
+  <thead>
+    <tr>
+      <th>Player</th>
+      <th>Points</th>
+      <th colspan="3"></th>
+    </tr>
+  </thead>
+
+  <tbody>
+  	<% if @tournamentLogic.players %>
+  		<p> YES </p>
+		<% @tournamentLogic.players.each do |player| %>
+			<% @tournamentLogic.players_points.each do |points| %>
+		      <tr>
+		        <td><%= player.nickname %></td>
+		        <td><%= points %></td>
+		      </tr>
+		    <% end %>
+		<% end %>
+	<% end %>
+  </tbody>
+</table>
+

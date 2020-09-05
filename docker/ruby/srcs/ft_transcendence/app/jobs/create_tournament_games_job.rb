@@ -3,6 +3,9 @@ class CreateTournamentGamesJob < ApplicationJob
 
   def perform(tournament)
     tournament.reload
+    tournament.status = "started"
+    $tournamentLogic = TournamentLogic.create(tournament.id)
+    $tournamentLogic.set_players(tournament.users)
 
     $count = tournament.users.count
     if ($count < 2)
@@ -36,12 +39,15 @@ class CreateTournamentGamesJob < ApplicationJob
       $newPlayerIndex = [0].concat($playersIndex)
       $firstHalf = $newPlayerIndex.slice(0...$half);
       $secondHalf = $newPlayerIndex.slice($half...$players.length).reverse();
-      for i in 0...$firstHalf.length
-        $p1 = $players[$firstHalf[i]]
-        $p2 = $players[$secondHalf[i]]
+      for j in 0...$firstHalf.length
+        $p1 = $players[$firstHalf[j]]
+        $p2 = $players[$secondHalf[j]]
         if $p1 != nil && $p2 != nil
           $game = Game.create(player1: $p1, player2: $p2, status: "waiting", mode: "tournament", tournament: tournament, start_time: $time) 
-          CheckTournamentGameJob.set(wait_until: $game.start_time + 300).perform_later($game)
+          CheckTournamentGameJob.set(wait_until: $game.start_time + 300).perform_later(tournament, $game)
+          if i == $rounds_nb - 1 && j == $firstHalf.length - 1
+            PickTournamentWinnerJob.set(wait_until: $game.start_time + 600).perform_later(tournament)
+          end
         end
         $playersIndex.push($playersIndex.shift())
       end

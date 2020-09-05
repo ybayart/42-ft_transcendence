@@ -27,24 +27,27 @@ class TournamentLogic
 
   def initialize(id)
   	@tournament = Tournament.find_by(id: id);
-  	@games = Array.new();
+  	@players = Array.new();
   	@players_points = Array.new();
   end
 
   def players
-	@players
+    @players
+  end
+
+  def players_points
+    @players_points
   end
 
   def tournament
-	@tournament
+    @tournament
   end
 
-  def games
-	@games
+  def set_players(players)
+    @players = players    
   end
 
-  def create_games
-
+  def add_win(index)
+    @players_points[i] += 1
   end
-
 end

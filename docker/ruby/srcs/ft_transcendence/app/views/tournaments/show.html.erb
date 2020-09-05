@@ -29,7 +29,17 @@
   <%= @tournament.points_award %>
 </p>
 
+<% if @tournament.winner %>
+  <p>
+    <strong>Winner:</strong>
+      <%= @tournament.winner.nickname %>
+  </p>
+<% end %>
+
+<hr>
 <%= render 'games' %>
+<hr>
+<%= render 'ranking' %>
 
 <%= link_to 'Edit', edit_tournament_path(@tournament) %> |
 <%= link_to 'Back', tournaments_path %>

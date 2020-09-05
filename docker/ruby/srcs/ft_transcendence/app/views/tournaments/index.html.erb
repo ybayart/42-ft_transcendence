@@ -26,7 +26,7 @@
         <td><%= link_to 'Edit', edit_tournament_path(tournament) %></td>
         <td><%= link_to 'Destroy', tournament, method: :delete, data: { confirm: 'Are you sure?' } %></td>
         <% if Time.now < tournament.start_time and current_user.tournament != tournament %>
-          <% if current_user.tournament %>
+          <% if current_user.tournament && current_user.tournament.status != "finished" %>
             <td><%= link_to 'Register', { controller: "tournaments", action: "register", 
             id: tournament.id }, data: { confirm: 'You are already registered to a tournament. Register to this one ?' } %></td>
           <% else %>
