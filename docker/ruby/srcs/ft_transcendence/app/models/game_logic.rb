@@ -1,32 +1,31 @@
 class GameLogic
   include ActiveModel::Model
 
-  @@games = Hash.new
 
   def self.create(id)
-	if !@@games[:id]
+  @@games ||= Hash.new
+	if !@@games.has_key?(id)
 		$game = Game.find_by(id: id)
 		if !$game.game_rules
 			$game_rules = GameRule.create()
 			$game.game_rules = $game_rules
 			$game.save
 		end
-	  @@games[:id] ||= GameLogic.new(id)
+	  @@games[id] ||= GameLogic.new(id)
 	end
-	@@games[:id]
+	@@games[id]
   end
 
   def self.delete(id)
-	if @@games && @@games[:id]
-      @@games[:id] = nil
+	if @@games && @@games.has_key?(id)
 	  @@games.delete(id)
 	end
   end
 
   def self.search(id)
 	$game = nil
-	if @@games && @@games[:id]
-	  $game = @@games[:id]
+	if @@games && @@games.has_key?(id)
+	  $game = @@games[id]
 	end
 	$game
   end
