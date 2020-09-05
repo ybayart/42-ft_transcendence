@@ -1,6 +1,8 @@
 class WarTime < ApplicationRecord
 	belongs_to :war, inverse_of: :war_times
 
+	validates :max_unanswered, numericality: { only_interger: true , greater_than_or_equal_to: 0 }
+
 	validate :check_dates
 
 	def check_dates

@@ -31,7 +31,7 @@ class War::TimesController < ApplicationController
 				format.html { redirect_to back_page, notice: 'Time was successfully created.' }
 				format.json { render :show, status: :created, location: back_page }
 			else
-				format.html { broadcast_errors @war_time, (['start_at', 'end_at']) }
+				format.html { broadcast_errors @war_time, (['start_at', 'end_at', 'max_unanswered']) }
 				format.json { render json: @war_time.errors, status: :unprocessable_entity }
 			end
 		end
@@ -47,7 +47,7 @@ class War::TimesController < ApplicationController
 				format.html { redirect_to back_page, notice: 'Time was successfully updated.' }
 				format.json { render :show, status: :ok, location: back_page }
 			else
-				format.html { broadcast_errors @war_time, (['start_at', 'end_at']) }
+				format.html { broadcast_errors @war_time, (['start_at', 'end_at', 'max_unanswered']) }
 				format.json { render json: @war_time.errors, status: :unprocessable_entity }
 			end
 		end
