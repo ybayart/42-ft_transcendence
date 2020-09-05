@@ -33,5 +33,15 @@ class War < ApplicationRecord
 				Notification.create(user: user, title: "New war asking!", message: "Guild <b>#{link_to self.guild1.name, guild_path(self.guild1)}</b> asked you for a war, you can see details #{link_to 'here', war_path(self)}")
 			end
 		end
+		if self.state == "pending"
+			self.guild1.officers.each do |user|
+				Notification.create(user: user, title: "New war!", message: "Guild <b>#{link_to self.guild1.name, guild_path(self.guild1)}</b> accepted your war, you can see details #{link_to 'here', war_path(self)}")
+			end
+		end
+		if self.state == "rejected"
+			self.guild1.officers.each do |user|
+				Notification.create(user: user, title: "New war!", message: "Guild <b>#{link_to self.guild1.name, guild_path(self.guild1)}</b> rejected your war, you can see details #{link_to 'here', war_path(self)}")
+			end
+		end
 	end
 end

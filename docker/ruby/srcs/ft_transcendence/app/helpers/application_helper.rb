@@ -24,7 +24,7 @@ module ApplicationHelper
 	def create_timeago(datetime)
 		datetime = datetime.in_time_zone('Europe/Paris')
 		encoded = datetime.strftime("%F %T")
-		human = datetime.strftime("%H:%M\n%d/%m/%Y")
+		human = datetime.strftime("%H:%M:%S\n%d/%m/%Y")
 		raw("<time class='timeago' datetime='#{encoded}'>#{human}</time>")
 	end
 end
