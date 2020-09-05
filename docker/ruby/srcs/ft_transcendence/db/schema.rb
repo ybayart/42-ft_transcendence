@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_09_05_130225) do
+ActiveRecord::Schema.define(version: 2020_09_05_161833) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -81,14 +81,11 @@ ActiveRecord::Schema.define(version: 2020_09_05_130225) do
     t.integer "player1_pts", default: 0
     t.integer "player2_pts", default: 0
     t.bigint "winner_id"
-    t.bigint "tournament_id"
     t.string "mode"
-    t.datetime "start_time"
     t.bigint "game_rules_id"
     t.index ["game_rules_id"], name: "index_games_on_game_rules_id"
     t.index ["player1_id"], name: "index_games_on_player1_id"
     t.index ["player2_id"], name: "index_games_on_player2_id"
-    t.index ["tournament_id"], name: "index_games_on_tournament_id"
     t.index ["winner_id"], name: "index_games_on_winner_id"
   end
 
@@ -205,11 +202,10 @@ ActiveRecord::Schema.define(version: 2020_09_05_130225) do
     t.integer "max_player"
     t.integer "points_award"
     t.datetime "start_time"
-    t.string "status"
-    t.bigint "winner_id"
+    t.bigint "winner_id_id"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
-    t.index ["winner_id"], name: "index_tournaments_on_winner_id"
+    t.index ["winner_id_id"], name: "index_tournaments_on_winner_id_id"
   end
 
   create_table "tournaments_users", id: false, force: :cascade do |t|
@@ -266,6 +262,7 @@ ActiveRecord::Schema.define(version: 2020_09_05_130225) do
     t.bigint "war_id"
     t.datetime "start_at"
     t.datetime "end_at"
+    t.integer "max_unsanswered"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.integer "max_unanswered", default: 0
