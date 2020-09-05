@@ -29,7 +29,7 @@ Rails.application.routes.draw do
 	get '/test', to: 'game#test'
 	get '/spectate/:id', to: 'game#spectate'
 
-	resources :tournaments
+	resources :tournaments, only: [:index, :show, :new, :create]
 	get '/register/:id', to: 'tournaments#register'
 
 	resources :room_messages
@@ -53,6 +53,7 @@ Rails.application.routes.draw do
 		resources :rooms, only: [:index, :show, :destroy]
 		resources :guilds, only: [:index, :show]
 		resources :moderators, only: [:index, :new, :create, :destroy]
+		resources :tournaments, controller: 'tournaments'
 	end
 
 	namespace :api do

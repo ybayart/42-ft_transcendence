@@ -75,17 +75,22 @@ ActiveRecord::Schema.define(version: 2020_09_05_161833) do
   create_table "games", force: :cascade do |t|
     t.bigint "player1_id"
     t.bigint "player2_id"
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
     t.string "status"
-    t.integer "player1_pts", default: 0
-    t.integer "player2_pts", default: 0
+    t.integer "player1_pts"
+    t.integer "player2_pts"
     t.bigint "winner_id"
     t.string "mode"
+    t.bigint "tournament_id"
+    t.datetime "start_time"
+    t.bigint "game_rule_id"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
     t.bigint "game_rules_id"
+    t.index ["game_rule_id"], name: "index_games_on_game_rule_id"
     t.index ["game_rules_id"], name: "index_games_on_game_rules_id"
     t.index ["player1_id"], name: "index_games_on_player1_id"
     t.index ["player2_id"], name: "index_games_on_player2_id"
+    t.index ["tournament_id"], name: "index_games_on_tournament_id"
     t.index ["winner_id"], name: "index_games_on_winner_id"
   end
 
@@ -203,6 +208,7 @@ ActiveRecord::Schema.define(version: 2020_09_05_161833) do
     t.integer "points_award"
     t.datetime "start_time"
     t.bigint "winner_id_id"
+    t.string "status"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["winner_id_id"], name: "index_tournaments_on_winner_id_id"
@@ -290,9 +296,6 @@ ActiveRecord::Schema.define(version: 2020_09_05_161833) do
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "friendships", "users", column: "friend_a_id"
   add_foreign_key "friendships", "users", column: "friend_b_id"
-  add_foreign_key "games", "users", column: "player1_id"
-  add_foreign_key "games", "users", column: "player2_id"
-  add_foreign_key "games", "users", column: "winner_id"
   add_foreign_key "guild_invit_members", "users", column: "by_id"
   add_foreign_key "notifications", "users"
   add_foreign_key "room_bans", "users", column: "by_id"

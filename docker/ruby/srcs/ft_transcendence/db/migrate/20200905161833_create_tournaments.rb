@@ -5,7 +5,8 @@ class CreateTournaments < ActiveRecord::Migration[6.0]
 			t.integer :max_player
 			t.integer :points_award
 			t.datetime :start_time
-			t.references :winner_id, reference: :user
+			t.references :winner_id, references: :users
+			t.string :status
 
 			t.timestamps
 		end
