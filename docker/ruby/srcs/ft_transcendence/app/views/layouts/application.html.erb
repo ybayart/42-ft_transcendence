@@ -11,58 +11,60 @@
 	</head>
 
 	<body controller="<%= ({controller: controller_path, action: action_name}).to_json %>" mutes="<%= current_user.mutes.map(&:id) if user_signed_in? %>">
-		<% if user_signed_in? and current_user.otp_accepted == true and current_user.nickname.nil? == false %>
+		<% if user_signed_in? %>
 			<nav class="navbar navbar-light" style="align-items: first baseline;">
 				<%= link_to root_path, class: 'navbar-brand' do %>
 					<img src='<%= asset_path('42-header.svg') %>' height='60px'>
 				<% end %>
-				<ul class="navbar-nav mr-auto responsive-large" style="flex-direction: row;">
-					<% unless Rails.application.routes.recognize_path(request.env['PATH_INFO'])[:controller][..4] == "admin" %>
-							<button id="play_matchmaking" type="button">Play</button>
-						<%= link_to profile_path(current_user), class: 'navbar-item navbar-btn' do %>
-							<button type="button">My Profile</button>
-						<% end %>
-						<%= link_to profile_friends_path(current_user), class: 'navbar-item navbar-btn' do %>
-							<button type="button">My Friends</button>
-						<% end %>
-						<%= link_to profile_mutes_path(current_user), class: 'navbar-item navbar-btn' do %>
-							<button type="button">My Mutes</button>
-						<% end %>
-						<%= link_to profiles_path, class: 'navbar-item navbar-btn' do %>
-							<button type="button">Users</button>
-						<% end %>
-						<%= link_to rooms_path, class: 'navbar-item navbar-btn' do %>
-							<button type="button">Rooms</button>
-						<% end %>
-						<%= link_to dms_path, class: 'navbar-item navbar-btn' do %>
-							<button type="button">dms</button>
-						<% end %>
-						<%= link_to guilds_path, class: 'navbar-item navbar-btn' do %>
-							<button type="button">Guilds</button>
-						<% end %>
-						<%= link_to wars_path, class: 'navbar-item navbar-btn' do %>
-							<button type="button">Wars</button>
-						<% end %>
-						<% if current_user.staff %>
+				<% if current_user.otp_accepted == true and current_user.nickname.nil? == false %>
+					<ul class="navbar-nav mr-auto responsive-large" style="flex-direction: row;">
+						<% unless Rails.application.routes.recognize_path(request.env['PATH_INFO'])[:controller][..4] == "admin" %>
+								<button id="play_matchmaking" type="button">Play</button>
+							<%= link_to profile_path(current_user), class: 'navbar-item navbar-btn' do %>
+								<button type="button">My Profile</button>
+							<% end %>
+							<%= link_to profile_friends_path(current_user), class: 'navbar-item navbar-btn' do %>
+								<button type="button">My Friends</button>
+							<% end %>
+							<%= link_to profile_mutes_path(current_user), class: 'navbar-item navbar-btn' do %>
+								<button type="button">My Mutes</button>
+							<% end %>
+							<%= link_to profiles_path, class: 'navbar-item navbar-btn' do %>
+								<button type="button">Users</button>
+							<% end %>
+							<%= link_to rooms_path, class: 'navbar-item navbar-btn' do %>
+								<button type="button">Rooms</button>
+							<% end %>
+							<%= link_to dms_path, class: 'navbar-item navbar-btn' do %>
+								<button type="button">dms</button>
+							<% end %>
+							<%= link_to guilds_path, class: 'navbar-item navbar-btn' do %>
+								<button type="button">Guilds</button>
+							<% end %>
+							<%= link_to wars_path, class: 'navbar-item navbar-btn' do %>
+								<button type="button">Wars</button>
+							<% end %>
+							<% if current_user.staff %>
+								<%= link_to admin_rooms_path, class: 'navbar-item navbar-btn' do %>
+									<button type="button">Admins</button>
+								<% end %>
+							<% end %>
+						<% else %>
+							<%= link_to root_path, class: 'navbar-item navbar-btn' do %>
+								<button type="button">Site</button>
+							<% end %>
 							<%= link_to admin_rooms_path, class: 'navbar-item navbar-btn' do %>
-								<button type="button">Admins</button>
+								<button type="button">Rooms</button>
+							<% end %>
+							<%= link_to admin_guilds_path, class: 'navbar-item navbar-btn' do %>
+								<button type="button">Guilds</button>
+							<% end %>
+							<%= link_to admin_moderators_path, class: 'navbar-item navbar-btn' do %>
+								<button type="button">Moderators</button>
 							<% end %>
 						<% end %>
-					<% else %>
-						<%= link_to root_path, class: 'navbar-item navbar-btn' do %>
-							<button type="button">Site</button>
-						<% end %>
-						<%= link_to admin_rooms_path, class: 'navbar-item navbar-btn' do %>
-							<button type="button">Rooms</button>
-						<% end %>
-						<%= link_to admin_guilds_path, class: 'navbar-item navbar-btn' do %>
-							<button type="button">Guilds</button>
-						<% end %>
-						<%= link_to admin_moderators_path, class: 'navbar-item navbar-btn' do %>
-							<button type="button">Moderators</button>
-						<% end %>
-					<% end %>
-				</ul>
+					</ul>
+				<% end %>
 				<ul class="navbar-nav">
 					<li id="navbar-user" class="nav-item navbar-btn">
 						<button type="button" data-toggle="collapse" data-target="#user-logout" aria-controls="user-logout" aria-expanded="false">
