@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_09_04_040400) do
+ActiveRecord::Schema.define(version: 2020_09_05_012125) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -88,8 +88,8 @@ ActiveRecord::Schema.define(version: 2020_09_04_040400) do
     t.index ["game_rules_id"], name: "index_games_on_game_rules_id"
     t.index ["player1_id"], name: "index_games_on_player1_id"
     t.index ["player2_id"], name: "index_games_on_player2_id"
-    t.index ["winner_id"], name: "index_games_on_winner_id"
     t.index ["tournament_id"], name: "index_games_on_tournament_id"
+    t.index ["winner_id"], name: "index_games_on_winner_id"
   end
 
   create_table "guild_invit_members", force: :cascade do |t|
@@ -210,6 +210,13 @@ ActiveRecord::Schema.define(version: 2020_09_04_040400) do
     t.index ["winner_id"], name: "index_tournaments_on_winner_id"
   end
 
+  create_table "tournaments_users", id: false, force: :cascade do |t|
+    t.bigint "tournament_id"
+    t.bigint "user_id"
+    t.index ["tournament_id"], name: "index_tournaments_users_on_tournament_id"
+    t.index ["user_id"], name: "index_tournaments_users_on_user_id"
+  end
+
   create_table "users", force: :cascade do |t|
     t.string "email", default: "", null: false
     t.string "encrypted_password", default: "", null: false
@@ -217,7 +224,6 @@ ActiveRecord::Schema.define(version: 2020_09_04_040400) do
     t.datetime "reset_password_sent_at"
     t.datetime "remember_created_at"
     t.bigint "guild_id"
-    t.bigint "tournament_id"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.string "login"
@@ -237,7 +243,6 @@ ActiveRecord::Schema.define(version: 2020_09_04_040400) do
     t.index ["guild_id"], name: "index_users_on_guild_id"
     t.index ["provider"], name: "index_users_on_provider"
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
-    t.index ["tournament_id"], name: "index_users_on_tournament_id"
     t.index ["uid"], name: "index_users_on_uid"
   end
 

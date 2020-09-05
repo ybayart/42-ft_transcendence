@@ -63,7 +63,7 @@ class TournamentsController < ApplicationController
 
   def register
     if @tournament.users.count + 1 <= @tournament.max_player
-      current_user.tournament = @tournament
+      current_user.tournaments.push(@tournament)
       current_user.save
       $notice = 'Registered to tournament.'
     else
