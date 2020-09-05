@@ -21,7 +21,7 @@ class GameController < ApplicationController
   end
 
   def find_game
-    @game = Game.find_by("player1_id != ? AND status = ?", current_user, "waiting");
+    @game = Game.find_by("player1_id != ? AND status = ? AND mode = ?", current_user, "waiting", "casual");
     if !@game
       @game = Game.create(player1: current_user, status: "waiting", mode: "casual");
     else
