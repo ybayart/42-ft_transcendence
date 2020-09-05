@@ -81,11 +81,14 @@ ActiveRecord::Schema.define(version: 2020_09_05_130225) do
     t.integer "player1_pts", default: 0
     t.integer "player2_pts", default: 0
     t.bigint "winner_id"
+    t.bigint "tournament_id"
     t.string "mode"
+    t.datetime "start_time"
     t.bigint "game_rules_id"
     t.index ["game_rules_id"], name: "index_games_on_game_rules_id"
     t.index ["player1_id"], name: "index_games_on_player1_id"
     t.index ["player2_id"], name: "index_games_on_player2_id"
+    t.index ["tournament_id"], name: "index_games_on_tournament_id"
     t.index ["winner_id"], name: "index_games_on_winner_id"
   end
 
@@ -195,6 +198,25 @@ ActiveRecord::Schema.define(version: 2020_09_05_130225) do
     t.datetime "updated_at", precision: 6, null: false
     t.index ["name"], name: "index_rooms_on_name", unique: true
     t.index ["owner_id"], name: "index_rooms_on_owner_id"
+  end
+
+  create_table "tournaments", force: :cascade do |t|
+    t.string "mode"
+    t.integer "max_player"
+    t.integer "points_award"
+    t.datetime "start_time"
+    t.string "status"
+    t.bigint "winner_id"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["winner_id"], name: "index_tournaments_on_winner_id"
+  end
+
+  create_table "tournaments_users", id: false, force: :cascade do |t|
+    t.bigint "tournament_id"
+    t.bigint "user_id"
+    t.index ["tournament_id"], name: "index_tournaments_users_on_tournament_id"
+    t.index ["user_id"], name: "index_tournaments_users_on_user_id"
   end
 
   create_table "users", force: :cascade do |t|

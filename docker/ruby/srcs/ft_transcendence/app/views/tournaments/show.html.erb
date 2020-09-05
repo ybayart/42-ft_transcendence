@@ -1,0 +1,45 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>Mode:</strong>
+  <%= @tournament.mode %>
+</p>
+
+<p>
+  <strong>Max player:</strong>
+  <%= @tournament.max_player %>
+</p>
+
+<p>
+  <strong>Registered:</strong>
+  	<ul>
+		<% @tournament.users.each do |user| %>
+			<li> <%= user.nickname %> </li>
+		<% end %>
+	</ul>
+</p>
+
+<p>
+  <strong>Start at:</strong>
+  <%= @tournament.start_time %>
+</p>
+
+<p>
+  <strong>Points award:</strong>
+  <%= @tournament.points_award %>
+</p>
+
+<% if @tournament.winner %>
+  <p>
+    <strong>Winner:</strong>
+      <%= @tournament.winner.nickname %>
+  </p>
+<% end %>
+
+<hr>
+<%= render 'games' %>
+<hr>
+<%= render 'ranking' %>
+
+<%= link_to 'Edit', edit_tournament_path(@tournament) %> |
+<%= link_to 'Back', tournaments_path %>

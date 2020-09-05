@@ -8,8 +8,12 @@ class GameChannel < ApplicationCable::Channel
 		@game = @gameLogic.game
 		@@subscribers[@game.id] ||= Array.new
 		@@subscribers[@game.id].push(current_user.id)
-		if current_user == @game.player1 && current_user != @game.player2
+		if @game.start_time && Time.now < @game.start_time
+			return
+		end
+		if @gameLogic.job_launched == false
 			UpdateGameStateJob.perform_later(params[:game])
+			@gameLogic.set_job
 		end
 		if current_user != @game.player1 && current_user != @game.player2
 			@gameLogic.addSpec
@@ -86,17 +90,20 @@ class GameChannel < ApplicationCable::Channel
 			@@subscribers[@game.id] = nil
 		end
 		if @game && (@game.player1 == current_user || @game.player2 == current_user) 
-			if @game && @game.status == "running"
+			if @game.status == "running"
+				@game.status = "finished"
 				if @game.player1 == current_user
 					@game.winner = @game.player2
 				elsif @game.player2 == current_user
 					@game.winner = @game.player1
 				end
 			end
-			@game.status = "finished"
-			@game.player1_pts = @gameLogic.player_scores[0]
-			@game.player2_pts = @gameLogic.player_scores[1]
-			GameLogic.delete(@game.id)
+			if @game.mode != "tournament"
+				@game.status = "finished"
+				@game.player1_pts = @gameLogic.player_scores[0]
+				@game.player2_pts = @gameLogic.player_scores[1]
+				GameLogic.delete(@game.id)
+			end
 			if @game.mode == "ranked"
 				$count = User.where("rank = ?", @game.winner.rank + 1).count
 				if $count == 0 && @game.winner.rank + 1 > 0 && @game.player1.rank == @game.player2.rank

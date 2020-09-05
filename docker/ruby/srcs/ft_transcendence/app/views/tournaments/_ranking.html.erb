@@ -1,0 +1,19 @@
+ <table>
+  <thead>
+    <tr>
+      <th>Player</th>
+      <th>Points</th>
+      <th colspan="3"></th>
+    </tr>
+  </thead>
+
+  <tbody>
+	<% @tournament.users.each do |player| %>
+	  	<tr>
+	        <td><%= player.nickname %></td>	
+			<td><%= @tournament.games.find_all { |game| game.winner == player }.count %></td>
+		</tr>
+	<% end %>
+  </tbody>
+</table>
+

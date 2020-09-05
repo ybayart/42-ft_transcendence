@@ -126,7 +126,6 @@ document.addEventListener('turbolinks:load', () => {
 			},
 
 			received(data) {
-				console.log(data);
 				if (data.config)
 				{
 					console.log(data.config);

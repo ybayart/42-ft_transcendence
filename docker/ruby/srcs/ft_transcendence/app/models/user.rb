@@ -15,6 +15,7 @@ class User < ActiveRecord::Base
 	has_many :friendships, :foreign_key => :friend_a
 	has_many :friends, through: :friendships, :source => :friend_b
 	belongs_to :guild, optional: true
+	has_and_belongs_to_many :tournaments
 	has_many :send_invites, class_name: "GuildInvitMember", foreign_key: "by_id", inverse_of: :by
 	has_many :receive_invites, class_name: "GuildInvitMember", foreign_key: "user_id", inverse_of: :user
 	has_many :notifications, dependent: :destroy
