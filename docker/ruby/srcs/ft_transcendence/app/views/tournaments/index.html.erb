@@ -23,7 +23,6 @@
         <td><%= tournament.points_award %></td>
         <td><%= tournament.start_time %></td>
         <td><%= link_to 'Show', tournament %></td>
-        <td><%= link_to 'Destroy', tournament, method: :delete, data: { confirm: 'Are you sure?' } %></td>
         <% if Time.now < tournament.start_time and !current_user.tournaments.include?(tournament) %>
           <td><%= link_to 'Register', controller: "tournaments", action: "register", id: tournament.id %></td>
         <% elsif current_user.tournaments.include?(tournament) %>
@@ -33,7 +32,3 @@
     <% end %>
   </tbody>
 </table>
-
-<br>
-
-<%= link_to 'New Tournament', new_tournament_path if current_user.staff %>
