@@ -1,5 +1,7 @@
 class WarTime < ApplicationRecord
 	belongs_to :war, inverse_of: :war_times
+	has_many :war_time_link_games
+	has_many :games, :through => :war_time_link_games
 
 	validates :max_unanswered, numericality: { only_interger: true , greater_than_or_equal_to: 0 }
 

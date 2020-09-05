@@ -5,6 +5,8 @@ class War < ApplicationRecord
 	belongs_to :guild2, class_name: :Guild, required: true
 	belongs_to :winner, class_name: :Guild, required: false
 	has_many :war_times, dependent: :destroy, inverse_of: :war
+	has_many :war_link_games
+	has_many :games, :through => :war_link_games
 
 	validates :state,
 			presence: true,
