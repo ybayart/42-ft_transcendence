@@ -35,6 +35,7 @@ Rails.application.routes.draw do
 		resources :invites, controller: 'guild/invites', only: [:index, :new, :create, :destroy]
 		resources :members, controller: 'guild/members', only: [:index, :destroy]
 		resources :officers, controller: 'guild/officers', only: [:index, :new, :create, :destroy]
+		resources :wars, only: [:index]
 	end
 
 	resources :wars do

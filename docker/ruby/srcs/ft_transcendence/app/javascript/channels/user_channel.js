@@ -19,7 +19,8 @@ consumer.subscriptions.create("UserChannel", {
 
 	received(data) {
 		if (data.type == "message") {
-			$('input#dm_message_message').val('');
+			if ($('#nav-nickname').attr('userid') == data.content.user_id)
+				$('input#dm_message_message').val('');
 			var dm_id = $('#dm_message_dm_id').val(),
 				messageTemplate = $('[data-role="message-template"]');
 			if (dm_id == data.content.dm_id) {

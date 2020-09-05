@@ -7,7 +7,8 @@ class WarsController < ApplicationController
 	# GET /wars
 	# GET /wars.json
 	def index
-		@wars = War.all
+		@wars = War.all.order("id DESC")
+		@wars = @wars.where("guild1_id = ? OR guild2_id = ?", params[:guild_id], params[:guild_id]) if params[:guild_id]
 	end
 
 	# GET /wars/1
@@ -53,6 +54,7 @@ class WarsController < ApplicationController
 			if ["aborted", "declared"].include?(params[:state])
 				error_msg = "War already locked" unless error_msg or @war.state == "waiting for war times"
 				error_msg = "Missing permission" unless error_msg or @war.guild1.officers.include?(current_user)
+				error_msg = "Other guild already on war" if error_msg == nil and params[:state] == "declared" and War.where("id != ? AND ((guild1_id = ? AND state IN (?)) OR (guild2_id = ? AND state IN (?)))", @war, @war.guild2, ["waiting for war times", "declared", "pending", "active"], @war.guild2, ["pending", "active"]).empty? == false
 			else
 				error_msg = "War already locked" unless error_msg or @war.state == "declared"
 				error_msg = "Missing permission" unless error_msg or @war.guild2.officers.include?(current_user)

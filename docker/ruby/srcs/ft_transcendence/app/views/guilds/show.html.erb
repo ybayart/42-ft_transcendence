@@ -41,6 +41,8 @@
 	<% end %>
 </p>
 
+<%= link_to raw('Wars<br>'), guild_wars_path(@guild) %>
+
 <%= link_to raw('Edit<br>'), edit_guild_path(@guild) if @guild.owner == current_user %>
 <%= link_to raw('Leave officers<br>'), guild_officer_path(@guild, current_user, back: true), method: :delete, remote: true if @guild.officers.include?(current_user) and @guild.owner != current_user %>
 <%= link_to raw('Leave guild<br>'), guild_member_path(@guild, current_user, back: true), method: :delete, remote: true if @guild.members.include?(current_user) and @guild.officers.exclude?(current_user) %>

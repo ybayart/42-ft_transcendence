@@ -53,7 +53,7 @@
 <%= link_to raw('War times<br>'), war_times_path(@war) %>
 
 <% if @war.guild1.officers.include?(current_user) and @war.state == "waiting for war times" %>
-	<%= link_to raw('Declare !<br>'), war_path(@war, state: "declared", back: true), method: :patch, data: { confirm: 'Are you sure?' }, remote: true %>
+	<%= link_to raw('Declare !<br>'), war_path(@war, state: "declared", back: true), method: :patch, data: { confirm: 'Are you sure?' }, remote: true unless @war.war_times.empty? %>
 	<%= link_to raw('Abort<br>'), war_path(@war, state: "aborted", back: true), method: :patch, data: { confirm: 'Are you sure?' }, remote: true %>
 <% end %>
 

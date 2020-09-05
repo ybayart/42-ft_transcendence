@@ -2,9 +2,16 @@
 
 <h1>Wars</h1>
 
+<%= link_to raw('Back<br>'), :back if params[:guild_id] %>
+
+<%= link_to 'New War', new_war_path if ready_for_war %>
+
+<br>
+
 <table>
 	<thead>
 		<tr>
+			<th>ID</th>
 			<th>Guild 1</th>
 			<th>Guild 2</th>
 			<th>Points to win</th>
@@ -16,6 +23,7 @@
 	<tbody>
 		<% @wars.each do |war| %>
 			<tr>
+				<td><%= war.id %></td>
 				<td><%= link_to war.guild1.name, war.guild1 %></td>
 				<td><%= link_to war.guild2.name, war.guild2 %></td>
 				<td><%= war.points_to_win %></td>
@@ -28,7 +36,3 @@
 		<% end %>
 	</tbody>
 </table>
-
-<br>
-
-<%= link_to 'New War', new_war_path if ready_for_war %>

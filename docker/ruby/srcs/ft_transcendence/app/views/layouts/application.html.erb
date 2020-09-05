@@ -20,15 +20,6 @@
 					<ul class="navbar-nav mr-auto responsive-large" style="flex-direction: row;">
 						<% unless Rails.application.routes.recognize_path(request.env['PATH_INFO'])[:controller][..4] == "admin" %>
 								<button id="play_matchmaking" type="button">Play</button>
-							<%= link_to profile_path(current_user), class: 'navbar-item navbar-btn' do %>
-								<button type="button">My Profile</button>
-							<% end %>
-							<%= link_to profile_friends_path(current_user), class: 'navbar-item navbar-btn' do %>
-								<button type="button">My Friends</button>
-							<% end %>
-							<%= link_to profile_mutes_path(current_user), class: 'navbar-item navbar-btn' do %>
-								<button type="button">My Mutes</button>
-							<% end %>
 							<%= link_to profiles_path, class: 'navbar-item navbar-btn' do %>
 								<button type="button">Users</button>
 							<% end %>
@@ -74,10 +65,30 @@
 							</span>
 						</button>
 						<div id="user-logout" class="collapse" style="text-align: center;">
-							<br>
-							<button onClick="reloadWithTurbolinks();">
-								Refresh
-							</button>
+							<% if current_user.otp_accepted == true and current_user.nickname.nil? == false %>
+								<br>
+								<button onClick="reloadWithTurbolinks();">
+									Refresh
+								</button>
+								<br>
+								<%= link_to profile_path(current_user), class: 'navbar-item navbar-btn' do %>
+									<button type="button">My Profile</button>
+								<% end %>
+								<br>
+								<% unless current_user.guild.nil? %>
+									<%= link_to guild_path(current_user.guild), class: 'navbar-item navbar-btn' do %>
+										<button type="button">My Guild</button>
+									<% end %>
+								<% end %>
+								<br>
+								<%= link_to profile_friends_path(current_user), class: 'navbar-item navbar-btn' do %>
+									<button type="button">My Friends</button>
+								<% end %>
+								<br>
+								<%= link_to profile_mutes_path(current_user), class: 'navbar-item navbar-btn' do %>
+									<button type="button">My Mutes</button>
+								<% end %>
+							<% end %>
 							<hr>
 							<%= link_to raw("
 								<img src=" + asset_path('logout.svg') + " class='logo-svg' style='height: 35px;margin-right: 15px;'>
