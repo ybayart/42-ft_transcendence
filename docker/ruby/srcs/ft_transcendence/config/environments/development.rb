@@ -16,6 +16,8 @@ Rails.application.configure do
   config.hosts << "e1r13p4.42.fr"
   config.hosts << "yann5.hexanyn.fr"
 
+  ActionCable.server.config.logger = Logger.new(nil)
+
   # Enable/disable caching. By default caching is disabled.
   # Run rails dev:cache to toggle caching.
   if Rails.root.join('tmp', 'caching-dev.txt').exist?

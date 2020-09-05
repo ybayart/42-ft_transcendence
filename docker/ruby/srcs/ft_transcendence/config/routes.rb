@@ -1,6 +1,6 @@
 Rails.application.routes.draw do
 
-  resources :dms
+	resources :dms
 	root to: 'profile/friends#index'
 	resources :profiles do
 		get 'otp', on: :collection
@@ -54,6 +54,8 @@ Rails.application.routes.draw do
 		resources :room_users
 		resources :room_settings, only: [:show, :update, :destroy]
 	end
+
+	get '/users/auth/guest', to: 'guest#login'
 
 	devise_for :users, controllers: { omniauth_callbacks: "users/omniauth_callbacks" }
 	devise_scope :user do
