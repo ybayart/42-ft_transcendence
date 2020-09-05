@@ -193,9 +193,9 @@ class GameLogic
 	if (gameEnd)
 	  designate_winner
 	  if @game.mode == "ranked"
-		$count = User.where("rank = ?", @game.winner.rank + 1).count
-		if $count == 0 && @game.winner.rank + 1 > 0 && @game.player1.rank == @game.player2.rank
-			@game.winner.rank += 1
+		$count = User.where("rank = ?", @game.winner.rank - 1).count
+		if $count == 0 && @game.winner.rank - 1 > 0 && @game.player1.rank == @game.player2.rank
+			@game.winner.rank -= 1
 			@game.winner.save
 		else
 			$tmp = @game.player2.rank
