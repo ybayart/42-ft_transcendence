@@ -10,7 +10,6 @@ class TournamentsController < ApplicationController
   # GET /tournaments/1
   # GET /tournaments/1.json
   def show
-    @tournamentLogic = TournamentLogic.create(params[:id])
   end
 
   # GET /tournaments/new

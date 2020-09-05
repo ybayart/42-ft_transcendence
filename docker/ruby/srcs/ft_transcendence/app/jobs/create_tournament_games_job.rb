@@ -3,15 +3,14 @@ class CreateTournamentGamesJob < ApplicationJob
 
   def perform(tournament)
     tournament.reload
-    tournament.status = "started"
-    $tournamentLogic = TournamentLogic.create(tournament.id)
-    $tournamentLogic.set_players(tournament.users)
-
     $count = tournament.users.count
     if ($count < 2)
       tournament.delete
       return
     end
+
+    tournament.status = "started"
+    tournament.save
 
     $players = Array.new($count, nil)
     if $count % 2 == 1

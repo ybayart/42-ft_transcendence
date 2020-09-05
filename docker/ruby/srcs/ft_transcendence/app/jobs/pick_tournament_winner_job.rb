@@ -17,8 +17,6 @@ class PickTournamentWinnerJob < ApplicationJob
   	$winner = nil
   	$users = User.where(tournament: tournament)
   	$users.each do |u|
-  		u.tournament = nil
-  		u.save
 	  	$wins = 0
   		$games = Game.where(player1: u, tournament: tournament).or(Game.where(player2: u, tournament: tournament))
   		$games.each do |g|

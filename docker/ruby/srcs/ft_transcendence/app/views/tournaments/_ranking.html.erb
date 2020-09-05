@@ -1,4 +1,3 @@
- 
  <table>
   <thead>
     <tr>
@@ -9,16 +8,11 @@
   </thead>
 
   <tbody>
-  	<% if @tournamentLogic.players %>
-  		<p> YES </p>
-		<% @tournamentLogic.players.each do |player| %>
-			<% @tournamentLogic.players_points.each do |points| %>
-		      <tr>
-		        <td><%= player.nickname %></td>
-		        <td><%= points %></td>
-		      </tr>
-		    <% end %>
-		<% end %>
+	<% @tournament.users.each do |player| %>
+	  	<tr>
+	        <td><%= player.nickname %></td>	
+			<td><%= @tournament.games.find_all { |game| game.winner == player }.count %></td>
+		</tr>
 	<% end %>
   </tbody>
 </table>
