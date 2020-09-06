@@ -1,9 +1,9 @@
 class GameLogic
   include ActiveModel::Model
 
+  @@games = Hash.new
 
   def self.create(id)
-  @@games ||= Hash.new
 	if !@@games.has_key?(id)
 		$game = Game.find_by(id: id)
 		if !$game.game_rules
@@ -192,7 +192,12 @@ class GameLogic
 	@last_loser = $loser
 	if (gameEnd)
 	  designate_winner
-	  if @game.mode == "ranked"
+	  attribute_points
+	end
+  end
+
+  def attribute_points
+	if @game.mode == "ranked"
 		$count = User.where("rank = ?", @game.winner.rank - 1).count
 		if $count == 0 && @game.winner.rank - 1 > 0 && @game.player1.rank == @game.player2.rank
 			@game.winner.rank -= 1
@@ -208,19 +213,18 @@ class GameLogic
 		end
 		@game.player1.save
 		@game.player2.save
-	  elsif @game.mode == "casual"
+	elsif @game.mode == "casual"
 		if @game.winner.guild
 			@game.winner.guild.points += 1
 			@game.winner.guild.save
 		end
-      elsif @game.mode == "war"
+	elsif @game.mode == "war"
 		@war_time = WarTimeLinkGame.find_by(game: @game).war_time
 		if @game.winner == @game.player1
 		  @war.increment(points1, 1)
 		else
 		  @war.increment(points2, 1)
 		end
-	  end
 	end
   end
 

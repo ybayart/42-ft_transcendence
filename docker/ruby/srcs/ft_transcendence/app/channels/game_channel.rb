@@ -85,10 +85,6 @@ class GameChannel < ApplicationCable::Channel
 	end
 
 	def unsubscribed
-		@@subscribers[@game.id].delete(current_user.id)
-		if @@subscribers[@game.id].length == 0
-			@@subscribers[@game.id] = nil
-		end
 		if @game && (@game.player1 == current_user || @game.player2 == current_user) 
 			if @game.status == "running"
 				@game.status = "finished"
@@ -102,33 +98,16 @@ class GameChannel < ApplicationCable::Channel
 				@game.status = "finished"
 				@game.player1_pts = @gameLogic.player_scores[0]
 				@game.player2_pts = @gameLogic.player_scores[1]
-				GameLogic.delete(@game.id)
+				@game.save
 			end
-			if @game.mode == "ranked"
-				$count = User.where("rank = ?", @game.winner.rank - 1).count
-				if $count == 0 && @game.winner.rank - 1 > 0 && @game.player1.rank == @game.player2.rank
-					@game.winner.rank -= 1
-					@game.winner.save
-				else
-					$tmp = @game.player2.rank
-					@game.player2.rank = @game.player1.rank
-					@game.player1.rank = $tmp
-				end
-				if @game.winner && @game.winner.guild
-					@game.winner.guild.points += 3
-					@game.winner.guild.save
-				end
-				@game.player1.save
-				@game.player2.save
-			elsif @game.mode == "casual"
-				if @game.winner && @game.winner.guild
-					@game.winner.guild.points += 1
-					@game.winner.guild.save
-				end
-			end
-			@game.save
+			@gameLogic.attribute_points
 		else
 			@gameLogic.removeSpec
+		end
+		@@subscribers[@game.id].delete(current_user.id)
+		if @@subscribers[@game.id].length == 0
+			@@subscribers.delete(@game.id)
+			GameLogic.delete(@game.id)
 		end
 	end
 
