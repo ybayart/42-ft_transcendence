@@ -249,7 +249,7 @@ class GameLogic
 			$loser = @game.player1
 		end
 		$const = 40
-		$factor = 1 / (1 + 10 ** (($loser.mmr - $winner.mmr) / 400))
+		$factor = 1.0 / (1.0 + 10.0 ** (($loser.mmr - $winner.mmr) / 400.0))
 		$winner.mmr += $const * $factor
 		$loser.mmr -= $const * $factor
 		change_rank($winner)
