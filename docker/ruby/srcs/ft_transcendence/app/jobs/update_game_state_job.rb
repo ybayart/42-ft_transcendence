@@ -109,15 +109,16 @@ class UpdateGameStateJob < ApplicationJob
 				spec_count: @gameLogic.spec_count
 			});
 			@gameLogic.clear_processed
-		elsif (@game.status == "finished" && @game.winner)
+		elsif (@game.status == "finished")
 			$status = "finished";
-			if @game.winner.nickname
+			if @game.winner
 				$status = "#{@game.winner.nickname} won !"
+			else
+				$status = "finished"
 			end
 			ActionCable.server.broadcast("game_#{@game.id}", {
 				status: @game.status,
 				msg_status: $status,
-				winner: @game.winner.nickname,
 				players: {
 					nicknames: [
 						@gameLogic.player_nicknames[0],

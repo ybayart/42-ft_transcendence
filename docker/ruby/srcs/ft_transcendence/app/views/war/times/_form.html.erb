@@ -1,4 +1,4 @@
-<%= form_with(model: war_time) do |form| %>
+<%= form_with(model: war_time, url: war_times_path(@war)) do |form| %>
 	<div class="field">
 		<%= form.label :start_at %>
 		<%= form.datetime_select :start_at %>

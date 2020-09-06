@@ -55,7 +55,7 @@ class GameController < ApplicationController
 		begin
 			@game = Game.find(params[:id])
 		rescue
-			redirect_to games_path
+			redirect_to game_index_path
 		end
 	end
 
@@ -63,7 +63,7 @@ class GameController < ApplicationController
 		begin
 			back_page = URI(request.referer).path
 		rescue
-			back_page = games_path
+			back_page = game_index_path
 		end
 		redirect_to back_page, :alert => "Not started" and return if @game.start_time and @game.start_time.future?
 	end

@@ -68,7 +68,6 @@ class War::TimesController < ApplicationController
 		game.mode = "war"
 		game.start_time = Time.now
 		game.save
-		CheckTournamentGameJob.set(wait_until: game.start_time + 15).perform_later(game)
 		@war_time.games << game
 		redirect_to game_path(game)
 		message = "Game opposing #{game.player1.nickname} & #{game.player2.nickname} is ready<br>"

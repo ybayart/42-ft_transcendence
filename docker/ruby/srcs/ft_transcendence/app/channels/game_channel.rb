@@ -5,7 +5,6 @@ class GameChannel < ApplicationCable::Channel
 	def subscribed
 		stream_from "game_#{params[:game]}"
 		@gameLogic = GameLogic.create(params[:game])
-		puts "chan gameLogic: #{@gameLogic}"
 		@game = @gameLogic.game
 		@@subscribers[@game.id] ||= Array.new
 		@@subscribers[@game.id].push(current_user.id)
@@ -55,9 +54,6 @@ class GameChannel < ApplicationCable::Channel
 	end
 
 	def unsubscribed
-		puts "chan player_ready[0]: #{@gameLogic.player_ready[0]}"
-		puts "chan player_ready[1]: #{@gameLogic.player_ready[1]}"
-		puts "chan player_nicknames[0]: #{@gameLogic.player_nicknames[0]}"
 		if @game && @game.status != "finished" && (@game.player1 == current_user || @game.player2 == current_user) 
 			if @game.status == "running"
 				if @game.player1 == current_user

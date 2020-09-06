@@ -1,10 +1,10 @@
 class GameLogic
-  include ActiveModel::Model
+	include ActiveModel::Model
 
-  @@semaphore = Mutex.new
-  @@games = Hash.new
+	@@semaphore = Mutex.new
+	@@games = Hash.new
 
-  def self.create(id)
+	def self.create(id)
 	@@semaphore.synchronize {
 		if !@@games.has_key?(id)
 			$game = Game.find_by(id: id)
@@ -13,31 +13,31 @@ class GameLogic
 				$game.game_rules = $game_rules
 				$game.save
 			end
-		  @@games[id] ||= GameLogic.new(id)
+			@@games[id] ||= GameLogic.new(id)
 		end
 	}
 	@@games[id]
-  end
+	end
 
-  def self.delete(id)
+	def self.delete(id)
 	@@semaphore.synchronize {
 		if @@games && @@games.has_key?(id)
-		  @@games.delete(id)
+			@@games.delete(id)
 		end
 	}
-  end
+	end
 
-  def self.search(id)
+	def self.search(id)
 	@@semaphore.synchronize {
 		$game = nil
 		if @@games && @@games.has_key?(id)
-		  $game = @@games[id]
+			$game = @@games[id]
 		end
 		$game
 	}
-  end
+	end
 
-  def self.check_rules(rules)
+	def self.check_rules(rules)
 	if rules["max_points"].to_i < 1 || rules["max_points"].to_i > 20
 		return false
 	end
@@ -51,9 +51,9 @@ class GameLogic
 		return false
 	end
 	return true
-  end
+	end
 
-  def initialize(id)
+	def initialize(id)
 	@game = Game.find_by(id: id)
 	@canvasWidth = @game.game_rules.canvas_width
 	@canvasHeight = @game.game_rules.canvas_height
@@ -76,9 +76,10 @@ class GameLogic
 	@processed_inputs[1] = []
 	@spec_count = 0
 	UpdateGameStateJob.perform_later(id)
-  end
+	CheckTournamentGameJob.set(wait_until: @game.start_time + 300).perform_later(id) if ["tournament", "war"].include?(@game.mode)
+	end
 
-  def send_config
+	def send_config
 	ActionCable.server.broadcast("game_#{@game.id}", {
 		config:
 		{
@@ -107,126 +108,126 @@ class GameLogic
 			max_points: @max_points
 		}
 	})
-  end
+	end
 
-  def canvasWidth
+	def canvasWidth
 	@canvasWidth
-  end
+	end
 
-  def canvasHeight
+	def canvasHeight
 	@canvasHeight
-  end
+	end
 
-  def paddles
+	def paddles
 	@paddles
-  end
+	end
 
-  def ball
+	def ball
 	@ball
-  end
+	end
 
-  def player_scores
+	def player_scores
 	@player_scores
-  end
+	end
 
-  def player_nicknames
+	def player_nicknames
 	@player_nicknames
-  end
+	end
 
-  def player_ready
+	def player_ready
 	@player_ready
-  end
+	end
 
-  def set_nicknames(player1, player2)
+	def set_nicknames(player1, player2)
 	@player_nicknames[0] = player1
 	@player_nicknames[1] = player2
-  end
+	end
 
-  def last_loser
+	def last_loser
 	@last_loser
-  end
+	end
 
-  def state
+	def state
 	@state
-  end
+	end
 
-  def max_points
+	def max_points
 	@max_points
-  end
+	end
 
-  def game
+	def game
 	@game
-  end
+	end
 
-  def spec_count
+	def spec_count
 	@spec_count
-  end
+	end
 
-  def addInput(type, id, player)
+	def addInput(type, id, player)
 	@inputs.unshift({ type: type, id: id, player: player })
-  end
+	end
 
-  def getFrontInput
+	def getFrontInput
 	@inputs.pop
-  end
+	end
 
-  def addProcessed(player, id)
+	def addProcessed(player, id)
 	@processed_inputs[player - 1].push(id)
-  end
+	end
 
-  def processed_inputs
+	def processed_inputs
 	@processed_inputs
-  end
+	end
 
-  def clear_processed
+	def clear_processed
 	@processed_inputs[0].clear
 	@processed_inputs[1].clear
-  end
+	end
 
-  def addSpec
+	def addSpec
 	@spec_count += 1
-  end
+	end
 
-  def removeSpec
+	def removeSpec
 	@spec_count -= 1
-  end
+	end
 
-  def start(player)
+	def start(player)
 	@state = "play"
 	@ball.throw(player)
-  end
+	end
 
-  def reset_ball(player)
+	def reset_ball(player)
 	@state = "pause"
 	@ball = Ball.new(player, @paddles[player - 1], @ballRadius)
-  end
+	end
 
-  def reset_paddles
+	def reset_paddles
 	$paddle_height = @paddles[0].height
 	@paddles[0] = Paddle.new(5, @canvasHeight / 2 - ($paddle_height / 2), $paddle_height)
 	$paddle_height = @paddles[1].height
 	@paddles[1] = Paddle.new(@canvasWidth - 20, @canvasHeight / 2 - ($paddle_height / 2), $paddle_height)
-  end
+	end
 
-  def reset_all
+	def reset_all
 	$loser = 0
 	if @ball.posX < 0
-	  @player_scores[1] += 1
-	  $loser = 1
+		@player_scores[1] += 1
+		$loser = 1
 	elsif @ball.posX > @canvasWidth
-	  @player_scores[0] += 1
-	  $loser = 2
+		@player_scores[0] += 1
+		$loser = 2
 	end
 	reset_paddles
 	reset_ball($loser)
 	@last_loser = $loser
 	if (gameEnd)
-	  designate_winner
-	  attribute_points
+		designate_winner
+		attribute_points
 	end
-  end
+	end
 
-  def change_rank(player)
+	def change_rank(player)
 	if player.mmr <= 1000
 		player.rank = 5
 	elsif player.mmr > 1000 && player.mmr <= 1200
@@ -238,9 +239,9 @@ class GameLogic
 	elsif player.mmr > 1600 && player.mmr <= 1800
 		player.rank = 1
 	end
-  end
+	end
 
-  def attribute_points
+	def attribute_points
 	if @game.mode == "ranked"
 		$winner = @game.winner
 		if @game.winner == @game.player1
@@ -268,90 +269,90 @@ class GameLogic
 	elsif @game.mode == "war"
 		@war_time = WarTimeLinkGame.find_by(game: @game).war_time
 		if @game.winner == @game.player1
-		  @war_time.war.increment!(:points1, 1)
+			@war_time.war.increment!(:points1, 1)
 		elsif @game.winner == @game.player2
-		  @war_time.war.increment!(:points2, 1)
+			@war_time.war.increment!(:points2, 1)
 		end
 	end
-  end
+	end
 
-  def paddle_up(nb)
+	def paddle_up(nb)
 	$paddle = @paddles[nb - 1]
 	if $paddle.posY - $paddle.velocity > 0
-	  $paddle.up
+		$paddle.up
 	end
 	if @state == "pause" && @last_loser == nb
-	  @ball.setPosY($paddle.getCenter)
+		@ball.setPosY($paddle.getCenter)
 	end
-  end
+	end
 
-  def paddle_down(nb)
+	def paddle_down(nb)
 	$paddle = @paddles[nb - 1]
 	if $paddle.posY + $paddle.height + $paddle.velocity < @canvasHeight
-	  $paddle.down
+		$paddle.down
 	end
 	if @state == "pause" && @last_loser == nb
-	  @ball.setPosY($paddle.getCenter)
+		@ball.setPosY($paddle.getCenter)
 	end
-  end
+	end
 
-  def manage_collide
+	def manage_collide
 	$paddle = nil
 	if @ball.collidesLeft(@paddles[0].posX, @paddles[0].posY, @paddles[0].width, @paddles[0].height)
-	  $paddle = @paddles[0]
-	  if @ball.posX - @ball.radius < @paddles[0].posX + @paddles[0].width
+		$paddle = @paddles[0]
+		if @ball.posX - @ball.radius < @paddles[0].posX + @paddles[0].width
 		@ball.setPosX(@paddles[0].posX + @paddles[0].width + @ball.radius)
-	  end
+		end
 	end
 	if @ball.collidesRight(@paddles[1].posX, @paddles[1].posY, @paddles[1].width, @paddles[1].height)
-	  $paddle = @paddles[1]
-	  if @ball.posX + @ball.radius > @paddles[1].posX
+		$paddle = @paddles[1]
+		if @ball.posX + @ball.radius > @paddles[1].posX
 		@ball.setPosX(@paddles[1].posX - @ball.radius)
-	  end
+		end
 	end
 	if $paddle
-	  $offset = (@ball.posY + @ball.radius * 2.0 - $paddle.posY) / ($paddle.height + @ball.radius * 2.0)
-	  $phi = 0.25 * Math::PI * (2.0 * $offset - 1.0)
-	  @ball.setVelocityX(@ball.velocityX * -1.0)
-	  if @ball.velocityY != 0 || @ball.posY != $paddle.getCenter
+		$offset = (@ball.posY + @ball.radius * 2.0 - $paddle.posY) / ($paddle.height + @ball.radius * 2.0)
+		$phi = 0.25 * Math::PI * (2.0 * $offset - 1.0)
+		@ball.setVelocityX(@ball.velocityX * -1.0)
+		if @ball.velocityY != 0 || @ball.posY != $paddle.getCenter
 		@ball.setVelocityY(@ball.speed * Math.sin($phi))
-	  end
-	  if $paddle != @last_collision
+		end
+		if $paddle != @last_collision
 		if @ball.speed < $paddle.width
-		  @ball.increaseSpeed
+			@ball.increaseSpeed
 		end
 		@last_collision = $paddle
-	  end
+		end
 	end
-  end
+	end
 
-  def updateBallPos
+	def updateBallPos
 	if @ball.posX < 0 || @ball.posX > @canvasWidth
-	  reset_all
+		reset_all
 	else
-	  manage_collide
+		manage_collide
 	end
 	if @ball.collidesSideArena(@canvasHeight)
 		@ball.setVelocityY(@ball.velocityY * -1)
 	end
 	@ball.updatePos
-  end
-
-  def gameEnd
-	(@player_scores[0] == @max_points || @player_scores[1] == @max_points)
-  end
-
-  def designate_winner
-	if @game.status == "running"
-	  @game.status = "finished"
-	  if @player_scores[0] > @player_scores[1]
-		@game.winner = @game.player1
-	  else
-		@game.winner = @game.player2
-	  end
-	  @game.player1_pts = @player_scores[0]
-	  @game.player2_pts = @player_scores[1]
-	  @game.save
 	end
-  end
+
+	def gameEnd
+	(@player_scores[0] == @max_points || @player_scores[1] == @max_points)
+	end
+
+	def designate_winner
+	if @game.status == "running"
+		@game.status = "finished"
+		if @player_scores[0] > @player_scores[1]
+		@game.winner = @game.player1
+		else
+		@game.winner = @game.player2
+		end
+		@game.player1_pts = @player_scores[0]
+		@game.player2_pts = @player_scores[1]
+		@game.save
+	end
+	end
 end
