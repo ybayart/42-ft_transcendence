@@ -1,19 +1,22 @@
 class Paddle {
-	constructor(data) {
+	constructor(data, canvas_height) {
 		this.posX = data.posX;
 		this.posY = data.posY;
 		this.width = data.width;
 		this.height = data.height;
 		this.velocity = data.velocity;
 		this.position_buffer = [];
+		this.posYMax = canvas_height - this.height;
 	}
 
 	goUp() {
-		this.posY -= this.velocity;
+		if (this.posY - this.velocity > 0)
+			this.posY -= this.velocity;
 	}
 
 	goDown() {
-		this.posY += this.velocity;
+		if (this.posY + this.velocity < this.posYMax)
+			this.posY += this.velocity;
 	}
 
 	correctPos(unverified_inputs, server_data)

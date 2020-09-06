@@ -148,9 +148,9 @@ document.addEventListener('turbolinks:load', () => {
 					if (ball == null)
 						ball = new Ball(data.ball)
 					if (paddles[me] == null)
-						paddles[me] = new Paddle(data.paddles[me])
+						paddles[me] = new Paddle(data.paddles[me], render.canvas.heigth)
 					if (paddles[other] == null)
-						paddles[other] = new Paddle(data.paddles[other])
+						paddles[other] = new Paddle(data.paddles[other], render.canvas.heigth)
 
 					if (!spectate)
 					{
