@@ -21,6 +21,7 @@ class Admin::TournamentsController < AdminController
 	# POST /tournaments.json
 	def create
 		@tournament = Tournament.new(tournament_params)
+		@tournament.mode = "robin" unless @tournament.mode
 
 		respond_to do |format|
 			if @tournament.save
