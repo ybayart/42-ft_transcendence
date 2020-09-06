@@ -1,25 +1,30 @@
 class GameLogic
   include ActiveModel::Model
 
+  @@semaphore = Mutex.new
   @@games = Hash.new
 
   def self.create(id)
-	if !@@games.has_key?(id)
-		$game = Game.find_by(id: id)
-		if !$game.game_rules
-			$game_rules = GameRule.create()
-			$game.game_rules = $game_rules
-			$game.save
+	@@semaphore.synchronize {
+		if !@@games.has_key?(id)
+			$game = Game.find_by(id: id)
+			if !$game.game_rules
+				$game_rules = GameRule.create()
+				$game.game_rules = $game_rules
+				$game.save
+			end
+		  @@games[id] ||= GameLogic.new(id)
 		end
-	  @@games[id] ||= GameLogic.new(id)
-	end
+	}
 	@@games[id]
   end
 
   def self.delete(id)
-	if @@games && @@games.has_key?(id)
-	  @@games.delete(id)
-	end
+	@@semaphore.synchronize {
+		if @@games && @@games.has_key?(id)
+		  @@games.delete(id)
+		end
+	}
   end
 
   def self.search(id)
@@ -68,7 +73,7 @@ class GameLogic
 	@processed_inputs[0] = []
 	@processed_inputs[1] = []
 	@spec_count = 0
-	@job_launched = false
+	UpdateGameStateJob.perform_later(id)
   end
 
   def canvasWidth
@@ -118,14 +123,6 @@ class GameLogic
 
   def game
 	@game
-  end
-
-  def job_launched
-  	@job_launched
-  end
-
-  def set_job
-  	@job_launched = true
   end
 
   def spec_count

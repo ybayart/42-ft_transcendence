@@ -11,10 +11,6 @@ class GameChannel < ApplicationCable::Channel
 		if @game.start_time && Time.now < @game.start_time
 			return
 		end
-		if @gameLogic.job_launched == false
-			UpdateGameStateJob.perform_later(params[:game])
-			@gameLogic.set_job
-		end
 		if current_user != @game.player1 && current_user != @game.player2
 			@gameLogic.addSpec
 		end
