@@ -220,9 +220,9 @@ class GameLogic
 	elsif @game.mode == "war"
 		@war_time = WarTimeLinkGame.find_by(game: @game).war_time
 		if @game.winner == @game.player1
-		  @war.increment(points1, 1)
+		  @war_time.war.increment!(:points1, 1)
 		else
-		  @war.increment(points2, 1)
+		  @war_time.war.increment!(:points2, 1)
 		end
 	end
   end
