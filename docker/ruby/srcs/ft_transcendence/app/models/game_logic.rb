@@ -71,6 +71,37 @@ class GameLogic
 	@job_launched = false
   end
 
+  def send_config
+	ActionCable.server.broadcast("game_#{@game.id}", {
+		config:
+		{
+			canvas:
+			{
+				width: @canvasWidth,
+				height: @canvasHeight
+			},
+			paddles: [
+				{
+					width: @paddles[0].width,
+					height: @paddles[0].height,
+					velocity: @paddles[0].velocity
+				},
+				{
+					width: @paddles[1].width,
+					height: @paddles[1].height,
+					velocity: @paddles[1].velocity
+				}
+			],
+			ball:
+			{
+				speed: @ball.startingSpeed,
+				radius: @ball.radius
+			},
+			max_points: @max_points
+		}
+	})
+  end
+
   def canvasWidth
 	@canvasWidth
   end

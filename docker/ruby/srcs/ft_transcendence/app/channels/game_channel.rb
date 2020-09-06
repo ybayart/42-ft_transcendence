@@ -18,34 +18,7 @@ class GameChannel < ApplicationCable::Channel
 		if current_user != @game.player1 && current_user != @game.player2
 			@gameLogic.addSpec
 		end
-		ActionCable.server.broadcast("game_#{params[:game]}", {
-			config:
-			{
-				canvas:
-				{
-					width: @gameLogic.canvasWidth,
-					height: @gameLogic.canvasHeight
-				},
-				paddles: [
-					{
-						width: @gameLogic.paddles[0].width,
-						height: @gameLogic.paddles[0].height,
-						velocity: @gameLogic.paddles[0].velocity
-					},
-					{
-						width: @gameLogic.paddles[1].width,
-						height: @gameLogic.paddles[1].height,
-						velocity: @gameLogic.paddles[1].velocity
-					}
-				],
-				ball:
-				{
-					speed: @gameLogic.ball.startingSpeed,
-					radius: @gameLogic.ball.radius
-				},
-				max_points: @gameLogic.max_points
-			}
-		})
+		@gameLogic.send_config
 	end
 
 	def getCurrentPlayerNumber
