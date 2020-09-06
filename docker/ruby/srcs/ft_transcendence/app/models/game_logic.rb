@@ -28,11 +28,13 @@ class GameLogic
   end
 
   def self.search(id)
-	$game = nil
-	if @@games && @@games.has_key?(id)
-	  $game = @@games[id]
-	end
-	$game
+	@@semaphore.synchronize {
+		$game = nil
+		if @@games && @@games.has_key?(id)
+		  $game = @@games[id]
+		end
+		$game
+	}
   end
 
   def self.check_rules(rules)
