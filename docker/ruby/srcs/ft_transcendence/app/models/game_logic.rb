@@ -78,6 +78,37 @@ class GameLogic
 	UpdateGameStateJob.perform_later(id)
   end
 
+  def send_config
+	ActionCable.server.broadcast("game_#{@game.id}", {
+		config:
+		{
+			canvas:
+			{
+				width: @canvasWidth,
+				height: @canvasHeight
+			},
+			paddles: [
+				{
+					width: @paddles[0].width,
+					height: @paddles[0].height,
+					velocity: @paddles[0].velocity
+				},
+				{
+					width: @paddles[1].width,
+					height: @paddles[1].height,
+					velocity: @paddles[1].velocity
+				}
+			],
+			ball:
+			{
+				speed: @ball.startingSpeed,
+				radius: @ball.radius
+			},
+			max_points: @max_points
+		}
+	})
+  end
+
   def canvasWidth
 	@canvasWidth
   end
@@ -195,23 +226,40 @@ class GameLogic
 	end
   end
 
+  def change_rank(player)
+	if player.mmr <= 1000
+		player.rank = 5
+	elsif player.mmr > 1000 && player.mmr <= 1200
+		player.rank = 4
+	elsif player.mmr > 1200 && player.mmr <= 1400
+		player.rank = 3
+	elsif player.mmr > 1400 && player.mmr <= 1600
+		player.rank = 2
+	elsif player.mmr > 1600 && player.mmr <= 1800
+		player.rank = 1
+	end
+  end
+
   def attribute_points
 	if @game.mode == "ranked"
-		$count = User.where("rank = ?", @game.winner.rank - 1).count
-		if $count == 0 && @game.winner.rank - 1 > 0 && @game.player1.rank == @game.player2.rank
-			@game.winner.rank -= 1
-			@game.winner.save
-		else
-			$tmp = @game.player2.rank
-			@game.player2.rank = @game.player1.rank
-			@game.player1.rank = $tmp
+		$winner = @game.winner
+		if @game.winner == @game.player1
+			$loser = @game.player2
+		elsif @game.winner == @game.player2
+			$loser = @game.player1
 		end
+		$const = 40
+		$factor = 1.0 / (1.0 + 10.0 ** (($loser.mmr - $winner.mmr) / 400.0))
+		$winner.mmr += $const * $factor
+		$loser.mmr -= $const * $factor
+		change_rank($winner)
+		change_rank($loser)
+		$winner.save
+		$loser.save
 		if @game.winner.guild
 			@game.winner.guild.points += 3
 			@game.winner.guild.save
 		end
-		@game.player1.save
-		@game.player2.save
 	elsif @game.mode == "casual"
 		if @game.winner.guild
 			@game.winner.guild.points += 1
