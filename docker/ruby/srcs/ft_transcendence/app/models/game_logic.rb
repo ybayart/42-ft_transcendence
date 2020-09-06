@@ -245,7 +245,7 @@ class GameLogic
 		$winner = @game.winner
 		if @game.winner == @game.player1
 			$loser = @game.player2
-		else
+		elsif @game.winner == @game.player2
 			$loser = @game.player1
 		end
 		$const = 40
