@@ -1,33 +1,40 @@
 class GameLogic
   include ActiveModel::Model
 
+  @@semaphore = Mutex.new
   @@games = Hash.new
 
   def self.create(id)
-	if !@@games.has_key?(id)
-		$game = Game.find_by(id: id)
-		if !$game.game_rules
-			$game_rules = GameRule.create()
-			$game.game_rules = $game_rules
-			$game.save
+	@@semaphore.synchronize {
+		if !@@games.has_key?(id)
+			$game = Game.find_by(id: id)
+			if !$game.game_rules
+				$game_rules = GameRule.create()
+				$game.game_rules = $game_rules
+				$game.save
+			end
+		  @@games[id] ||= GameLogic.new(id)
 		end
-	  @@games[id] ||= GameLogic.new(id)
-	end
+	}
 	@@games[id]
   end
 
   def self.delete(id)
-	if @@games && @@games.has_key?(id)
-	  @@games.delete(id)
-	end
+	@@semaphore.synchronize {
+		if @@games && @@games.has_key?(id)
+		  @@games.delete(id)
+		end
+	}
   end
 
   def self.search(id)
-	$game = nil
-	if @@games && @@games.has_key?(id)
-	  $game = @@games[id]
-	end
-	$game
+	@@semaphore.synchronize {
+		$game = nil
+		if @@games && @@games.has_key?(id)
+		  $game = @@games[id]
+		end
+		$game
+	}
   end
 
   def self.check_rules(rules)
@@ -68,7 +75,7 @@ class GameLogic
 	@processed_inputs[0] = []
 	@processed_inputs[1] = []
 	@spec_count = 0
-	@job_launched = false
+	UpdateGameStateJob.perform_later(id)
   end
 
   def send_config
@@ -151,14 +158,6 @@ class GameLogic
 	@game
   end
 
-  def job_launched
-  	@job_launched
-  end
-
-  def set_job
-  	@job_launched = true
-  end
-
   def spec_count
 	@spec_count
   end
@@ -227,23 +226,40 @@ class GameLogic
 	end
   end
 
+  def change_rank(player)
+	if player.mmr <= 1000
+		player.rank = 5
+	elsif player.mmr > 1000 && <= 1200
+		player.rank = 4
+	elsif player.mmr > 1200 && <= 1400
+		player.rank = 3
+	elsif player.mmr > 1400 && <= 1600
+		player.rank = 2
+	elsif player.mmr > 1600 && <= 1800
+		player.rank = 1
+	end
+  end
+
   def attribute_points
 	if @game.mode == "ranked"
-		$count = User.where("rank = ?", @game.winner.rank - 1).count
-		if $count == 0 && @game.winner.rank - 1 > 0 && @game.player1.rank == @game.player2.rank
-			@game.winner.rank -= 1
-			@game.winner.save
+		$winner = @game.winner
+		if @game.winner == @game.player1
+			$loser = @game.player2
 		else
-			$tmp = @game.player2.rank
-			@game.player2.rank = @game.player1.rank
-			@game.player1.rank = $tmp
+			$loser = @game.player1
 		end
+		$const = 40
+		$factor = 1 / (1 + 10 ** (($loser.mmr - $winner.mmr) / 400))
+		$winner.mmr += $const * $factor
+		$loser.mmr -= $const * $factor
+		change_rank($winner)
+		change_rank($loser)
+		$winner.save
+		$loser.save
 		if @game.winner.guild
 			@game.winner.guild.points += 3
 			@game.winner.guild.save
 		end
-		@game.player1.save
-		@game.player2.save
 	elsif @game.mode == "casual"
 		if @game.winner.guild
 			@game.winner.guild.points += 1

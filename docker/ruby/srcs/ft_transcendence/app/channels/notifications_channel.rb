@@ -13,9 +13,7 @@ class NotificationsChannel < ApplicationCable::Channel
 				if $from_user != $to_user
 					$game_rules = GameRule.create(canvas_width: data["canvas"]["width"].to_i, canvas_height: data["canvas"]["height"].to_i, ball_radius: data["ball"]["radius"].to_i, max_points: data["max_points"].to_i)
 					$game = Game.create(player1: $from_user, player2: $to_user, status: "waiting", mode: "casual", game_rules: $game_rules)
-					$gameLogic = GameLogic.create($game.id)
 					$message = $from_user.nickname + " invited you to play."
-					Notification.create(user: $to_user, message: $message)
 					NotificationsChannel.broadcast_to($to_user, {
 						type: "invitation",
 						game:
