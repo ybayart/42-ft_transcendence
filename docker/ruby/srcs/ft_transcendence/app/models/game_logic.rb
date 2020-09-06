@@ -229,13 +229,13 @@ class GameLogic
   def change_rank(player)
 	if player.mmr <= 1000
 		player.rank = 5
-	elsif player.mmr > 1000 && <= 1200
+	elsif player.mmr > 1000 && player.mmr <= 1200
 		player.rank = 4
-	elsif player.mmr > 1200 && <= 1400
+	elsif player.mmr > 1200 && player.mmr <= 1400
 		player.rank = 3
-	elsif player.mmr > 1400 && <= 1600
+	elsif player.mmr > 1400 && player.mmr <= 1600
 		player.rank = 2
-	elsif player.mmr > 1600 && <= 1800
+	elsif player.mmr > 1600 && player.mmr <= 1800
 		player.rank = 1
 	end
   end

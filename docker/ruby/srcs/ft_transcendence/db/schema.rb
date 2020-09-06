@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_09_05_161833) do
+ActiveRecord::Schema.define(version: 2020_09_06_141854) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -243,6 +243,7 @@ ActiveRecord::Schema.define(version: 2020_09_05_161833) do
     t.boolean "otp_required_for_login"
     t.boolean "otp_accepted"
     t.integer "rank", default: 5
+    t.integer "mmr", default: 1000
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["guild_id"], name: "index_users_on_guild_id"
     t.index ["provider"], name: "index_users_on_provider"
