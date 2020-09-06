@@ -54,7 +54,7 @@ class GameChannel < ApplicationCable::Channel
 	end
 
 	def unsubscribed
-		if @game && (@game.player1 == current_user || @game.player2 == current_user) 
+		if @game && @game.status != "finished" && (@game.player1 == current_user || @game.player2 == current_user) 
 			if @game.status == "running"
 				if @game.player1 == current_user
 					@game.winner = @game.player2
