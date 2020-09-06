@@ -83,19 +83,19 @@ class GameChannel < ApplicationCable::Channel
 	def unsubscribed
 		if @game && (@game.player1 == current_user || @game.player2 == current_user) 
 			if @game.status == "running"
-				@game.status = "finished"
 				if @game.player1 == current_user
 					@game.winner = @game.player2
 				elsif @game.player2 == current_user
 					@game.winner = @game.player1
 				end
+				@game.status = "finished"
 			end
 			if @game.mode != "tournament"
 				@game.status = "finished"
 				@game.player1_pts = @gameLogic.player_scores[0]
 				@game.player2_pts = @gameLogic.player_scores[1]
-				@game.save
 			end
+			@game.save	
 			@gameLogic.attribute_points
 		else
 			@gameLogic.removeSpec
