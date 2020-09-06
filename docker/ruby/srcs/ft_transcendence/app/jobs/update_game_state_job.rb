@@ -21,7 +21,7 @@ class UpdateGameStateJob < ApplicationJob
 			send_game_state(@gameLogic, @game)
 			if @game.status == "finished"
 				GameLogic.delete(id)
-				if (!@game.winner && @game.mode != "tournament")
+				if (!@game.winner && ["tournament", "war"].exclude?(@game.mode))
 					Game.delete(id)
 				end
             end

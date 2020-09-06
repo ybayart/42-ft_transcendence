@@ -24,7 +24,7 @@
         <td><%= tournament.start_time %></td>
         <td><%= link_to 'Show', tournament %></td>
         <% if Time.now < tournament.start_time and !current_user.tournaments.include?(tournament) %>
-          <td><%= link_to 'Register', controller: "tournaments", action: "register", id: tournament.id %></td>
+          <td><%= link_to 'Register', register_tournament_path(tournament), method: :post, remote: true %></td>
         <% elsif current_user.tournaments.include?(tournament) %>
           <td> Registered</td>
         <% end %>
