@@ -59,21 +59,29 @@ class War::TimesController < ApplicationController
 		game = Game.new
 		if @war.guild1.members.include?(current_user)
 			game.player1 = current_user
-			game.player2 = @war.guild2.members.offset(@war.guild2.members.count - 1).first
+			game.player2 = @war.guild2.members.offset(rand(@war.guild2.members.count)).first
 		else
 			game.player2 = current_user
-			game.player1 = @war.guild1.members.offset(@war.guild1.members.count - 1).first
+			game.player1 = @war.guild1.members.offset(rand(@war.guild1.members.count)).first
 		end
 		game.status = "waiting"
 		game.mode = "war"
+		CheckTournamentGameJob.set(wait_until: game.start_time + 300).perform_later(game)
 		if game.save
 			@war_time.games << game
 			redirect_to game_path(game)
+			message = "Game opposing #{game.player1.nickname} & #{game.player2.nickname} is ready<br>"
+			if [game.player1, game.player2].include?(current_user)
+				message += "You have 5 minutes to join "
+			else
+				message += "You can watch match "
+			end
+			message += "#{link_to 'here', game_path(game)}<br>#{link_to "War ##{@war.id}", war_path(@war)}<br>#{link_to "WarTime ##{@war_time.id}", war_time_path(@war, @war_time)}"
 			@war.guild1.members.each do |user|
-				Notification.create(user: user, title: "New game in war time!", message: "Game opposing #{game.player1.nickname} & #{game.player2.nickname} is ready<br>You can join #{link_to 'here', game_path(game)}<br>#{link_to "War ##{@war.id}", war_path(@war)}<br>#{link_to "WarTime ##{@war_time.id}", war_time_path(@war, @war_time)}")
+				Notification.create(user: user, title: "New game in war time!", message: message)
 			end
 			@war.guild2.members.each do |user|
-				Notification.create(user: user, title: "New game in war time!", message: "Game opposing #{game.player1.nickname} & #{game.player2.nickname} is ready<br>You can join #{link_to 'here', game_path(game)}<br>#{link_to "War ##{@war.id}", war_path(@war)}<br>#{link_to "WarTime ##{@war_time.id}", war_time_path(@war, @war_time)}")
+				Notification.create(user: user, title: "New game in war time!", message: message)
 			end
 		end
 	end
@@ -114,8 +122,9 @@ class War::TimesController < ApplicationController
 		end
 
 		def running
-			redirect_to war_time_path(@war), :alert => "You're not in this war" and return if @war.guild1.members.exclude?(current_user) and @war.guild2.members.exclude?(current_user)
-			redirect_to war_time_path(@war), :alert => "It's not the time to do that" and return if @war_time.start_at.future? or @war_time.end_at.past?
-			redirect_to war_time_path(@war), :alert => "Another fight already launched" and return unless @war_time.games.where.not(status: "finished").empty?
+			redirect_to war_time_path(@war, @war_time), :alert => "You're not in this war" and return if @war.guild1.members.exclude?(current_user) and @war.guild2.members.exclude?(current_user)
+			redirect_to war_time_path(@war, @war_time), :alert => "It's not the time to do that" and return if @war_time.start_at.future? or @war_time.end_at.past?
+			redirect_to war_time_path(@war, @war_time), :alert => "Another fight already launched" and return unless @war_time.games.where.not(status: "finished").empty?
+			redirect_to war_time_path(@war, @war_time), :alert => "Max of unanswered matchs is reached" and return if @war_time.unanswered > @war_time.max_unanswered
 		end
 end
