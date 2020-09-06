@@ -221,7 +221,6 @@ class GameLogic
 		  @war.increment(points2, 1)
 		end
 	  end
-	  end
 	end
   end
 
