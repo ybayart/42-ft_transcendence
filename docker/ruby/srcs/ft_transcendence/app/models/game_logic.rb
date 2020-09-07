@@ -80,10 +80,7 @@ class GameLogic
 		if ["ranked", "tournament"].include?(@game.mode) and @game.player1.guild and @game.player2.guild
 			guild1 = @game.player1.guild
 			guild2 = @game.player2.guild
-			puts "--------- guild1: #{guild1.name}"
-			puts "--------- guild2: #{guild2.name}"
 			@war = War.where("state = ? AND ((guild1_id = ? AND guild2_id = ?) OR (guild1_id = ? AND guild2_id = ?))", "active", guild1, guild2, guild2, guild1)
-			puts "--------- wars: #{@war.count}"
 			@war.first.games << @game if @war.empty? == false and @war.first.all_match == true
 		end
 	end
@@ -279,7 +276,7 @@ class GameLogic
 			end
 		elsif @game.mode == "war"
 			@war_time = WarTimeLinkGame.find_by(game: @game).war_time
-			addpoints = @war_time
+			addpoints = @war_time.war
 		elsif @game.mode == "tournament"
 			@war = WarLinkGame.find_by(game: @game)
 			addpoints = @war.war if @war

@@ -5,6 +5,8 @@ class CreateMatchFromQueueJob < ApplicationJob
 		@queue = Matchmaking.queue
 		while @queue && @queue.length > 0
 			if @queue.length >= 2
+				valplayer1 = nil
+				valplayer2 = nil
 				@queue[0..-2].each_with_index do |p1, i|
 					valplayer1 = p1;
 					valplayer2 = nil;
@@ -21,7 +23,7 @@ class CreateMatchFromQueueJob < ApplicationJob
 						end
 					end
 				end
-				if (valplayer1 && valplayer2)						
+				if (valplayer1 && valplayer2)
 					Matchmaking.removePlayerFromQueue(valplayer1)
 					Matchmaking.removePlayerFromQueue(valplayer2)
 					valgame_id = createGame(valplayer1, valplayer2)

@@ -11,11 +11,11 @@
 	<% @games.each do |game| %>
 		<tr>
 			<td <% if game.winner == game.player1 %> style="font-weight: bold;" <% end %> >
-				<%= game.player1.login %>
+				<%= game.player1.nickname %>
 			</td>
 			<td <% if game.winner == game.player2 %> style="font-weight: bold;" <% end %> >
 				<% if game.player2 %>
-					<%= game.player2.login %>
+					<%= game.player2.nickname %>
 				<% end %>
 			</td>
 			<td><%= game.player1_pts %> - <%= game.player2_pts %>

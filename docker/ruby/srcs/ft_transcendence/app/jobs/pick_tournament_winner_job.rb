@@ -28,7 +28,7 @@ class PickTournamentWinnerJob < ApplicationJob
   	end
     if valwinner.guild
     	valwinner.guild.points += tournament.points_award
-    	valwinner.save
+    	valwinner.guild.save
     end
   	tournament.winner = valwinner
   	tournament.status = "finished"
