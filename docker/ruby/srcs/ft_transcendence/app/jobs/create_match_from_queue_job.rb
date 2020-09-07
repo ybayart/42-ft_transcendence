@@ -21,7 +21,7 @@ class CreateMatchFromQueueJob < ApplicationJob
 						end
 					end
 				end
-				if ($player1 && $player2)						
+				if ($player1 && $player2)
 					Matchmaking.removePlayerFromQueue($player1)
 					Matchmaking.removePlayerFromQueue($player2)
 					$game_id = createGame($player1, $player2)
