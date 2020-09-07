@@ -7,11 +7,11 @@ class GameLogic
 	def self.create(id)
 	@@semaphore.synchronize {
 		if !@@games.has_key?(id)
-			$game = Game.find_by(id: id)
-			if !$game.game_rules
-				$game_rules = GameRule.create()
-				$game.game_rules = $game_rules
-				$game.save
+			valgame = Game.find_by(id: id)
+			if !valgame.game_rules
+				valgame_rules = GameRule.create()
+				valgame.game_rules = valgame_rules
+				valgame.save
 			end
 			@@games[id] ||= GameLogic.new(id)
 		end
@@ -29,11 +29,11 @@ class GameLogic
 
 	def self.search(id)
 	@@semaphore.synchronize {
-		$game = nil
+		valgame = nil
 		if @@games && @@games.has_key?(id)
-			$game = @@games[id]
+			valgame = @@games[id]
 		end
-		$game
+		valgame
 	}
 	end
 
@@ -59,9 +59,9 @@ class GameLogic
 		@canvasHeight = @game.game_rules.canvas_height
 		@ballRadius = @game.game_rules.ball_radius
 		@paddles = Array.new(2)
-		$paddle_height = 50.0
-		@paddles[0] = Paddle.new(5, @canvasHeight / 2 - ($paddle_height / 2), $paddle_height)
-		@paddles[1] = Paddle.new(@canvasWidth - 20, @canvasHeight / 2 - ($paddle_height / 2), $paddle_height)
+		valpaddle_height = 50.0
+		@paddles[0] = Paddle.new(5, @canvasHeight / 2 - (valpaddle_height / 2), valpaddle_height)
+		@paddles[1] = Paddle.new(@canvasWidth - 20, @canvasHeight / 2 - (valpaddle_height / 2), valpaddle_height)
 		@last_loser = rand(1..2)
 		@last_collision = if @last_loser == 1 then @paddles[0] else @paddles[1] end
 		@ball = Ball.new(@last_loser, @paddles[@last_loser - 1], @ballRadius)
@@ -212,24 +212,24 @@ class GameLogic
 	end
 
 	def reset_paddles
-	$paddle_height = @paddles[0].height
-	@paddles[0] = Paddle.new(5, @canvasHeight / 2 - ($paddle_height / 2), $paddle_height)
-	$paddle_height = @paddles[1].height
-	@paddles[1] = Paddle.new(@canvasWidth - 20, @canvasHeight / 2 - ($paddle_height / 2), $paddle_height)
+	valpaddle_height = @paddles[0].height
+	@paddles[0] = Paddle.new(5, @canvasHeight / 2 - (valpaddle_height / 2), valpaddle_height)
+	valpaddle_height = @paddles[1].height
+	@paddles[1] = Paddle.new(@canvasWidth - 20, @canvasHeight / 2 - (valpaddle_height / 2), valpaddle_height)
 	end
 
 	def reset_all
-	$loser = 0
+	valloser = 0
 	if @ball.posX < 0
 		@player_scores[1] += 1
-		$loser = 1
+		valloser = 1
 	elsif @ball.posX > @canvasWidth
 		@player_scores[0] += 1
-		$loser = 2
+		valloser = 2
 	end
 	reset_paddles
-	reset_ball($loser)
-	@last_loser = $loser
+	reset_ball(valloser)
+	@last_loser = valloser
 	if (gameEnd)
 		designate_winner
 		attribute_points
@@ -252,20 +252,20 @@ class GameLogic
 
 	def attribute_points
 		if @game.mode == "ranked"
-			$winner = @game.winner
+			valwinner = @game.winner
 			if @game.winner == @game.player1
-				$loser = @game.player2
+				valloser = @game.player2
 			elsif @game.winner == @game.player2
-				$loser = @game.player1
+				valloser = @game.player1
 			end
-			$const = 40
-			$factor = 1.0 / (1.0 + 10.0 ** (($winner.mmr - $loser.mmr) / 400.0))
-			$winner.mmr += $const * $factor
-			$loser.mmr -= $const * $factor
-			change_rank($winner)
-			change_rank($loser)
-			$winner.save
-			$loser.save
+			valconst = 40
+			valfactor = 1.0 / (1.0 + 10.0 ** ((valwinner.mmr - valloser.mmr) / 400.0))
+			valwinner.mmr += valconst * valfactor
+			valloser.mmr -= valconst * valfactor
+			change_rank(valwinner)
+			change_rank(valloser)
+			valwinner.save
+			valloser.save
 			if @game.winner.guild
 				@game.winner.guild.points += 3
 				@game.winner.guild.save
@@ -294,51 +294,51 @@ class GameLogic
 	end
 
 	def paddle_up(nb)
-	$paddle = @paddles[nb - 1]
-	if $paddle.posY - $paddle.velocity > 0
-		$paddle.up
+	valpaddle = @paddles[nb - 1]
+	if valpaddle.posY - valpaddle.velocity > 0
+		valpaddle.up
 	end
 	if @state == "pause" && @last_loser == nb
-		@ball.setPosY($paddle.getCenter)
+		@ball.setPosY(valpaddle.getCenter)
 	end
 	end
 
 	def paddle_down(nb)
-	$paddle = @paddles[nb - 1]
-	if $paddle.posY + $paddle.height + $paddle.velocity < @canvasHeight
-		$paddle.down
+	valpaddle = @paddles[nb - 1]
+	if valpaddle.posY + valpaddle.height + valpaddle.velocity < @canvasHeight
+		valpaddle.down
 	end
 	if @state == "pause" && @last_loser == nb
-		@ball.setPosY($paddle.getCenter)
+		@ball.setPosY(valpaddle.getCenter)
 	end
 	end
 
 	def manage_collide
-	$paddle = nil
+	valpaddle = nil
 	if @ball.collidesLeft(@paddles[0].posX, @paddles[0].posY, @paddles[0].width, @paddles[0].height)
-		$paddle = @paddles[0]
+		valpaddle = @paddles[0]
 		if @ball.posX - @ball.radius < @paddles[0].posX + @paddles[0].width
 		@ball.setPosX(@paddles[0].posX + @paddles[0].width + @ball.radius)
 		end
 	end
 	if @ball.collidesRight(@paddles[1].posX, @paddles[1].posY, @paddles[1].width, @paddles[1].height)
-		$paddle = @paddles[1]
+		valpaddle = @paddles[1]
 		if @ball.posX + @ball.radius > @paddles[1].posX
 		@ball.setPosX(@paddles[1].posX - @ball.radius)
 		end
 	end
-	if $paddle
-		$offset = (@ball.posY + @ball.radius * 2.0 - $paddle.posY) / ($paddle.height + @ball.radius * 2.0)
-		$phi = 0.25 * Math::PI * (2.0 * $offset - 1.0)
+	if valpaddle
+		valoffset = (@ball.posY + @ball.radius * 2.0 - valpaddle.posY) / (valpaddle.height + @ball.radius * 2.0)
+		valphi = 0.25 * Math::PI * (2.0 * valoffset - 1.0)
 		@ball.setVelocityX(@ball.velocityX * -1.0)
-		if @ball.velocityY != 0 || @ball.posY != $paddle.getCenter
-		@ball.setVelocityY(@ball.speed * Math.sin($phi))
+		if @ball.velocityY != 0 || @ball.posY != valpaddle.getCenter
+		@ball.setVelocityY(@ball.speed * Math.sin(valphi))
 		end
-		if $paddle != @last_collision
-		if @ball.speed < $paddle.width
+		if valpaddle != @last_collision
+		if @ball.speed < valpaddle.width
 			@ball.increaseSpeed
 		end
-		@last_collision = $paddle
+		@last_collision = valpaddle
 		end
 	end
 	end

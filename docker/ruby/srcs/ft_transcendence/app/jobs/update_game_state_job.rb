@@ -6,11 +6,11 @@ class UpdateGameStateJob < ApplicationJob
 		if @gameLogic
 			@game = @gameLogic.game
 		end
-   		$i = 0
+   		vali = 0
 		while @gameLogic
-			if $i >= 100
+			if vali >= 100
 				@game.reload(lock: true)
-				$i = 0
+				vali = 0
 			end
 			if @game.status == "running"
 				process_inputs(@gameLogic)
@@ -26,7 +26,7 @@ class UpdateGameStateJob < ApplicationJob
 				end
             end
 		  	@gameLogic = GameLogic.search(id)
-			$i += 10
+			vali += 10
 			sleep(1.0/20.0)
 		end
 	end
@@ -53,19 +53,19 @@ class UpdateGameStateJob < ApplicationJob
 		end
 		if (@game.status == "waiting")
 			if (@game.player2 == nil)
-				$status = "waiting for a player to join...<br>"
+				valstatus = "waiting for a player to join...<br>"
 			else
-				$status = "waiting for both players to be ready...<br>"
+				valstatus = "waiting for both players to be ready...<br>"
 			end
 			if @gameLogic.player_ready[0]
-				$status += "#{@gameLogic.player_nicknames[0]} is ready<br>"
+				valstatus += "#{@gameLogic.player_nicknames[0]} is ready<br>"
 			end
 			if @gameLogic.player_ready[1]
-				$status += "#{@gameLogic.player_nicknames[1]} is ready<br>"
+				valstatus += "#{@gameLogic.player_nicknames[1]} is ready<br>"
 			end
 			ActionCable.server.broadcast("game_#{@game.id}", {
 				status: "waiting",
-				msg_status: $status,
+				msg_status: valstatus,
 			});
 		elsif (@game.status == "running")
 			ActionCable.server.broadcast("game_#{@game.id}", {
@@ -110,15 +110,15 @@ class UpdateGameStateJob < ApplicationJob
 			});
 			@gameLogic.clear_processed
 		elsif (@game.status == "finished")
-			$status = "finished";
+			valstatus = "finished";
 			if @game.winner
-				$status = "#{@game.winner.nickname} won !"
+				valstatus = "#{@game.winner.nickname} won !"
 			else
-				$status = "finished"
+				valstatus = "finished"
 			end
 			ActionCable.server.broadcast("game_#{@game.id}", {
 				status: @game.status,
-				msg_status: $status,
+				msg_status: valstatus,
 				players: {
 					nicknames: [
 						@gameLogic.player_nicknames[0],

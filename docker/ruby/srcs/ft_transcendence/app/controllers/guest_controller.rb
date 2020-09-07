@@ -1,14 +1,14 @@
 class GuestController < ApplicationController
 	skip_before_action :authenticate_user!, :only => [:login]
 	def login
-		$id = rand(1..9999)
-		$login = "guest_#{$id.to_s.rjust(4, "0")}"
-		if User.exists?(login: $login)
-			$user = User.find(login: $login)
+		valid = rand(1..9999)
+		vallogin = "guest_#{valid.to_s.rjust(4, "0")}"
+		if User.exists?(login: vallogin)
+			valuser = User.find(login: vallogin)
 		else
-			$user = User.new_guest($login)
+			valuser = User.new_guest(vallogin)
 		end
-		sign_in_and_redirect $user, :event => :authentication
+		sign_in_and_redirect valuser, :event => :authentication
 	end
 
 end

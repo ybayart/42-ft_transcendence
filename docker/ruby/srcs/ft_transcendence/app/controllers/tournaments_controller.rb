@@ -16,11 +16,11 @@ class TournamentsController < ApplicationController
 	def register
 		if @tournament.users.count + 1 <= @tournament.max_player
 			current_user.tournaments << @tournament
-			$notice = 'Registered to tournament.'
+			valnotice = 'Registered to tournament.'
 		else
-			$notice = 'Tournament is full.'
+			valnotice = 'Tournament is full.'
 		end
-		redirect_to @tournament, notice: $notice
+		redirect_to @tournament, notice: valnotice
 	end
 
 	private

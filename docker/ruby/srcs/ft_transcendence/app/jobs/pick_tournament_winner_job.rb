@@ -3,30 +3,30 @@ class PickTournamentWinnerJob < ApplicationJob
 
   def perform(tournament)
     Game.uncached do
-    	$unfinished = Game.where(tournament: tournament, status: "running")
-    	while $unfinished.length > 0
+    	valunfinished = Game.where(tournament: tournament, status: "running")
+    	while valunfinished.length > 0
     		sleep(30)
-        $unfinished.reload
+        valunfinished.reload
     	end
     end
 
-  	$max_win = 0
-  	$winner = nil
-  	$users = tournament.users
-  	$users.each do |u|
-	  	$wins = 0
-  		$games = Game.where(player1: u, tournament: tournament).or(Game.where(player2: u, tournament: tournament))
-  		$games.each do |g|
+  	valmax_win = 0
+  	valwinner = nil
+  	valusers = tournament.users
+  	valusers.each do |u|
+	  	valwins = 0
+  		valgames = Game.where(player1: u, tournament: tournament).or(Game.where(player2: u, tournament: tournament))
+  		valgames.each do |g|
   			if g.winner == u
-  				$wins += 1
+  				valwins += 1
   			end
   		end
-  		if $wins > $max_win
-  			$max_win = $wins
-  			$winner = u
+  		if valwins > valmax_win
+  			valmax_win = valwins
+  			valwinner = u
   		end
   	end
-  	tournament.winner = $winner
+  	tournament.winner = valwinner
   	tournament.status = "finished"
   	tournament.save
   end
