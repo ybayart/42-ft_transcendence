@@ -4,7 +4,7 @@ class ProfilesController < ApplicationController
 	before_action :need_otp, only: [:otp, :otppost]
 
 	def index
-		@profiles = User.all.order("state DESC, mmr ASC, nickname ASC")
+		@profiles = User.all.order("state DESC, mmr DESC, nickname ASC")
 	end
 
 	def otp
