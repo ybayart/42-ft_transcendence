@@ -26,7 +26,9 @@ class GameChannel < ApplicationCable::Channel
 	end
 
 	def input(data)
-		@gameLogic.addInput(data["type"], data["id"], getCurrentPlayerNumber)
+		if current_user == @game.player1 || current_user == @game.player2
+			@gameLogic.addInput(data["type"], data["id"], getCurrentPlayerNumber)
+		end
 	end
 
 	def space
