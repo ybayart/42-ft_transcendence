@@ -24,7 +24,7 @@ class NotificationsChannel < ApplicationCable::Channel
 						},
 						message: $message
 					})
-					Notification.create(use: $to_user, title: 'Invitation to play', message: "#{<%= link_to $from_user.nickname, profile_path($from_user)} invited you to play a game!<br>Join #{link_to 'here', game_path($game)}")
+#					Notification.create(use: $to_user, title: 'Invitation to play', message: "#{<%= link_to $from_user.nickname, profile_path($from_user)} invited you to play a game!<br>Join #{link_to 'here', game_path($game)}")
 					NotificationsChannel.broadcast_to($from_user, {
 						type: "redirect",
 						game:
