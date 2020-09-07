@@ -30,7 +30,7 @@ class Admin::TournamentsController < AdminController
 				format.html { redirect_to back_page, notice: 'Tournament was successfully created.' }
 				format.json { render :show, status: :created, location: back_page }
 			else
-				format.html { render :new }
+				format.html { broadcast_errors @tournament, (["mode", "max_player", "start_time", "points_award"]) }
 				format.json { render json: @tournament.errors, status: :unprocessable_entity }
 			end
 		end
