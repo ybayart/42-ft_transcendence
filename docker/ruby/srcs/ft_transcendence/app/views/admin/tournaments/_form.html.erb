@@ -1,35 +1,27 @@
 <%= form_with(model: tournament, url: admin_tournaments_path) do |form| %>
-  <% if tournament.errors.any? %>
-    <div id="error_explanation">
-      <h2><%= pluralize(tournament.errors.count, "error") %> prohibited this tournament from being saved:</h2>
-
-      <ul>
-        <% tournament.errors.full_messages.each do |message| %>
-          <li><%= message %></li>
-        <% end %>
-      </ul>
-    </div>
-  <% end %>
-
   <div class="field">
     <%= form.label :mode %>
     <%= form.radio_button(:mode, "robin") %>
     <%= form.label(:mode_robin, "Round robin") %>
+	<%= form.error_for :mode %>
   </div>
 
   <div class="field">
     <%= form.label :max_player %>
     <%= form.number_field :max_player %>
+    <%= form.error_for :max_player %>
   </div>
 
   <div class="field">
     <%= form.label :start_time %>
     <%= form.datetime_select :start_time %>
+    <%= form.error_for :start_time %>
   </div>
 
   <div class="field">
     <%= form.label :points_award %>
     <%= form.number_field :points_award %>
+    <%= form.error_for :points_award %>
   </div>
 
   <div class="actions">

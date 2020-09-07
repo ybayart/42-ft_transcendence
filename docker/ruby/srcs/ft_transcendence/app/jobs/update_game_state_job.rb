@@ -9,7 +9,7 @@ class UpdateGameStateJob < ApplicationJob
    		vali = 0
 		while @gameLogic
 			if vali >= 100
-				@game.reload(lock: true)
+				Thread.new { @game.reload(lock: true) }
 				vali = 0
 			end
 			if @game.status == "running"
