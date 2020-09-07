@@ -16,32 +16,6 @@
 	</div>
 
 	<div class="col">
-		<div class="chat" data-channel-subscribe="room" data-room-id="<%= @room.id %>">
-			<% @room_messages.each do |room_message| %>
-				<div class="chat-message-container">
-					<div class="row no-gutters">
-						<div class="col-auto text-center">
-							<img src="<%= url_for(room_message.user.profile_pic) %>" class="avatar" alt="" title="<%= room_message.user.nickname %>">
-						</div>
-
-						<div class="col">
-							<div class="message-content">
-								<p class="mb-1 ml-1">
-									<%= room_message.message %>
-								</p>
-
-								<div class="text-right">
-									<small>
-										<%= create_timeago(room_message.created_at) %>
-									</small>
-								</div>
-							</div>
-						</div>
-					</div>
-				</div>
-			<% end %>
-		</div>
-
 		<%= form_with(model: @room_message, remote: true) do |form| %>
 			<div class="input-group mb-3">
 				<%= form.text_field :message, as: :string,
@@ -57,6 +31,40 @@
 
 			<%= form.hidden_field :room_id %>
 		<% end %>
+		<div class="chat" data-channel-subscribe="room" data-room-id="<%= @room.id %>">
+			<% @room_messages.reverse_each do |room_message| %>
+				<div class="chat-message-container">
+					<div class="row no-gutters">
+						<div class="col-auto text-center">
+							<img src="<%= url_for(room_message.user.profile_pic) %>" class="avatar" alt="" title="<%= room_message.user.nickname %>">
+						</div>
+
+						<div class="col">
+							<div class="message-content">
+								<p class="mb-0 ml-1">
+									<%= link_to profile_path(current_user) do %>
+										<%= "#{room_message.user.guild.anagram} | " if room_message.user.guild %>
+										<%= room_message.user.nickname %>
+									<% end %>
+									<% if room_message.user != current_user %>
+										<button type="button" data-toggle="modal" data-target="#exampleModal">Invite to play</button>
+									<% end %>
+								</p>
+								<p class="mb-1 ml-1">
+									<%= room_message.message %>
+								</p>
+
+								<div class="text-right">
+									<small>
+										<%= create_timeago(room_message.created_at) %>
+									</small>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			<% end %>
+		</div>
 	</div>
 </div>
 <div class="d-none" data-role="message-template">
@@ -68,6 +76,7 @@
 
 			<div class="col">
 				<div class="message-content">
+					<p class="mb-0 ml-1" data-role="message-user"></p>
 					<p class="mb-1 ml-1" data-role="message-text"></p>
 
 					<div class="text-right">
@@ -78,6 +87,8 @@
 		</div>
 	</div>
 </div>
+
+<%= render 'game/rules_modal' %>
 
 <script type="text/template" class="room_users-template">
 	<h4>Owner</h4>

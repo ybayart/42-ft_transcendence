@@ -16,4 +16,4 @@ RUN	cd /data/ft_transcendence/;\
 	bundle install;\
 	yarn install --check-files
 
-CMD cd /data/ft_transcendence;bash ./install.sh;tail -F /dev/null
+CMD cd /data/ft_transcendence;bash ./install.sh;rails s -b=0.0.0.0

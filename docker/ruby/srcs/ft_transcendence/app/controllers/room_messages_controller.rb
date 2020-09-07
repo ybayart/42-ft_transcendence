@@ -6,7 +6,11 @@ class RoomMessagesController < ApplicationController
 		unless @room_message.errors.any?
 			@room_message = @room_message.as_json
 			@room_message[:pic] = url_for(current_user.profile_pic)
-			@room_message[:date] = @room_message['updated_at'].in_time_zone('Europe/Paris').strftime("%F %T")
+			@room_message[:name] = {'nick': current_user.nickname, 'display': ''}
+			@room_message[:name][:display] += "#{current_user.guild.anagram} | " if current_user.guild
+			@room_message[:name][:display] += @room_message[:name][:nick]
+			datetime = @room_message['updated_at'].in_time_zone('Europe/Paris')
+			@room_message[:date] = {'format': datetime.strftime("%F %T"), 'human': datetime.strftime("%H:%M:%S\n%d/%m/%Y")}
 			output = {"type": "message", "content": @room_message}
 			RoomChannel.broadcast_to @room, output
 		else

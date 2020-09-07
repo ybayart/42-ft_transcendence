@@ -45,9 +45,11 @@ Rails.application.routes.draw do
 	end
 
 	resources :wars do
-		resources :times, controller: 'war/times', only: [:index, :new, :create, :edit, :update, :destroy] do
+		resources :times, controller: 'war/times', only: [:index, :show, :new, :create, :edit, :update, :destroy] do
 			post :creategame, on: :member
+			resources :game, only: [:index]
 		end
+		resources :game, only: [:index]
 	end
 
 	resources :notifications, only: [:index, :show]

@@ -6,13 +6,17 @@ class DmMessagesController < ApplicationController
 		unless @dm_message.errors.any?
 			@dm_message = @dm_message.as_json
 			@dm_message[:pic] = url_for(current_user.profile_pic)
-			@dm_message[:date] = @dm_message['updated_at'].in_time_zone('Europe/Paris').strftime("%F %T")
+			@dm_message[:name] = {'nick': current_user.nickname, 'display': ''}
+			@dm_message[:name][:display] += "#{current_user.guild.anagram} | " if current_user.guild
+			@dm_message[:name][:display] += @dm_message[:name][:nick]
+			datetime = @dm_message['updated_at'].in_time_zone('Europe/Paris')
+			@dm_message[:date] = {'format': datetime.strftime("%F %T"), 'human': datetime.strftime("%H:%M:%S\n%d/%m/%Y")}
 			output = {"type": "message", "content": @dm_message}
 			UserChannel.broadcast_to @dm.user1, output
 			UserChannel.broadcast_to @dm.user2, output unless @dm.user1 == @dm.user2
 		else
 			errors = @dm_message.errors.full_messages
-			@dm_message = @room_message.as_json
+			@dm_message = @dm_message.as_json
 			@dm_message[:errors] = errors
 		end
 	end

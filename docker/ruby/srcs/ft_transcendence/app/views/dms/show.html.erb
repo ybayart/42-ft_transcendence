@@ -13,32 +13,6 @@
 
 <%= link_to 'Back', dms_path %>
 
-<div class="chat" data-room-id="<%= @dm.id %>">
-	<% @dm.dm_messages.each do |dm_message| %>
-		<div class="chat-message-container">
-			<div class="row no-gutters">
-				<div class="col-auto text-center">
-					<img src="<%= url_for(dm_message.user.profile_pic) %>" class="avatar" alt="" title="<%= dm_message.user.nickname %>">
-				</div>
-
-				<div class="col">
-					<div class="message-content">
-						<p class="mb-1 ml-1">
-							<%= dm_message.message %>
-						</p>
-
-						<div class="text-right">
-							<small>
-								<%= create_timeago(dm_message.created_at) %>
-							</small>
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
-	<% end %>
-</div>
-
 <%= form_with(model: @dm_message) do |form| %>
 	<div class="input-group mb-3">
 		<%= form.text_field :message, as: :string,
@@ -55,6 +29,36 @@
 	<%= form.hidden_field :dm_id %>
 <% end %>
 
+<div class="chat" data-room-id="<%= @dm.id %>">
+	<% @dm.dm_messages.reverse_each do |dm_message| %>
+		<div class="chat-message-container">
+			<div class="row no-gutters">
+				<div class="col-auto text-center">
+					<img src="<%= url_for(dm_message.user.profile_pic) %>" class="avatar" alt="" title="<%= dm_message.user.nickname %>">
+				</div>
+
+				<div class="col">
+					<div class="message-content">
+						<p class="mb-0 ml-1">
+							<%= "#{dm_message.user.guild.anagram} | " if dm_message.user.guild %>
+							<%= dm_message.user.nickname %>
+						</p>
+						<p class="mb-1 ml-1">
+							<%= dm_message.message %>
+						</p>
+
+						<div class="text-right">
+							<small>
+								<%= create_timeago(dm_message.created_at) %>
+							</small>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	<% end %>
+</div>
+
 <div class="d-none" data-role="message-template">
 	<div class="chat-message-container">
 		<div class="row no-gutters">
@@ -64,6 +68,7 @@
 
 			<div class="col">
 				<div class="message-content">
+					<p class="mb-0 ml-1" data-role="message-user"></p>
 					<p class="mb-1 ml-1" data-role="message-text"></p>
 
 					<div class="text-right">

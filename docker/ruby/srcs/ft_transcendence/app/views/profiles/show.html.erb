@@ -30,6 +30,7 @@
 <p>
 	<% if current_user != @profile and @profile.state == "online" %>
 		<%= render 'game/rules_form' %>
+		<%= render 'game/rules_modal' %>
 	<% end %>
 </p>
 

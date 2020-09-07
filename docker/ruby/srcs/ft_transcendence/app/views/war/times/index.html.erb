@@ -8,7 +8,8 @@
 			<th>ID</td>
 			<th>Start at</th>
 			<th>End at</th>
-			<th>Unanswered matchs</th>
+			<th>Played games</th>
+			<th>Unanswered</th>
 			<th colspan="3"></th>
 		</tr>
 	</thead>
@@ -19,6 +20,7 @@
 				<td><%= war_time.id %></td>
 				<td><%= create_timeago(war_time.start_at) %></td>
 				<td><%= create_timeago(war_time.end_at) %></td>
+				<td><%= link_to 'Games', war_time_game_index_path(@war, war_time) %></td>
 				<td><%= war_time.unanswered %>/<%= war_time.max_unanswered %></td>
 				<% if @war.guild1.officers.include?(current_user) and @war.state == "waiting for war times" %>
 					<td><%= link_to 'Edit', edit_war_time_path(@war, war_time) %></td>
@@ -26,7 +28,7 @@
 				<% end %>
 				<% if war_time.start_at.past? and war_time.end_at.future? %>
 					<td>Active!</td>
-					<td><%= link_to 'Launch a random match', creategame_war_time_path(@war, war_time), method: :post, remote: true if war_time.games.where.not(status: "finished").empty? and war_time.unanswered <= war_time.max_unanswered %></td>
+					<td><%= link_to 'Launch a random match', creategame_war_time_path(@war, war_time), method: :post, remote: true if (war_time.war.guild1.members.include?(current_user) or war_time.war.guild2.members.include?(current_user)) and war_time.games.where.not(status: "finished").empty? and war_time.unanswered <= war_time.max_unanswered %></td>
 				<% elsif war_time.end_at.past? %>
 					<td>Ended</td>
 				<% end %>

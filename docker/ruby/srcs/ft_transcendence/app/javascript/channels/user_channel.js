@@ -25,10 +25,11 @@ consumer.subscriptions.create("UserChannel", {
 				messageTemplate = $('[data-role="message-template"]');
 			if (dm_id == data.content.dm_id) {
 				var content = messageTemplate.children().clone(true, true);
-				content.find('[data-role="user-avatar"]').attr("src", data.content.pic).attr("title", data.content.nickname);
+				content.find('[data-role="user-avatar"]').attr("src", data.content.pic).attr("title", data.content.name.nick)
+				content.find('[data-role="message-user"]').text(data.content.name.display);
 				content.find('[data-role="message-text"]').text(data.content.message);
-				content.find('[data-role="message-date"] > time').attr("datetime", data.content.date).addClass("timeago");
-				$('div.chat').append(content);
+				content.find('[data-role="message-date"] > time').attr("datetime", data.content.date.format).text(data.content.date.human).addClass("timeago");
+				$('div.chat').prepend(content);
 				$("time.timeago").timeago();
 			}
 		} else {

@@ -54,29 +54,38 @@ class GameLogic
 	end
 
 	def initialize(id)
-	@game = Game.find_by(id: id)
-	@canvasWidth = @game.game_rules.canvas_width
-	@canvasHeight = @game.game_rules.canvas_height
-	@ballRadius = @game.game_rules.ball_radius
-	@paddles = Array.new(2)
-	$paddle_height = 50.0
-	@paddles[0] = Paddle.new(5, @canvasHeight / 2 - ($paddle_height / 2), $paddle_height)
-	@paddles[1] = Paddle.new(@canvasWidth - 20, @canvasHeight / 2 - ($paddle_height / 2), $paddle_height)
-	@last_loser = rand(1..2)
-	@last_collision = if @last_loser == 1 then @paddles[0] else @paddles[1] end
-	@ball = Ball.new(@last_loser, @paddles[@last_loser - 1], @ballRadius)
-	@player_scores = Array.new(2, 0)
-	@player_nicknames = Array.new(2)
-	@player_ready = [false, false]
-	@state = "pause"
-	@max_points = @game.game_rules.max_points
-	@inputs = Array.new()
-	@processed_inputs = Array.new(2)
-	@processed_inputs[0] = []
-	@processed_inputs[1] = []
-	@spec_count = 0
-	UpdateGameStateJob.perform_later(id)
-	CheckTournamentGameJob.set(wait_until: @game.start_time + 300).perform_later(id) if ["tournament", "war"].include?(@game.mode)
+		@game = Game.find_by(id: id)
+		@canvasWidth = @game.game_rules.canvas_width
+		@canvasHeight = @game.game_rules.canvas_height
+		@ballRadius = @game.game_rules.ball_radius
+		@paddles = Array.new(2)
+		$paddle_height = 50.0
+		@paddles[0] = Paddle.new(5, @canvasHeight / 2 - ($paddle_height / 2), $paddle_height)
+		@paddles[1] = Paddle.new(@canvasWidth - 20, @canvasHeight / 2 - ($paddle_height / 2), $paddle_height)
+		@last_loser = rand(1..2)
+		@last_collision = if @last_loser == 1 then @paddles[0] else @paddles[1] end
+		@ball = Ball.new(@last_loser, @paddles[@last_loser - 1], @ballRadius)
+		@player_scores = Array.new(2, 0)
+		@player_nicknames = Array.new(2)
+		@player_ready = [false, false]
+		@state = "pause"
+		@max_points = @game.game_rules.max_points
+		@inputs = Array.new()
+		@processed_inputs = Array.new(2)
+		@processed_inputs[0] = []
+		@processed_inputs[1] = []
+		@spec_count = 0
+		UpdateGameStateJob.perform_later(id)
+		CheckTournamentGameJob.set(wait_until: @game.start_time + 10).perform_later(id) if ["tournament", "war"].include?(@game.mode)
+		if ["ranked", "tournament"].include?(@game.mode) and @game.player1.guild and @game.player2.guild
+			guild1 = @game.player1.guild
+			guild2 = @game.player2.guild
+			puts "--------- guild1: #{guild1.name}"
+			puts "--------- guild2: #{guild2.name}"
+			@war = War.where("state = ? AND ((guild1_id = ? AND guild2_id = ?) OR (guild1_id = ? AND guild2_id = ?))", "active", guild1, guild2, guild2, guild1)
+			puts "--------- wars: #{@war.count}"
+			@war.first.games << @game if @war.empty? == false and @war.first.all_match == true
+		end
 	end
 
 	def send_config
@@ -242,38 +251,46 @@ class GameLogic
 	end
 
 	def attribute_points
-	if @game.mode == "ranked"
-		$winner = @game.winner
-		if @game.winner == @game.player1
-			$loser = @game.player2
-		elsif @game.winner == @game.player2
-			$loser = @game.player1
+		if @game.mode == "ranked"
+			$winner = @game.winner
+			if @game.winner == @game.player1
+				$loser = @game.player2
+			elsif @game.winner == @game.player2
+				$loser = @game.player1
+			end
+			$const = 40
+			$factor = 1.0 / (1.0 + 10.0 ** (($winner.mmr - $loser.mmr) / 400.0))
+			$winner.mmr += $const * $factor
+			$loser.mmr -= $const * $factor
+			change_rank($winner)
+			change_rank($loser)
+			$winner.save
+			$loser.save
+			if @game.winner.guild
+				@game.winner.guild.points += 3
+				@game.winner.guild.save
+			end
+			@war = WarLinkGame.find_by(game: @game)
+			addpoints = @war.war if @war
+		elsif @game.mode == "casual"
+			if @game.winner.guild
+				@game.winner.guild.points += 1
+				@game.winner.guild.save
+			end
+		elsif @game.mode == "war"
+			@war_time = WarTimeLinkGame.find_by(game: @game).war_time
+			addpoints = @war_time
+		elsif @game.mode == "tournament"
+			@war = WarLinkGame.find_by(game: @game)
+			addpoints = @war.war if @war
 		end
-		$const = 40
-		$factor = 1.0 / (1.0 + 10.0 ** (($winner.mmr - $loser.mmr) / 400.0))
-		$winner.mmr += $const * $factor
-		$loser.mmr -= $const * $factor
-		change_rank($winner)
-		change_rank($loser)
-		$winner.save
-		$loser.save
-		if @game.winner.guild
-			@game.winner.guild.points += 3
-			@game.winner.guild.save
+		if addpoints
+			if @game.winner == @game.player1
+				addpoints.increment!(:points1, 1)
+			elsif @game.winner == @game.player2
+				addpoints.increment!(:points2, 1)
+			end
 		end
-	elsif @game.mode == "casual"
-		if @game.winner.guild
-			@game.winner.guild.points += 1
-			@game.winner.guild.save
-		end
-	elsif @game.mode == "war"
-		@war_time = WarTimeLinkGame.find_by(game: @game).war_time
-		if @game.winner == @game.player1
-			@war_time.war.increment!(:points1, 1)
-		elsif @game.winner == @game.player2
-			@war_time.war.increment!(:points2, 1)
-		end
-	end
 	end
 
 	def paddle_up(nb)

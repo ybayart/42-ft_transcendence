@@ -47,10 +47,12 @@
 
 <p>
 	<strong>Winner:</strong>
-	<%= @war.winner.nickname if @war.winner %>
+	<%= @war.winner.name if @war.winner %>
 </p>
 
 <%= link_to raw('War times<br>'), war_times_path(@war) %>
+
+<%= link_to raw('Games<br>'), war_game_index_path(@war) %>
 
 <% if @war.guild1.officers.include?(current_user) and @war.state == "waiting for war times" %>
 	<%= link_to raw('Declare !<br>'), war_path(@war, state: "declared", back: true), method: :patch, data: { confirm: 'Are you sure?' }, remote: true unless @war.war_times.empty? %>

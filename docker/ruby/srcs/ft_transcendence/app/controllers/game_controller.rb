@@ -3,7 +3,22 @@ class GameController < ApplicationController
 	before_action :in_past, only: [:show]
 
 	def index
-		@games = Game.all.order("id DESC")
+		begin
+			if params[:war_id]
+				@games = War.find(params[:war_id]).games
+				@title = "War ##{params[:war_id]} games"
+			end
+			if params[:time_id]
+				@games = WarTime.find(params[:time_id]).games
+				@title = "WarTime ##{params[:time_id]} games"
+			end
+		rescue
+		end
+		unless @games
+			@games = Game.all
+			@title = "Games"
+		end
+		@games = @games.order("id DESC")
 	end
 
 	def show
