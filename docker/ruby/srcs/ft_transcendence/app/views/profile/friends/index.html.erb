@@ -13,6 +13,7 @@
     <tr>
       <th>Nickname</th>
 	  <th>Profile image</th>
+	  <th>Status</th>
       <th colspan="3"></th>
     </tr>
   </thead>
@@ -22,6 +23,12 @@
       <tr>
         <td><%= link_to profile_friend.nickname, profile_path(profile_friend) %></td>
 		<td><img src="<%= url_for(profile_friend.profile_pic) if profile_friend.profile_pic.attached? %>" style="max-height: 100px; max-width: 100px;"></td>
+		<td>
+			<% if profile.state == "online" and Game.where("status = ? AND (player1_id = ? OR player2_id = ?)", "running", profile_friend, profile_friend).empty? == false %>
+				In a game
+			<% else %>
+				<%= profile_friend.state %></td>
+			<% end %>
         <td><%= link_to 'Destroy', profile_friend_path(@profile, profile_friend), method: :delete, data: { confirm: 'Are you sure?' }, remote: true %></td>
       </tr>
     <% end %>

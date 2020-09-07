@@ -3,8 +3,8 @@ class CreateTournamentGamesJob < ApplicationJob
 
   def perform(tournament)
     tournament.reload
-    $count = tournament.users.count
-    if ($count < 2)
+    valcount = tournament.users.count
+    if (valcount < 2)
       tournament.delete
       return
     end
@@ -12,43 +12,43 @@ class CreateTournamentGamesJob < ApplicationJob
     tournament.status = "started"
     tournament.save
 
-    $players = Array.new($count, nil)
-    if $count % 2 == 1
-      $players.push(nil)
+    valplayers = Array.new(valcount, nil)
+    if valcount % 2 == 1
+      valplayers.push(nil)
     end
 
-    for i in 0...$count
-      $players[i] = tournament.users[i]
+    for i in 0...valcount
+      valplayers[i] = tournament.users[i]
     end
 
-    $rounds_nb = $players.length - 1
-    $half = $players.length / 2;
-    $time = Time.now
+    valrounds_nb = valplayers.length - 1
+    valhalf = valplayers.length / 2;
+    valtime = Time.now
 
-    $playersIndex = [];
-    for i in 0...$players.length
-      $playersIndex.push(i)
+    valplayersIndex = [];
+    for i in 0...valplayers.length
+      valplayersIndex.push(i)
     end
-    $playersIndex.shift
+    valplayersIndex.shift
     
-    for i in 0...$rounds_nb
+    for i in 0...valrounds_nb
       if i != 0
-        $time += 300
+        valtime += 300
       end
-      $newPlayerIndex = [0].concat($playersIndex)
-      $firstHalf = $newPlayerIndex.slice(0...$half);
-      $secondHalf = $newPlayerIndex.slice($half...$players.length).reverse();
-      for j in 0...$firstHalf.length
-        $p1 = $players[$firstHalf[j]]
-        $p2 = $players[$secondHalf[j]]
-        if $p1 != nil && $p2 != nil
-          $game = Game.create(player1: $p1, player2: $p2, status: "waiting", mode: "tournament", tournament: tournament, start_time: $time) 
-          CheckTournamentGameJob.set(wait_until: $game.start_time + 305).perform_later($game.id)
-          if i == $rounds_nb - 1 && j == $firstHalf.length - 1
-            PickTournamentWinnerJob.set(wait_until: $game.start_time + 500).perform_later(tournament)
+      valnewPlayerIndex = [0].concat(valplayersIndex)
+      valfirstHalf = valnewPlayerIndex.slice(0...valhalf);
+      valsecondHalf = valnewPlayerIndex.slice(valhalf...valplayers.length).reverse();
+      for j in 0...valfirstHalf.length
+        valp1 = valplayers[valfirstHalf[j]]
+        valp2 = valplayers[valsecondHalf[j]]
+        if valp1 != nil && valp2 != nil
+          valgame = Game.create(player1: valp1, player2: valp2, status: "waiting", mode: "tournament", tournament: tournament, start_time: valtime) 
+          CheckTournamentGameJob.set(wait_until: valgame.start_time + 305).perform_later(valgame.id)
+          if i == valrounds_nb - 1 && j == valfirstHalf.length - 1
+            PickTournamentWinnerJob.set(wait_until: valgame.start_time + 500).perform_later(tournament)
           end
         end
-        $playersIndex.push($playersIndex.shift())
+        valplayersIndex.push(valplayersIndex.shift())
       end
     end
   end

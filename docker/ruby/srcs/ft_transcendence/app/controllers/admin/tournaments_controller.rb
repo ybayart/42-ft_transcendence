@@ -52,12 +52,12 @@ class Admin::TournamentsController < AdminController
 		if @tournament.users.count + 1 <= @tournament.max_player
 			current_user.tournaments.push(@tournament)
 			current_user.save
-			$notice = 'Registered to tournament.'
+			valnotice = 'Registered to tournament.'
 		else
-			$notice = 'Tournament is full.'
+			valnotice = 'Tournament is full.'
 		end
 		respond_to do |format|
-			format.html { redirect_to @tournament, notice: $notice }
+			format.html { redirect_to @tournament, notice: valnotice }
 		end
 	end
 

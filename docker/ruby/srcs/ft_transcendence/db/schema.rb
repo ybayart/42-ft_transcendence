@@ -207,11 +207,11 @@ ActiveRecord::Schema.define(version: 2020_09_06_165255) do
     t.integer "max_player"
     t.integer "points_award"
     t.datetime "start_time"
-    t.bigint "winner_id_id"
+    t.bigint "winner_id"
     t.string "status"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
-    t.index ["winner_id_id"], name: "index_tournaments_on_winner_id_id"
+    t.index ["winner_id"], name: "index_tournaments_on_winner_id"
   end
 
   create_table "tournaments_users", id: false, force: :cascade do |t|

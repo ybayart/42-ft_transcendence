@@ -49,7 +49,7 @@ class User < ActiveRecord::Base
 	end
 
 	def self.new_guest(guest)
-		$user = nil
+		valuser = nil
 		create do |user|
 			user.email = "#{guest}@mail.fr"
 			user.password = "#{guest}pass"
@@ -59,9 +59,9 @@ class User < ActiveRecord::Base
 			user.otp_required_for_login = false
 			user.otp_accepted = true
 			user.staff = false
-			$user = user
+			valuser = user
 		end
-		$user
+		valuser
 	end
 
 	def check_columns
