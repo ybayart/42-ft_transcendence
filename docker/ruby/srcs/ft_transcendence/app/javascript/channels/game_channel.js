@@ -14,7 +14,6 @@ document.addEventListener('turbolinks:load', () => {
 		if (logKey)
 			document.removeEventListener('keypress', logKey);
 		sub.unsubscribe();
-		console.log("unsub_game");
 	}
 	var render = new Render(document.querySelector('.myCanvas'));
 	if (render.canvas)
@@ -37,7 +36,7 @@ document.addEventListener('turbolinks:load', () => {
 		logKey = function(e) {
 			e.preventDefault();
 			var input;
-			if (e.key == 'w')
+			if (e.keyCode == 38 || e.keyCode == 87)
 			{
 				input = { type: "paddle_up", id: inputs_id };
 				sub.perform('input', input);
@@ -45,7 +44,7 @@ document.addEventListener('turbolinks:load', () => {
 				if (paddles[me])
 					paddles[me].goUp();
 			}
-			else if (e.key == 's')
+			else if (e.keyCode == 40 || e.keyCode == 83)
 			{
 				input = { type: "paddle_down", id: inputs_id };
 				sub.perform('input', input);
@@ -53,7 +52,7 @@ document.addEventListener('turbolinks:load', () => {
 				if (paddles[me])
 					paddles[me].goDown();
 			}
-			else if (e.key == ' ')
+			else if (e.keyCode == 32)
 				sub.perform('space', { id: inputs_id });
 			inputs_id++;
 		}
@@ -102,10 +101,9 @@ document.addEventListener('turbolinks:load', () => {
 			game: $('.GameInfo').attr("value")
 			}, {
 			connected() {
-				console.log("sub_game");
 				if (!spectate)
 				{
-					document.addEventListener('keypress', logKey);
+					document.addEventListener('keydown', logKey);
 					if ($("#matchmaking-alert").length)
 					{
 						matchmaking.perform('unsubscribe_queue');
@@ -122,13 +120,11 @@ document.addEventListener('turbolinks:load', () => {
 			},
 
 			disconnected() {
-				console.log("game unsub");
 			},
 
 			received(data) {
 				if (data.config)
 				{
-					console.log(data.config);
 					render.config(data.config);
 					render.canvas.width = data.config.canvas.width;
 					render.canvas.height = data.config.canvas.height;
@@ -180,7 +176,7 @@ document.addEventListener('turbolinks:load', () => {
 					render.resetCanvas();
 					sub.unsubscribe();
 					if (!spectate)
-						document.removeEventListener('keypress', logKey);
+						document.removeEventListener('keydown', logKey);
 				}
 			}
 		});
