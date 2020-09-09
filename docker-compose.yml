@@ -9,9 +9,9 @@ services:
     environment:
       FT_TRANSCENDENCE_DATABASE_PASSWORD: password
       TZ: Europe/Paris
-      OAUTH_CLIENT: 84d0d1d5dc45b7355d2c70a85692bdd664f18dc91c8402a06cad841d4b1f8d6c
-      OAUTH_SECRET: 7cf46c7187441a862b935c2a9e271dbd86250e67909abce31ff83362cb27f27a
-      TOTP_KEY: tW367bPC5rESTKh48zi697yq8fjcELAc9U7
+      OAUTH_CLIENT:
+      OAUTH_SECRET:
+      TOTP_KEY:
     tty: true
     stdin_open: true
     healthcheck:
